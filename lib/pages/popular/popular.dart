@@ -6,14 +6,14 @@ import 'package:ice_live_viewer/utils/http/bilibili.dart';
 import 'package:ice_live_viewer/widgets/room_card.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class RecommendPage extends StatefulWidget {
-  const RecommendPage({Key? key}) : super(key: key);
+class PopularPage extends StatefulWidget {
+  const PopularPage({Key? key}) : super(key: key);
 
   @override
-  State<RecommendPage> createState() => _RecommendPageState();
+  State<PopularPage> createState() => _PopularPageState();
 }
 
-class _RecommendPageState extends State<RecommendPage> {
+class _PopularPageState extends State<PopularPage> {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   List<RoomInfo> roomsList = [];
@@ -55,7 +55,12 @@ class _RecommendPageState extends State<RecommendPage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Recommend")),
+      appBar: AppBar(
+        title: const Text(
+          "POPULAR",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,

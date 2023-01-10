@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/pages/areas_page/areas_room_page.dart';
 import 'package:ice_live_viewer/utils/http/bilibili.dart';
 import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
+
+import 'areas_room.dart';
 
 class AreasPage extends StatefulWidget {
   const AreasPage({Key? key}) : super(key: key);
@@ -36,7 +37,10 @@ class _AreasPageState extends State<AreasPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bilibili'),
+        title: const Text(
+          'AREAS',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         bottom: tabController == null
             ? const PreferredSize(
                 child: SizedBox(height: 0),

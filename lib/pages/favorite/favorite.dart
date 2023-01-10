@@ -18,7 +18,10 @@ class FavoritePage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favorites"),
+        title: const Text(
+          "FAVORITES",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         actions: [
           provider.isHideOffline == false
               ? IconButton(

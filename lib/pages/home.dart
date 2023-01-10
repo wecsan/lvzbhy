@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:ice_live_viewer/pages/areas_page/areas_page.dart';
-import 'package:ice_live_viewer/pages/favorite_page/favorite_page.dart';
-import 'package:ice_live_viewer/pages/recommend_page/recommend_page.dart';
+import 'package:ice_live_viewer/pages/areas/areas.dart';
+import 'package:ice_live_viewer/pages/favorite/favorite.dart';
+import 'package:ice_live_viewer/pages/popular/popular.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -52,7 +52,7 @@ class _HomePageRouterState extends State<HomePageRouter> {
         // Favorites
         const FavoritePage(),
         // Popular
-        const RecommendPage(),
+        const PopularPage(),
         // Areas
         const AreasPage(),
       ][_selectedIndex],

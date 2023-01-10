@@ -6,37 +6,36 @@ enum Platform { huya, bilibili, douyu, unknown }
 
 class RoomInfo {
   String roomId;
-  String link;
-  bool isInit = true;
+  String link = '';
   String title = '';
   String nick = '';
   String avatar = '';
-  LiveStatus liveStatus = LiveStatus.unknown;
   String cover = '';
-  String platform = '';
+  String platform = 'UNKNOWN';
+  LiveStatus liveStatus = LiveStatus.unknown;
+
   int huyaDanmakuId = 0;
   Map cdnMultiLink = {};
 
-  RoomInfo(this.roomId,
-      {this.link = '',
-      this.liveStatus = LiveStatus.unknown,
-      this.platform = 'UNKNOWN'});
+  RoomInfo(this.roomId);
 
   RoomInfo.fromJson(Map<String, dynamic> json)
-      : roomId = json['roomId'],
-        title = json['title'],
-        link = json['link'],
-        nick = json['nick'],
-        avatar = json['avatar'],
-        cover = json['cover'],
-        liveStatus = json['liveStatus'];
+      : roomId = json['roomId'] ?? '',
+        title = json['title'] ?? '',
+        link = json['link'] ?? '',
+        nick = json['nick'] ?? '',
+        avatar = json['avatar'] ?? '',
+        cover = json['cover'] ?? '',
+        platform = json['platform'] ?? '',
+        liveStatus = LiveStatus.values[json['liveStatus']];
   Map<String, dynamic> toJson() => <String, dynamic>{
         'roomId': roomId,
         'title': title,
         'nick': nick,
         'avatar': avatar,
         'cover': cover,
-        'liveStatus': liveStatus
+        'platform': platform,
+        'liveStatus': liveStatus.index
       };
 
   RoomInfo.fromLink(String rawLink)
