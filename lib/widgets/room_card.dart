@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
-import 'package:ice_live_viewer/pages/mobileplay.dart';
+import 'package:ice_live_viewer/pages/video_play_page/mobileplay.dart';
 import 'package:ice_live_viewer/utils/http/bilibili.dart';
 import 'package:ice_live_viewer/utils/http/douyu.dart';
 import 'package:ice_live_viewer/utils/http/huya.dart';

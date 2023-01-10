@@ -3,14 +3,19 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:web_socket_channel/io.dart';
 
 class DouYuDanmakuListView extends StatefulWidget {
-  final int roomId;
   const DouYuDanmakuListView({
     Key? key,
     required this.roomId,
+    required this.barrageController,
   }) : super(key: key);
+
+  final int roomId;
+  final BarrageWallController barrageController;
+
   @override
   _LiveDanmakuPageState createState() => _LiveDanmakuPageState();
 }
@@ -136,6 +141,14 @@ class _LiveDanmakuPageState extends State<DouYuDanmakuListView>
     setState(() {
       _messageList.add(item);
     });
+    widget.barrageController.send([
+      Bullet(
+        child: Text(
+          item.msg,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    ]);
   }
 
   @override

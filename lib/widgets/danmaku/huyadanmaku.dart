@@ -1,13 +1,20 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:ice_live_viewer/utils/dart_tars_protocol/tarscodec.dart';
 import 'package:web_socket_channel/io.dart';
 
 class HuyaDanmakuListView extends StatefulWidget {
-  const HuyaDanmakuListView({Key? key, required this.danmakuId})
-      : super(key: key);
+  const HuyaDanmakuListView({
+    Key? key,
+    required this.danmakuId,
+    required this.barrageController,
+  }) : super(key: key);
+
   final int danmakuId;
+  final BarrageWallController barrageController;
+
   @override
   State<HuyaDanmakuListView> createState() => _HuyaDanmakuListViewState();
 }
@@ -95,6 +102,14 @@ class _HuyaDanmakuListViewState extends State<HuyaDanmakuListView>
       setState(() {
         _messageList.add(item);
       });
+      widget.barrageController.send([
+        Bullet(
+          child: Text(
+            item.msg,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ]);
     }
   }
 

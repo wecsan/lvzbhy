@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:ice_live_viewer/utils/http/bilibili.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -14,9 +15,11 @@ class BilibiliDanmakuListView extends StatefulWidget {
   const BilibiliDanmakuListView({
     Key? key,
     required this.roomId,
+    required this.barrageController,
   }) : super(key: key);
 
   final int roomId;
+  final BarrageWallController barrageController;
 
   @override
   _BilibiliDanmakuListViewState createState() =>
@@ -181,6 +184,14 @@ class _BilibiliDanmakuListViewState extends State<BilibiliDanmakuListView>
       setState(() {
         _messageList.add(item);
       });
+      widget.barrageController.send([
+        Bullet(
+          child: Text(
+            item.msg,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ]);
     }
   }
 
