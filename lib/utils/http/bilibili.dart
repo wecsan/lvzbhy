@@ -7,20 +7,12 @@ import 'package:ice_live_viewer/model/livearea.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 
 class BilibiliApi {
-  /// Bilibili清晰度
-  static String bilibiliFD = "80";
-  static String bilibiliLD = "150";
-  static String bilibiliSD = "250";
-  static String bilibiliHD = "400";
-  static String bilibiliOD = "10000";
-
-  /// 获取网页json数据 由于bilibili的编码utf-8 所以需要转换
   static Future<dynamic> _getJson(String url) async {
     var resp = await http.get(
       Uri.parse(url),
       headers: {
         'User-Agent':
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/108.0.0.0'
       },
     );
     return await jsonDecode(const Utf8Codec().decode(resp.bodyBytes));
@@ -29,10 +21,10 @@ class BilibiliApi {
   /// 获取直播间所有清晰度的url
   /// @param urls
   /// @param rid
-  static Future<Map<String, List>> _getRoomStreamLink(RoomInfo biliRoom) async {
+  static Future<Map<String, dynamic>> _getRoomStreamLink(RoomInfo room) async {
     String defaultQn = '10000';
     String newStreamUrl =
-        'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${biliRoom.roomId}&qn=$defaultQn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
+        'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$defaultQn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
     dynamic streamJson = await _getJson(newStreamUrl);
     List<dynamic> qualityReferenceList =
         streamJson['data']['playurl_info']['playurl']['g_qn_desc'];
@@ -78,7 +70,7 @@ class BilibiliApi {
       }
 
       String qnUrl =
-          'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${biliRoom.roomId}&qn=$qn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
+          'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$qn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
       dynamic qnJson = await _getJson(qnUrl);
       List<dynamic> qnStreamMultiList =
           qnJson['data']['playurl_info']['playurl']['stream'];
@@ -105,34 +97,43 @@ class BilibiliApi {
       }
       finalStream[qnName] = urlMap;
     }
-    return finalStream;
+
+    Map<String, Map<String, String>> result = {};
+    for (var key in finalStream.keys) {
+      List<dynamic> list = finalStream[key] ?? [];
+      result[key] = {};
+      for (int i = 0; i < list.length; i++) {
+        result[key]!["线路$i"] = list[i];
+      }
+    }
+    return result;
   }
 
   /// 获取单个直播间信息
   /// @param roomId 房间号
   /// @return
-  static Future<RoomInfo> getRoomFullInfo(RoomInfo biliRoom) async {
+  static Future<RoomInfo> getRoomInfo(RoomInfo room) async {
     String reqUrl =
-        "https://api.live.bilibili.com/xlive/web-room/v1/index/getH5InfoByRoom?room_id=${biliRoom.roomId}";
+        "https://api.live.bilibili.com/xlive/web-room/v1/index/getH5InfoByRoom?room_id=${room.roomId}";
     dynamic response = await _getJson(reqUrl);
     dynamic data = response["data"];
     dynamic roomInfo = data["room_info"];
     dynamic ownerInfo = data["anchor_info"]["base_info"];
     dynamic liveStatus = roomInfo["live_status"];
 
-    biliRoom.platform = "bilibili";
-    biliRoom.roomId = roomInfo["room_id"].toString();
-    biliRoom.title = roomInfo["title"];
-    biliRoom.nick = ownerInfo["uname"];
-    biliRoom.cover = roomInfo["cover"];
-    biliRoom.avatar = ownerInfo["face"];
+    room.platform = "bilibili";
+    room.roomId = roomInfo["room_id"].toString();
+    room.title = roomInfo["title"];
+    room.nick = ownerInfo["uname"];
+    room.cover = roomInfo["cover"];
+    room.avatar = ownerInfo["face"];
 
     if (liveStatus == 1) {
-      Map links = await _getRoomStreamLink(biliRoom);
-      biliRoom.liveStatus = LiveStatus.live;
-      biliRoom.cdnMultiLink = links;
+      Map links = await _getRoomStreamLink(room);
+      room.liveStatus = LiveStatus.live;
+      room.cdnMultiLink = links;
     } else {}
-    return biliRoom;
+    return room;
   }
 
   /// 根据分页获取推荐直播间
@@ -148,14 +149,14 @@ class BilibiliApi {
     if (response["code"] == 0) {
       List<dynamic> data = response["data"];
       data.forEach((roomInfo) {
-        var liveRoomInfo = RoomInfo(roomInfo["roomid"].toString());
-        liveRoomInfo.platform = "bilibili";
-        liveRoomInfo.title = roomInfo["title"];
-        liveRoomInfo.nick = roomInfo["uname"];
-        liveRoomInfo.cover = roomInfo["system_cover"];
-        liveRoomInfo.avatar = roomInfo["face"];
-        liveRoomInfo.liveStatus = LiveStatus.live;
-        list.add(liveRoomInfo);
+        var room = RoomInfo(roomInfo["roomid"].toString());
+        room.platform = "bilibili";
+        room.title = roomInfo["title"];
+        room.nick = roomInfo["uname"];
+        room.cover = roomInfo["system_cover"];
+        room.avatar = roomInfo["face"];
+        room.liveStatus = LiveStatus.live;
+        list.add(room);
       });
     } else {
       log("BILIBILI---获取推荐直播间异常");
@@ -170,28 +171,24 @@ class BilibiliApi {
     String url =
         "https://api.live.bilibili.com/xlive/web-interface/v1/index/getWebAreaList?source_id=2";
 
-    try {
-      dynamic response = await _getJson(url);
-      if (response["code"] == 0) {
-        List<dynamic> data = response["data"]["data"];
-        data.forEach((areaType) {
-          List<AreaInfo> subAreaList = [];
-          List<dynamic> jsonArray = areaType["list"];
-          jsonArray.forEach((areaInfo) {
-            AreaInfo area = AreaInfo();
-            area.platform = "bilibili";
-            area.areaType = areaInfo["parent_id"].toString();
-            area.typeName = areaInfo["parent_name"];
-            area.areaId = areaInfo["id"].toString();
-            area.areaName = areaInfo["name"];
-            area.areaPic = areaInfo["pic"];
-            subAreaList.add(area);
-          });
-          areaList.add(subAreaList);
+    dynamic response = await _getJson(url);
+    if (response["code"] == 0) {
+      List<dynamic> data = response["data"]["data"];
+      data.forEach((areaType) {
+        List<AreaInfo> subAreaList = [];
+        List<dynamic> areaInfoList = areaType["list"];
+        areaInfoList.forEach((areaInfo) {
+          AreaInfo area = AreaInfo();
+          area.platform = "bilibili";
+          area.areaType = areaInfo["parent_id"].toString();
+          area.typeName = areaInfo["parent_name"];
+          area.areaId = areaInfo["id"].toString();
+          area.areaName = areaInfo["name"];
+          area.areaPic = areaInfo["pic"];
+          subAreaList.add(area);
         });
-      }
-    } catch (e) {
-      log("BILIBILI---刷新分类缓存异常");
+        areaList.add(subAreaList);
+      });
     }
     return areaList;
   }
@@ -201,7 +198,8 @@ class BilibiliApi {
   /// @param page 请求页数
   /// @param size
   /// @return
-  static Future<List<RoomInfo>> getAreaRooms(AreaInfo area, int page) async {
+  static Future<List<RoomInfo>> getAreaRooms(
+      AreaInfo area, int page, int size) async {
     List<RoomInfo> list = [];
 
     String url =
@@ -209,17 +207,17 @@ class BilibiliApi {
 
     dynamic response = await _getJson(url);
     if (response["code"] == 0) {
-      List<dynamic> data = response["data"]["list"];
-      data.forEach((roomInfo) {
-        var liveRoomInfo = RoomInfo(roomInfo["roomid"].toString());
-        liveRoomInfo.platform = "bilibili";
-        liveRoomInfo.title = roomInfo["title"];
-        liveRoomInfo.nick = roomInfo["uname"];
-        liveRoomInfo.cover = roomInfo["cover"];
-        liveRoomInfo.avatar = roomInfo["face"];
-        liveRoomInfo.liveStatus = LiveStatus.live;
-        list.add(liveRoomInfo);
-      });
+      List<dynamic> roomInfoList = response["data"]["list"];
+      for (var roomInfo in roomInfoList) {
+        var room = RoomInfo(roomInfo["roomid"].toString());
+        room.platform = "bilibili";
+        room.title = roomInfo["title"];
+        room.nick = roomInfo["uname"];
+        room.cover = roomInfo["cover"];
+        room.avatar = roomInfo["face"];
+        room.liveStatus = LiveStatus.live;
+        list.add(room);
+      }
     }
     return list;
   }

@@ -123,25 +123,22 @@ class RoomEmptyView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: Icon(
-              Icons.post_add_rounded,
-              size: 144,
-              color: Theme.of(context).disabledColor,
-            ),
+          Icon(
+            Icons.post_add_rounded,
+            size: 144,
+            color: Theme.of(context).disabledColor,
           ),
-          Expanded(
-            child: Text.rich(
-                TextSpan(children: [
-                  TextSpan(
-                      text: "No data!\n\n",
-                      style: Theme.of(context).textTheme.headlineLarge),
-                  TextSpan(
-                      text: "Click the button below\nto add your first link",
-                      style: Theme.of(context).textTheme.headline3),
-                ]),
-                textAlign: TextAlign.center),
-          ),
+          const SizedBox(height: 32),
+          Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: "No Favorites\n\n",
+                    style: Theme.of(context).textTheme.headlineLarge),
+                TextSpan(
+                    text: "Click the button below\nto add live link",
+                    style: Theme.of(context).textTheme.headline3),
+              ]),
+              textAlign: TextAlign.center),
         ],
       ),
     );

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/pages/live_play/live_play.dart';
-import 'package:ice_live_viewer/utils/http/bilibili.dart';
-import 'package:ice_live_viewer/utils/http/douyu.dart';
-import 'package:ice_live_viewer/utils/http/huya.dart';
+import 'package:ice_live_viewer/utils/http/httpapi.dart';
 import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
 
 class RoomCard extends StatelessWidget {
@@ -19,12 +17,7 @@ class RoomCard extends StatelessWidget {
   final bool dense;
 
   void onTap(BuildContext context) async {
-    final fullRoom = room.platform == 'bilibili'
-        ? await BilibiliApi.getRoomFullInfo(room)
-        : room.platform == 'huya'
-            ? await HuyaApi.getLiveInfo(room.link)
-            : await DouyuApi.getRoomFullInfo(room);
-
+    final fullRoom = await HttpApi.getRoomInfo(room);
     if (fullRoom.liveStatus == LiveStatus.live) {
       Navigator.push(
         context,
@@ -32,15 +25,16 @@ class RoomCard extends StatelessWidget {
       );
     } else {
       showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                '${fullRoom.nick} is offline.',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            );
-          });
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(
+              '${fullRoom.nick} is offline.',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          );
+        },
+      );
     }
   }
 

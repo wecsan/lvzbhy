@@ -35,7 +35,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     cdnMultiLink = widget.room.cdnMultiLink;
 
     barrageController = BarrageWallController();
-    _initVideoController(cdnMultiLink.values.toList()[0][0]);
+    _initVideoController(cdnMultiLink.values.toList()[0].values.toList()[0]);
   }
 
   void _initVideoController(String url, {bool swap = false}) {
@@ -81,13 +81,12 @@ class _LivePlayPageState extends State<LivePlayPage> {
           onSelected: (String link) => _initVideoController(link, swap: true),
           itemBuilder: (context) {
             final menuList = <PopupMenuItem<String>>[];
-            for (var i = 0; i < value.length; i++) {
+            value.forEach((k, v) {
               menuList.add(PopupMenuItem(
-                child: Text("Line ${i + 1}",
-                    style: const TextStyle(fontSize: 14.0)),
-                value: value[i],
+                child: Text(k, style: const TextStyle(fontSize: 14.0)),
+                value: v,
               ));
-            }
+            });
             return menuList;
           },
         ),
@@ -125,7 +124,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                     ),
                   ),
             Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+              padding: const EdgeInsets.only(left: 16, right: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -137,6 +136,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 ],
               ),
             ),
+            const Divider(height: 1),
             Expanded(
               child: DanmakuListView(
                 room: widget.room,

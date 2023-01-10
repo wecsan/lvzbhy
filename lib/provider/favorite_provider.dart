@@ -28,7 +28,7 @@ class FavoriteProvider with ChangeNotifier {
 
   void getRoomsInfoFromApi() async {
     for (var item in _roomsList) {
-      RoomInfo singleRoom = await HttpApi.getLiveInfo(item);
+      RoomInfo singleRoom = await HttpApi.getRoomInfo(item);
       _roomsList[_roomsList.indexOf(item)] = singleRoom;
       notifyListeners();
     }
@@ -51,12 +51,11 @@ class FavoriteProvider with ChangeNotifier {
 
   void addRoomLink(String link) async {
     RoomInfo singleRoom = RoomInfo.fromLink(link);
-    singleRoom = await HttpApi.getLiveInfo(singleRoom);
+    singleRoom = await HttpApi.getRoomInfo(singleRoom);
     addRoom(singleRoom);
   }
 
   void addRoom(RoomInfo room) async {
-    room = await HttpApi.getLiveInfo(room);
     final idx = _roomsList.indexWhere((e) => e.roomId == room.roomId);
     if (idx != -1) _roomsList[idx] = room;
     _roomsList.add(room);
@@ -70,7 +69,7 @@ class FavoriteProvider with ChangeNotifier {
     _saveRoomsToPrefs();
   }
 
-  void updateRoomInfo(RoomInfo room) {
+  void updateRoom(RoomInfo room) {
     final idx = _roomsList.indexWhere((e) => e.roomId == room.roomId);
     if (idx != -1) _roomsList[idx] = room;
     notifyListeners();

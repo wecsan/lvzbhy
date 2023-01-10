@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/utils/http/bilibili.dart';
+import 'package:ice_live_viewer/utils/http/httpapi.dart';
 import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
 
 import 'areas_room.dart';
@@ -13,22 +13,30 @@ class AreasPage extends StatefulWidget {
   State<AreasPage> createState() => _AreasPageState();
 }
 
-class _AreasPageState extends State<AreasPage>
-    with SingleTickerProviderStateMixin {
+class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
+  TabController? tabController;
   List<List<AreaInfo>> areaList = [];
   int labelIndex = 0;
-  TabController? tabController;
+  String platform = 'bilibili';
 
   @override
   void initState() {
     super.initState();
-    getData();
+    _onLoading();
   }
 
-  void getData() async {
-    areaList = await BilibiliApi.getAreaList();
+  Future<void> _onLoading() async {
+    areaList.clear();
+    areaList = await HttpApi.getAreaList(platform);
     tabController = TabController(length: areaList.length, vsync: this);
     setState(() {});
+  }
+
+  void _changePlatform(String name) async {
+    platform = name;
+    tabController!.dispose();
+    await _onLoading();
+    Navigator.pop(context);
   }
 
   @override
@@ -41,7 +49,7 @@ class _AreasPageState extends State<AreasPage>
           'AREAS',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        bottom: tabController == null
+        bottom: areaList.isEmpty
             ? const PreferredSize(
                 child: SizedBox(height: 0),
                 preferredSize: Size.fromHeight(0),
@@ -75,7 +83,69 @@ class _AreasPageState extends State<AreasPage>
                 area: areaList[labelIndex][index],
               ),
             )
-          : Container(),
+          : const AreaEmptyView(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: const Text('Bilibili'),
+                      onTap: () => _changePlatform("bilibili"),
+                    ),
+                    ListTile(
+                      title: const Text('Douyu'),
+                      onTap: () => _changePlatform("douyu"),
+                    ),
+                    ListTile(
+                      title: const Text('Huya'),
+                      onTap: () => _changePlatform("huya"),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.video_collection_rounded),
+      ),
+    );
+  }
+}
+
+class AreaEmptyView extends StatelessWidget {
+  const AreaEmptyView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.live_tv_rounded,
+            size: 144,
+            color: Theme.of(context).disabledColor,
+          ),
+          const SizedBox(height: 32),
+          Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: "No Area Found\n\n",
+                    style: Theme.of(context).textTheme.headlineLarge),
+                TextSpan(
+                    text: "Click the button below\nto switch platform",
+                    style: Theme.of(context).textTheme.headline3),
+              ]),
+              textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 }

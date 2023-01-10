@@ -1,10 +1,22 @@
 import 'dart:convert';
+import 'package:ice_live_viewer/model/livearea.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'package:ice_live_viewer/utils/linkparser.dart';
 
 class DouyuApi {
+  static Future<dynamic> _getJson(String url) async {
+    var resp = await http.get(
+      Uri.parse(url),
+      headers: {
+        'User-Agent':
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+      },
+    );
+    return await jsonDecode(resp.body);
+  }
+
   static String _generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
   }
@@ -27,7 +39,6 @@ class DouyuApi {
         headers: headers,
         body: data);
     var body = json.decode(resp.body);
-    //print(body);
     if (body['error'] == 0) {
       String rtmpLive = body['data']['rtmp_live'];
       RegExpMatch? match =
@@ -38,7 +49,6 @@ class DouyuApi {
     } else if (body['error'] == 104) {
       return {'error': 104, 'msg': '房间不存在'};
     }
-    //return {'error': 102, 'msg': '房间未开播'};
     throw Exception(body);
   }
 
@@ -92,7 +102,6 @@ class DouyuApi {
             'https://$cdn-tct.douyucdn.cn/live/${key}_900.flv?uuid=';
       }
     }
-    //print(realUrl);
     return realUrl;
   }
 
@@ -110,7 +119,7 @@ class DouyuApi {
   ///id:直播id
   ///startTime:直播开始时间
   ///linkList:直播链接列表[CDN-链接]
-  static Future<RoomInfo> getRoomFullInfo(RoomInfo douyuRoom) async {
+  static Future<RoomInfo> getRoomInfo(RoomInfo douyuRoom) async {
     //try to get room basic info, if error, try to fix the room id
     Map roomBasicInfo = await _getRoomBasicInfo(douyuRoom);
     //print(roomBasicInfo);
@@ -136,5 +145,111 @@ class DouyuApi {
       douyuRoom.liveStatus = LiveStatus.offline;
     }
     return douyuRoom;
+  }
+
+  static Future<List<RoomInfo>> getRecommend(int page, int size) async {
+    List<RoomInfo> list = [];
+
+    int start = size * (page - 1) ~/ 8 + ((size * (page - 1) % 8 == 0) ? 0 : 1);
+    start = (start == 0) ? 1 : start;
+    int end = size * (page) ~/ 8 + ((size * (page) % 8 == 0) ? 0 : 1);
+
+    for (int i = start; i <= end; i++) {
+      String url = "https://m.douyu.com/api/room/list?page=$i&type=";
+      dynamic response = await _getJson(url);
+      dynamic result = response["data"];
+      if (response["code"] == 0) {
+        List<dynamic> roomInfoList = result["list"];
+        for (var roomInfo in roomInfoList) {
+          RoomInfo room = RoomInfo(roomInfo["rid"].toString());
+          room.platform = 'douyu';
+          room.nick = roomInfo["nickname"];
+          room.title = roomInfo["roomName"];
+          room.cover = roomInfo["roomSrc"];
+          room.avatar = roomInfo["avatar"];
+          room.liveStatus = LiveStatus.live;
+          list.add(room);
+        }
+      }
+    }
+    return list;
+  }
+
+  static Future<List<List<AreaInfo>>> getAreaList() async {
+    List<List<AreaInfo>> areaList = [];
+    Map<String, String> cate1Map = {};
+    Map<String, List<AreaInfo>> cate2Map = {};
+    String url = "https://m.douyu.com/api/cate/list";
+
+    dynamic response = await _getJson(url);
+    if (response["code"] == 0) {
+      List<dynamic> cate1InfoList = response["data"]["cate1Info"];
+      for (var element in cate1InfoList) {
+        String cate1Name = element["cate1Name"];
+        String cate1Id = element["cate1Id"].toString();
+        cate1Map[cate1Id] = cate1Name;
+        cate2Map[cate1Id] = [];
+      }
+
+      List<dynamic> areaInfoList = response["data"]["cate2Info"];
+      for (var areaInfo in areaInfoList) {
+        final typeId = areaInfo["cate1Id"].toString();
+        if ("21" == typeId || !cate1Map.containsKey(typeId)) {
+          continue;
+        }
+
+        AreaInfo area = AreaInfo();
+        area.areaType = typeId;
+        area.typeName = cate1Map[typeId]!;
+
+        area.platform = "douyu";
+        area.areaId = areaInfo["cate2Id"].toString();
+        area.areaName = areaInfo["cate2Name"];
+        area.areaPic = areaInfo["pic"];
+        area.shortName = areaInfo["shortName"];
+
+        cate2Map[typeId]?.add(area);
+      }
+    }
+
+    cate2Map.forEach((key, value) {
+      if (value.isNotEmpty) areaList.add(value);
+    });
+    return areaList;
+  }
+
+  static Future<List<RoomInfo>> getAreaRooms(
+      AreaInfo area, int page, int size) async {
+    List<RoomInfo> list = [];
+
+    int start = size * (page - 1) ~/ 8 + 1;
+    start = (start == 0) ? 1 : start;
+    int end = size * page ~/ 8 + ((size * (page) % 8 == 0) ? 0 : 1);
+
+    for (int i = start; i <= end; i++) {
+      String url =
+          "https://m.douyu.com/api/room/list?page=$i&type=${area.shortName}";
+      dynamic response = await _getJson(url);
+      dynamic result = response["data"];
+      if (response["code"] == 0) {
+        List<dynamic> roomInfoList = result["list"];
+        for (var roomInfo in roomInfoList) {
+          RoomInfo room = RoomInfo(roomInfo["rid"].toString());
+          room.platform = 'douyu';
+          room.nick = roomInfo["nickname"];
+          room.title = roomInfo["roomName"];
+          room.cover = roomInfo["roomSrc"];
+          room.avatar = roomInfo["avatar"];
+          room.liveStatus = LiveStatus.live;
+          list.add(room);
+        }
+      }
+    }
+    return list;
+  }
+
+  static Future<List<RoomInfo>> searchRoom(String platform, AreaInfo area,
+      {int page = 1}) {
+    throw UnimplementedError();
   }
 }
