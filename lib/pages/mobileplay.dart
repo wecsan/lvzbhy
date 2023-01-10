@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:ice_live_viewer/model/liveroom.dart';
+import 'package:ice_live_viewer/provider/favorite_provider.dart';
 import 'package:ice_live_viewer/widgets/bilibilianmaku.dart';
 import 'package:ice_live_viewer/widgets/huyadanmaku.dart';
 import 'package:chewie/chewie.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:ice_live_viewer/widgets/douyudanmaku.dart';
 import 'package:wakelock/wakelock.dart';
 
 class MobilePlayer extends StatefulWidget {
-  const MobilePlayer(
-      {Key? key,
-      required this.title,
-      required this.url,
-      required this.danmakuId,
-      required this.type})
-      : super(key: key);
+  const MobilePlayer({Key? key, required this.room}) : super(key: key);
 
-  final String title;
-  final String url;
-  final int danmakuId;
-  final String type;
+  final RoomInfo room;
+
   @override
   State<MobilePlayer> createState() => _MobilePlayerState();
 }
@@ -27,10 +22,23 @@ class _MobilePlayerState extends State<MobilePlayer> {
   late VideoPlayerController _controller;
   late ChewieController chewieController;
 
+  late String title;
+  late Map<dynamic, dynamic> cdnMultiLink;
+  late String url;
+  late int danmakuId;
+  late String type;
+
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.url)
+
+    title = widget.room.title;
+    cdnMultiLink = widget.room.cdnMultiLink;
+    url = cdnMultiLink.values.toList()[0][0];
+    danmakuId = int.parse(widget.room.roomId);
+    type = widget.room.platform;
+
+    _controller = VideoPlayerController.network(url)
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
@@ -46,8 +54,9 @@ class _MobilePlayerState extends State<MobilePlayer> {
 
   @override
   Widget build(BuildContext context) {
+    FavoriteProvider favoritePod = Provider.of<FavoriteProvider>(context);
     Wakelock.enable();
-    //Wakelock.enabled.then((value) => print('Wakelock:$value'));
+
     final ratio =
         MediaQuery.of(context).size.width / MediaQuery.of(context).size.height;
 
@@ -67,11 +76,45 @@ class _MobilePlayerState extends State<MobilePlayer> {
               color: Colors.black,
             ),
           );
-    final danmakuListView = widget.type == 'huya'
-        ? HuyaDanmakuListView(danmakuId: widget.danmakuId)
-        : (widget.type == 'bilibili'
-            ? BilibiliDanmakuListView(roomId: widget.danmakuId)
-            : DouYuDanmakuListView(roomId: widget.danmakuId));
+    final danmakuListView = type == 'huya'
+        ? HuyaDanmakuListView(danmakuId: danmakuId)
+        : (type == 'bilibili'
+            ? BilibiliDanmakuListView(roomId: danmakuId)
+            : DouYuDanmakuListView(roomId: danmakuId));
+
+    final resButtons = [];
+    cdnMultiLink.forEach(((key, value) {
+      var urlList = value as List<dynamic>;
+      resButtons.add(
+        PopupMenuButton(
+          iconSize: 24,
+          icon: Text(
+            key,
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+          onSelected: (dynamic link) {
+            _controller.dispose();
+            _controller = VideoPlayerController.network(link)
+              ..initialize().then((_) {
+                // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+                setState(() {});
+              });
+          },
+          itemBuilder: (context) {
+            final menuList = <PopupMenuItem>[];
+            for (var i = 0; i < urlList.length; i++) {
+              menuList.add(PopupMenuItem(
+                child: Text("Line ${i + 1}",
+                    style: const TextStyle(fontSize: 14.0)),
+                value: urlList[i],
+              ));
+            }
+            return menuList;
+          },
+        ),
+      );
+    }));
+
     return WillPopScope(
       onWillPop: () async {
         _controller.pause();
@@ -89,7 +132,7 @@ class _MobilePlayerState extends State<MobilePlayer> {
               //Wakelock.enabled.then((value) => print('Wakelock:$value'));
             },
           ),
-          title: Text(widget.title),
+          title: Text(title),
         ),
         body: ratio > 1.2
             ? Row(
@@ -104,8 +147,56 @@ class _MobilePlayerState extends State<MobilePlayer> {
             : Column(
                 children: <Widget>[
                   nativeVideo,
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "画质",
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        ...resButtons,
+                      ],
+                    ),
+                  ),
                   Expanded(
                     child: danmakuListView,
+                  ),
+                  ListTile(
+                    leading: CircleAvatar(
+                      foregroundImage: (widget.room.avatar == '')
+                          ? null
+                          : NetworkImage(widget.room.avatar),
+                      radius: 18,
+                      backgroundColor: Theme.of(context).disabledColor,
+                    ),
+                    title: Text(
+                      widget.room.nick,
+                      maxLines: 1,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    trailing: favoritePod.isFavorite(widget.room.roomId)
+                        ? ElevatedButton(
+                            onPressed: () {
+                              favoritePod.removeRoom(widget.room);
+                            },
+                            child: Text(
+                              'Followed',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  ?.copyWith(
+                                      color: Theme.of(context).errorColor),
+                            ),
+                          )
+                        : ElevatedButton(
+                            onPressed: () {
+                              favoritePod.addRoom(widget.room);
+                            },
+                            child: const Text('Follow'),
+                          ),
                   ),
                 ],
               ),
@@ -166,84 +257,5 @@ class _ChewiePlayerState extends State<ChewiePlayer> {
                 ),
               );
     return videoPlayerContainer;
-  }
-}
-
-/* class BPlayer extends StatefulWidget {
-  const BPlayer({Key? key, required this.url}) : super(key: key);
-
-  final String url;
-
-  @override
-  State<BPlayer> createState() => _BPlayerState();
-}
-
-class _BPlayerState extends State<BPlayer> {
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: BetterPlayer.network(
-        widget.url,
-        betterPlayerConfiguration: const BetterPlayerConfiguration(
-          aspectRatio: 16 / 9,
-        ),
-      ),
-    );
-  }
-}
- */
-
-class PlayPage extends StatelessWidget {
-  const PlayPage(
-      {Key? key,
-      required this.title,
-      required this.url,
-      required this.danmakuId})
-      : super(key: key);
-
-  final String title;
-  final String url;
-  final int danmakuId;
-
-  @override
-  Widget build(BuildContext context) {
-    final ratio =
-        MediaQuery.of(context).size.width / MediaQuery.of(context).size.height;
-    final nativeVideo = ChewiePlayer(url: url);
-
-    var huyaDanmakuListView = HuyaDanmakuListView(
-      danmakuId: danmakuId,
-    );
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(title),
-      ),
-      body: ratio > 1.2
-          ? Row(
-              children: <Widget>[
-                nativeVideo,
-                Expanded(
-                  child: huyaDanmakuListView,
-                ),
-              ],
-            )
-          : Column(
-              children: <Widget>[
-                nativeVideo,
-                Expanded(
-                  child: HuyaDanmakuListView(
-                    danmakuId: danmakuId,
-                  ),
-                ),
-              ],
-            ),
-    );
   }
 }

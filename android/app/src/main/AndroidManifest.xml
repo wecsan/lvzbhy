@@ -2,7 +2,7 @@
     package="com.iiijam.iceliveviewer">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="iceliveviewer"
+        android:label="HotLive"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

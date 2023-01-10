@@ -22,12 +22,12 @@ class HuyaApi {
     return json['data'];
   }
 
-  static Future<SingleRoom> getLiveInfo(String url) async {
+  static Future<RoomInfo> getLiveInfo(String url) async {
     String roomId = getRoomId(url);
     if (int.tryParse(roomId) == null) {
       roomId = await fixRoomId(roomId);
     }
-    SingleRoom newEmptyRoom = SingleRoom(roomId);
+    RoomInfo newEmptyRoom = RoomInfo(roomId);
     Map roomInfo = await _getFromHuyaApi(roomId);
     newEmptyRoom.platform = 'huya';
     newEmptyRoom.link = url;

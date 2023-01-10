@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///This is the new util class for the shared preferences.
@@ -38,13 +41,21 @@ class PrefsHelper {
     prefs.setInt('theme_color', pref);
   }
 
-  static List<String> getLinksOfRoomsPrefList() {
-    List<String>? linksList = prefs.getStringList('links');
-    return linksList ?? [];
+  static List<String> getFavoriteRoomsPref() {
+    List<String>? roomJsons = prefs.getStringList('favorites');
+    var rooms = <RoomInfo>[];
+    roomJsons?.forEach((element) {
+      rooms.add(RoomInfo.fromJson(jsonDecode(element)));
+    });
+    return roomJsons ?? [];
   }
 
-  static void setLinksOfRoomsPrefList(List<String> links) {
-    prefs.setStringList('links', links);
+  static void setFavoriteRoomsPref(List<RoomInfo> rooms) {
+    var roomJsons = <String>[];
+    for (var element in rooms) {
+      roomJsons.add(jsonEncode(element.toJson()));
+    }
+    prefs.setStringList('favorites', roomJsons);
   }
 
   static dynamic getAnyPref(String key) {

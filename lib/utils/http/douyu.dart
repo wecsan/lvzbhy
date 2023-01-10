@@ -9,7 +9,7 @@ class DouyuApi {
     return md5.convert(utf8.encode(input)).toString();
   }
 
-  static Future<Map> _getRoomStreamInfo(SingleRoom douyuRoom) async {
+  static Future<Map> _getRoomStreamInfo(RoomInfo douyuRoom) async {
     Map data = {
       'rid': douyuRoom.roomId,
       'did': '10000000000000000000000000001501'
@@ -42,7 +42,7 @@ class DouyuApi {
     throw Exception(body);
   }
 
-  static Future<Map> _getRoomBasicInfo(SingleRoom douyuRoom) async {
+  static Future<Map> _getRoomBasicInfo(RoomInfo douyuRoom) async {
     var resp = await http.get(Uri.parse(
         'https://open.douyucdn.cn/api/RoomApi/room/${douyuRoom.roomId}'));
     var body = json.decode(resp.body);
@@ -63,7 +63,7 @@ class DouyuApi {
     }
   }
 
-  Future<String> fixErrorroomId(String wrongroomId) async {
+  static Future<String> fixErrorroomId(String wrongroomId) async {
     var resp =
         await http.get(Uri.parse('https://m.douyu.com/$wrongroomId'), headers: {
       'User-Agent':
@@ -80,7 +80,7 @@ class DouyuApi {
     }
   }
 
-  static Future<Map> _getRoomStreamLink(SingleRoom douyuRoom) async {
+  static Future<Map> _getRoomStreamLink(RoomInfo douyuRoom) async {
     Map info = await _getRoomStreamInfo(douyuRoom);
     //print(info);
     Map<String, dynamic> realUrl = {'hw': {}, 'ws': {}, 'akm': {}};
@@ -96,7 +96,7 @@ class DouyuApi {
     return realUrl;
   }
 
-  Future<String> verifyLink(String link) async {
+  static Future<String> verifyLink(String link) async {
     return fixErrorroomId(LinkParser.getRoomId(link));
   }
 
@@ -110,7 +110,7 @@ class DouyuApi {
   ///id:直播id
   ///startTime:直播开始时间
   ///linkList:直播链接列表[CDN-链接]
-  static Future<SingleRoom> getRoomFullInfo(SingleRoom douyuRoom) async {
+  static Future<RoomInfo> getRoomFullInfo(RoomInfo douyuRoom) async {
     //try to get room basic info, if error, try to fix the room id
     Map roomBasicInfo = await _getRoomBasicInfo(douyuRoom);
     //print(roomBasicInfo);

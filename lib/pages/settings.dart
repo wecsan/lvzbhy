@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/provider/themeprovider.dart';
+import 'package:ice_live_viewer/pages/help.dart';
+import 'package:ice_live_viewer/provider/theme_provider.dart';
 import 'package:ice_live_viewer/utils/storage.dart';
 import 'package:provider/provider.dart';
 
@@ -59,20 +60,27 @@ class SettingsPage extends StatelessWidget {
                 'Use custom resolution for Huya, if you want to use a custom resolution for Huya, you should enable this option',
             settingKey: 'use_custom_resolution_for_huya',
           ),
-          const SwitchTile(
-            title: '[Deprecated]Use .m3u8 for Bilibili',
-            subtitle:
-                'Use .m3u8 format to play Bilibili live stream instead of the default .flv format, when you find that Bilibili live stream cannot be played, you can try this option.',
-            settingKey: 'use_m3u8',
-          ),
           const SectionTitle(
-            title: 'Experimental',
+            title: 'Others',
           ),
-          const SwitchTile(
-            title: '[Only Windows|Not complete] Use Native Player',
-            subtitle:
-                'This setup only uses Win32 APIs & no texture, intermediate buffers or copying of pixel buffers.',
-            settingKey: 'use_native_player',
+          ListTile(
+            title: const Text('Help'),
+            subtitle: const Text('How to use hotlive app'),
+            leading: const Icon(Icons.help_outline_outlined, size: 32),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HelpPage()),
+              );
+            },
+          ),
+          ListTile(
+            title: const Text('About'),
+            subtitle: const Text('About our hotlive app'),
+            leading: const Icon(Icons.align_vertical_bottom_rounded, size: 32),
+            onTap: () {
+              showAboutDialog(context: context);
+            },
           ),
         ],
       ),
@@ -89,7 +97,7 @@ class SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title, style: Theme.of(context).textTheme.headline1),
+      title: Text(title, style: Theme.of(context).textTheme.headline2),
     );
   }
 }

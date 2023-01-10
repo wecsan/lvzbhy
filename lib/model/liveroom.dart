@@ -4,7 +4,7 @@ enum LiveStatus { live, offline, replay, unknown }
 
 enum Platform { huya, bilibili, douyu, unknown }
 
-class SingleRoom {
+class RoomInfo {
   String roomId;
   String link;
   bool isInit = true;
@@ -17,12 +17,12 @@ class SingleRoom {
   int huyaDanmakuId = 0;
   Map cdnMultiLink = {};
 
-  SingleRoom(this.roomId,
+  RoomInfo(this.roomId,
       {this.link = '',
       this.liveStatus = LiveStatus.unknown,
       this.platform = 'UNKNOWN'});
 
-  SingleRoom.fromJson(Map<String, dynamic> json)
+  RoomInfo.fromJson(Map<String, dynamic> json)
       : roomId = json['roomId'],
         title = json['title'],
         link = json['link'],
@@ -39,7 +39,7 @@ class SingleRoom {
         'liveStatus': liveStatus
       };
 
-  SingleRoom.fromLink(String rawLink)
+  RoomInfo.fromLink(String rawLink)
       : link = rawLink,
         platform = LinkParser.checkType(rawLink),
         roomId = LinkParser.getRoomId(rawLink);

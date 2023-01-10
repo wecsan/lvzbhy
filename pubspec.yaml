@@ -33,11 +33,7 @@ dependencies:
   http: ^0.13.4
   shared_preferences: ^2.0.15
   wakelock: ^0.6.2
-  dart_vlc:
-    git:
-      url: https://github.com/iiijam/dart_vlc.git
-      ref: master
-
+  pull_to_refresh: ^2.0.0
   
   web_socket_channel: ^2.2.0
   url_launcher: ^6.1.5

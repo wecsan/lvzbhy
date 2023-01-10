@@ -1,5 +1,5 @@
-import 'package:ice_live_viewer/utils/http/douyuparser.dart';
-import 'package:ice_live_viewer/utils/http/huyaparser.dart';
+import 'package:ice_live_viewer/utils/http/douyu.dart';
+import 'package:ice_live_viewer/utils/http/huya.dart';
 
 class LinkParser {
   /// Parses a link and returns its id.
@@ -24,14 +24,13 @@ class LinkParser {
     String roomId = getRoomId(url);
     if (url.contains("huya")) {
       if (int.tryParse(roomId) == null) {
-        roomId = await fixRoomId(roomId);
+        roomId = await HuyaApi.fixRoomId(roomId);
       }
       return "https://m.huya.com/$roomId";
     } else if (url.contains("bilibili")) {
       return "https://live.bilibili.com/$roomId";
     } else if (url.contains("douyu")) {
-      Douyu dyroom = Douyu(roomId);
-      roomId = await dyroom.verifyLink();
+      roomId = await DouyuApi.verifyLink(url);
       return "https://m.douyu.com/$roomId";
     } else {
       return '';
