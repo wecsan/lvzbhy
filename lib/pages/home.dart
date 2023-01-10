@@ -51,11 +51,11 @@ class _HomePageRouterState extends State<HomePageRouter> {
       ),
       body: [
         // Favorites
-        const KeepAliveWrapper(child: FavoritePage()),
+        const FavoritePage(),
         // Popular
-        const KeepAliveWrapper(child: PopularPage()),
+        const PopularPage(),
         // Areas
-        const KeepAliveWrapper(child: AreasPage()),
+        const AreasPage(),
       ][_selectedIndex],
     );
   }

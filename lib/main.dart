@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ice_live_viewer/pages/home.dart';
+import 'package:ice_live_viewer/provider/areas_provider.dart';
 import 'package:ice_live_viewer/provider/favorite_provider.dart';
+import 'package:ice_live_viewer/provider/popular_provider.dart';
 import 'package:ice_live_viewer/utils/prefs_helper.dart';
 import 'package:ice_live_viewer/utils/theme.dart';
 import 'package:ice_live_viewer/provider/theme_provider.dart';
@@ -28,6 +30,14 @@ void main() async {
     ),
     ChangeNotifierProvider(
       create: (_) => FavoriteProvider(),
+      lazy: false,
+    ),
+    ChangeNotifierProvider(
+      create: (_) => PopularProvider(),
+      lazy: false,
+    ),
+    ChangeNotifierProvider(
+      create: (_) => AreasProvider(),
       lazy: false,
     ),
   ], child: const MyApp()));

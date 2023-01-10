@@ -83,9 +83,7 @@ class RoomGridView extends StatelessWidget {
                               '\nLiveStatus: ' +
                               room.liveStatus.name +
                               '\ncover' +
-                              room.cover +
-                              '\n' +
-                              room.cdnMultiLink.toString()),
+                              room.cover),
                           actions: [
                             TextButton(
                               onPressed: () {

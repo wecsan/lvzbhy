@@ -202,6 +202,7 @@ class BilibiliApi {
       AreaInfo area, int page, int size) async {
     List<RoomInfo> list = [];
 
+    page++;
     String url =
         "https://api.live.bilibili.com/xlive/web-interface/v1/second/getList?platform=web&parent_area_id=${area.areaType}&area_id=${area.areaId}&sort_type=&page=$page";
 

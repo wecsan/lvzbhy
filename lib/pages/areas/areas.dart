@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/utils/http/httpapi.dart';
+import 'package:ice_live_viewer/provider/areas_provider.dart';
 import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
+import 'package:provider/provider.dart';
 
 import 'areas_room.dart';
 
@@ -15,33 +16,18 @@ class AreasPage extends StatefulWidget {
 
 class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   TabController? tabController;
-  List<List<AreaInfo>> areaList = [];
   int labelIndex = 0;
-  String platform = 'bilibili';
 
   @override
   void initState() {
     super.initState();
-    _onLoading();
-  }
-
-  Future<void> _onLoading() async {
-    areaList.clear();
-    areaList = await HttpApi.getAreaList(platform);
-    tabController = TabController(length: areaList.length, vsync: this);
-    setState(() {});
-  }
-
-  void _changePlatform(String name) async {
-    platform = name;
-    tabController!.dispose();
-    await _onLoading();
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    AreasProvider provider = Provider.of<AreasProvider>(context);
+    tabController =
+        TabController(length: provider.labelList.length, vsync: this);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +35,18 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
           'AREAS',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        bottom: areaList.isEmpty
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                provider.platform.toUpperCase(),
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
+          ),
+        ],
+        bottom: provider.labelList.isEmpty
             ? const PreferredSize(
                 child: SizedBox(height: 0),
                 preferredSize: Size.fromHeight(0),
@@ -64,26 +61,13 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                 labelStyle: Theme.of(context).textTheme.labelLarge,
                 indicatorColor: Theme.of(context).primaryColor,
                 indicatorSize: TabBarIndicatorSize.label,
-                tabs: areaList.map((e) => Text(e[0].typeName)).toList(),
+                tabs: provider.labelList.map<Widget>((e) => Text(e)).toList(),
                 onTap: (value) {
-                  setState(() => labelIndex = value);
+                  provider.setIndex(value);
                 },
               ),
       ),
-      body: areaList.isNotEmpty
-          ? MasonryGridView.count(
-              padding: const EdgeInsets.all(5),
-              controller: ScrollController(),
-              crossAxisCount: screenWidth > 1280
-                  ? 10
-                  : (screenWidth > 960 ? 8 : (screenWidth > 640 ? 5 : 3)),
-              itemCount: areaList[labelIndex].length,
-              // physics: (const BouncingScrollPhysics()),
-              itemBuilder: (context, index) => AreaCard(
-                area: areaList[labelIndex][index],
-              ),
-            )
-          : const AreaEmptyView(),
+      body: AreaGridView(provider: provider),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -92,20 +76,19 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
               return AlertDialog(
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      title: const Text('Bilibili'),
-                      onTap: () => _changePlatform("bilibili"),
-                    ),
-                    ListTile(
-                      title: const Text('Douyu'),
-                      onTap: () => _changePlatform("douyu"),
-                    ),
-                    ListTile(
-                      title: const Text('Huya'),
-                      onTap: () => _changePlatform("huya"),
-                    ),
-                  ],
+                  children: provider.platforms
+                      .map<Widget>(
+                        (e) => ListTile(
+                          title: Text(e.toUpperCase()),
+                          onTap: () {
+                            provider.setPlatform(e);
+                            tabController = TabController(
+                                length: provider.labelList.length, vsync: this);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )
+                      .toList(),
                 ),
               );
             },
@@ -114,6 +97,34 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
         child: const Icon(Icons.video_collection_rounded),
       ),
     );
+  }
+}
+
+class AreaGridView extends StatelessWidget {
+  const AreaGridView({Key? key, required this.provider}) : super(key: key);
+
+  final AreasProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (provider.areaList.isNotEmpty) {
+      return KeepAliveWrapper(
+          child: MasonryGridView.count(
+        padding: const EdgeInsets.all(5),
+        controller: ScrollController(),
+        crossAxisCount: screenWidth > 1280
+            ? 10
+            : (screenWidth > 960 ? 8 : (screenWidth > 640 ? 5 : 3)),
+        itemCount: provider.areaList.length,
+        // physics: (const BouncingScrollPhysics()),
+        itemBuilder: (context, index) => AreaCard(
+          area: provider.areaList[index],
+        ),
+      ));
+    } else {
+      return const AreaEmptyView();
+    }
   }
 }
 

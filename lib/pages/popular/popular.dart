@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
+import 'package:ice_live_viewer/provider/popular_provider.dart';
 import 'package:ice_live_viewer/utils/http/httpapi.dart';
+import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
 import 'package:ice_live_viewer/widgets/room_card.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PopularPage extends StatefulWidget {
@@ -14,48 +17,16 @@ class PopularPage extends StatefulWidget {
 }
 
 class _PopularPageState extends State<PopularPage> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  List<RoomInfo> roomsList = [];
-  int pageIndex = 0;
-  String platform = 'bilibili';
+  late PopularProvider provider;
 
   @override
   void initState() {
     super.initState();
-    _onRefresh();
-  }
-
-  void _onRefresh() async {
-    pageIndex = 0;
-    final items = await HttpApi.getRecommend(platform, page: pageIndex);
-    roomsList.clear();
-    roomsList.addAll(items);
-    _refreshController.refreshCompleted();
-    setState(() {});
-  }
-
-  void _onLoading() async {
-    pageIndex++;
-    final items = await HttpApi.getRecommend(platform, page: pageIndex);
-    if (items.isEmpty) {
-      _refreshController.loadFailed();
-    } else {
-      roomsList.addAll(items);
-      _refreshController.loadComplete();
-    }
-    setState(() {});
-  }
-
-  void _changePlatform(String name) async {
-    platform = name;
-    _onRefresh();
-    setState(() {});
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<PopularProvider>(context);
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -64,6 +35,17 @@ class _PopularPageState extends State<PopularPage> {
           "POPULAR",
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                provider.platform.toUpperCase(),
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SmartRefresher(
         enablePullDown: true,
@@ -89,20 +71,20 @@ class _PopularPageState extends State<PopularPage> {
             );
           },
         ),
-        controller: _refreshController,
-        onRefresh: _onRefresh,
-        onLoading: _onLoading,
-        child: roomsList.isNotEmpty
+        controller: provider.refreshController,
+        onRefresh: provider.onRefresh,
+        onLoading: provider.onLoading,
+        child: provider.roomList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
                 controller: ScrollController(),
                 crossAxisCount: screenWidth > 1280
                     ? 8
                     : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2)),
-                itemCount: roomsList.length,
+                itemCount: provider.roomList.length,
                 // physics: (const BouncingScrollPhysics()),
                 itemBuilder: (context, index) =>
-                    RoomCard(room: roomsList[index], dense: true),
+                    RoomCard(room: provider.roomList[index], dense: true),
               )
             : const RoomEmptyView(),
       ),
@@ -114,20 +96,17 @@ class _PopularPageState extends State<PopularPage> {
               return AlertDialog(
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      title: const Text('Bilibili'),
-                      onTap: () => _changePlatform("bilibili"),
-                    ),
-                    ListTile(
-                      title: const Text('Douyu'),
-                      onTap: () => _changePlatform("douyu"),
-                    ),
-                    ListTile(
-                      title: const Text('Huya'),
-                      onTap: () => _changePlatform("huya"),
-                    ),
-                  ],
+                  children: provider.platforms
+                      .map<Widget>(
+                        (e) => ListTile(
+                          title: Text(e.toUpperCase()),
+                          onTap: () {
+                            provider.setPlatform(e);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )
+                      .toList(),
                 ),
               );
             },
@@ -136,6 +115,34 @@ class _PopularPageState extends State<PopularPage> {
         child: const Icon(Icons.video_collection_rounded),
       ),
     );
+  }
+}
+
+class RoomGridView extends StatelessWidget {
+  const RoomGridView({Key? key, required this.provider}) : super(key: key);
+
+  final PopularProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (provider.roomList.isNotEmpty) {
+      return KeepAliveWrapper(
+          child: MasonryGridView.count(
+        padding: const EdgeInsets.all(5),
+        controller: ScrollController(),
+        crossAxisCount: screenWidth > 1280
+            ? 8
+            : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2)),
+        itemCount: provider.roomList.length,
+        // physics: (const BouncingScrollPhysics()),
+        itemBuilder: (context, index) => RoomCard(
+          room: provider.roomList[index],
+          dense: true,
+        ),
+      ));
+    }
+    return const RoomEmptyView();
   }
 }
 
