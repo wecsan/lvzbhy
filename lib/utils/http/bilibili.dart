@@ -5,16 +5,20 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:ice_live_viewer/model/livearea.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
+import 'package:ice_live_viewer/utils/prefs_helper.dart';
 
 class BilibiliApi {
   static Future<dynamic> _getJson(String url) async {
+    final cookie = PrefsHelper.getBilibiliCustomCookie();
+    Map<String, String> _headers = {
+      'User-Agent':
+          'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Mobile Safari/537.36 Edg/108.0.1462.76'
+    };
+    if (cookie.isNotEmpty) _headers["cookie"] = cookie;
+
     var resp = await http.get(
       Uri.parse(url),
-      headers: {
-        'User-Agent':
-            'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Mobile Safari/537.36 Edg/108.0.1462.76',
-        'cookie': 'buvid3=EC8BE6F6-EC10-73D6-0C7E-3E67DCFC633C10860infoc',
-      },
+      headers: _headers,
     );
     return await jsonDecode(const Utf8Codec().decode(resp.bodyBytes));
   }

@@ -115,7 +115,7 @@ class _FavoritePageState extends State<FavoritePage> {
             : const EmptyView(
                 icon: Icons.favorite_rounded,
                 title: 'No Favorites',
-                subtitle: 'Click the button below\nto add live link',
+                subtitle: 'Please follow live rooms first',
               ),
       ),
       floatingActionButton: provider.isHideOffline

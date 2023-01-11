@@ -41,6 +41,14 @@ class PrefsHelper {
     prefs.setInt('theme_color', pref);
   }
 
+  static String getBilibiliCustomCookie() {
+    return prefs.getString('bilibili_custom_cookie') ?? '';
+  }
+
+  static void setBilibiliCustomCookie(String cookie) {
+    prefs.setString('bilibili_custom_cookie', cookie);
+  }
+
   static List<String> getFavoriteRoomsPref() {
     List<String>? roomJsons = prefs.getStringList('favorites');
     var rooms = <RoomInfo>[];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/provider/theme_provider.dart';
+import 'package:ice_live_viewer/utils/prefs_helper.dart';
 import 'package:ice_live_viewer/utils/storage.dart';
 import 'package:provider/provider.dart';
 
@@ -47,10 +48,45 @@ class SettingsPage extends StatelessWidget {
             leading: const Icon(Icons.translate_rounded, size: 32),
             onTap: () {},
           ),
+          ListTile(
+            title: const Text('Set custom bilibili cookie for search'),
+            subtitle: const Text(
+              'Use custom cookie for bilibili search api, because bilibili search need cookie vaildation',
+            ),
+            onTap: () {
+              final cookie = PrefsHelper.getBilibiliCustomCookie();
+              final controller = TextEditingController(text: cookie);
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Bilibili Cookie'),
+                  content: TextField(
+                    controller: controller,
+                    autofocus: true,
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        return Navigator.pop(context);
+                      },
+                      child: const Text("Cancle"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        PrefsHelper.setBilibiliCustomCookie(controller.text);
+                        return Navigator.pop(context);
+                      },
+                      child: const Text("Confirm"),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
           const SwitchTile(
             title: 'Use custom resolution for Huya',
             subtitle:
-                'Use custom resolution for Huya, if you want to use a custom resolution for Huya, you should enable this option',
+                'Use custom resolution for Huya, if you want to use a custom resolution',
             settingKey: 'use_custom_resolution_for_huya',
           ),
           const SectionTitle(
