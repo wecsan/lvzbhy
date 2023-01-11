@@ -79,7 +79,9 @@ class _MyChewieMaterialControlsState extends State<MyChewieMaterialControls>
                     children: <Widget>[
                       !_latestValue.isPlaying && _latestValue.isBuffering
                           ? const Expanded(
-                              child: Center(child: CircularProgressIndicator()))
+                              child: Center(
+                              child: CircularProgressIndicator(),
+                            ))
                           : _buildHitArea(),
                       _buildBottomBar(context),
                     ],

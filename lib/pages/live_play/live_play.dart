@@ -110,39 +110,41 @@ class _LivePlayPageState extends State<LivePlayPage> {
           ),
           title: Text(title),
         ),
-        body: Column(
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: videoController.value.isInitialized
-                  ? Container(
-                      child: Chewie(controller: chewieController),
-                      color: Colors.black,
-                    )
-                  : Container(color: Colors.black),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Row(
-                children: [
-                  const Icon(Icons.video_library_rounded, size: 20),
-                  const Spacer(),
-                  ...resolutionBtns,
-                ],
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: videoController.value.isInitialized
+                    ? Container(
+                        child: Chewie(controller: chewieController),
+                        color: Colors.black,
+                      )
+                    : Container(color: Colors.black),
               ),
-            ),
-            const Divider(height: 1),
-            Expanded(
-              child: DanmakuListView(
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.video_library_rounded, size: 20),
+                    const Spacer(),
+                    ...resolutionBtns,
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: DanmakuListView(
+                  room: widget.room,
+                  barrageController: barrageController,
+                ),
+              ),
+              OwnerListTile(
                 room: widget.room,
-                barrageController: barrageController,
+                favoritePod: favoritePod,
               ),
-            ),
-            OwnerListTile(
-              room: widget.room,
-              favoritePod: favoritePod,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

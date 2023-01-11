@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/model/livearea.dart';
 import 'package:ice_live_viewer/provider/areas_provider.dart';
 import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
+import 'package:ice_live_viewer/widgets/empty_view.dart';
 import 'package:provider/provider.dart';
 
 import 'areas_room.dart';
@@ -128,40 +130,11 @@ class AreaGridView extends StatelessWidget {
               itemBuilder: (context, index) => AreaCard(area: areaList[index]),
             ),
           )
-        : const AreaEmptyView();
-  }
-}
-
-class AreaEmptyView extends StatelessWidget {
-  const AreaEmptyView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.live_tv_rounded,
-            size: 144,
-            color: Theme.of(context).disabledColor,
-          ),
-          const SizedBox(height: 32),
-          Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                    text: "No Area Found\n\n",
-                    style: Theme.of(context).textTheme.headlineLarge),
-                TextSpan(
-                    text: "Click the button below\nto switch platform",
-                    style: Theme.of(context).textTheme.headline3),
-              ]),
-              textAlign: TextAlign.center),
-        ],
-      ),
-    );
+        : const EmptyView(
+            icon: Icons.area_chart_outlined,
+            title: 'No Area Found',
+            subtitle: 'Click the button below\nto switch platform',
+          );
   }
 }
 
@@ -208,11 +181,6 @@ class AreaCard extends StatelessWidget {
                 child: Image.network(
                   area.areaPic,
                   fit: BoxFit.fill,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
                   errorBuilder: (context, error, stackTrace) => const Center(
                     child: Text(
                       'Cover\nNot Found',

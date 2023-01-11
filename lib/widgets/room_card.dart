@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/pages/live_play/live_play.dart';
@@ -77,12 +78,6 @@ class RoomCard extends StatelessWidget {
                       ? Image.network(
                           room.cover,
                           fit: BoxFit.fill,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          },
                           errorBuilder: (context, error, stackTrace) =>
                               const Center(
                             child: Icon(Icons.live_tv_rounded, size: 48),

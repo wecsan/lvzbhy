@@ -25,12 +25,6 @@ class SettingsPage extends StatelessWidget {
             title: 'General',
           ),
           ListTile(
-            title: const Text('Under Construction'),
-            subtitle: const Text('This page is still not complete'),
-            leading: const Icon(Icons.construction_rounded, size: 32),
-            onTap: () {},
-          ),
-          ListTile(
             title: const Text('Change Theme Color'),
             subtitle: const Text('Change the theme color of the app'),
             leading: const Icon(Icons.color_lens, size: 32),
@@ -49,8 +43,8 @@ class SettingsPage extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('[Not complete]Change Language'),
-            subtitle: const Text('Change the language of the app'),
+            title: const Text('Change Language'),
+            subtitle: const Text('Change the language of the app [x]'),
             leading: const Icon(Icons.translate_rounded, size: 32),
             onTap: () {},
           ),
@@ -66,7 +60,7 @@ class SettingsPage extends StatelessWidget {
           ListTile(
             title: const Text('Help'),
             subtitle: const Text('How to use hotlive app'),
-            leading: const Icon(Icons.help_outline_outlined, size: 32),
+            leading: const Icon(Icons.help_outline_rounded, size: 32),
             onTap: () {
               Navigator.push(
                 context,
@@ -77,7 +71,15 @@ class SettingsPage extends StatelessWidget {
           ListTile(
             title: const Text('About'),
             subtitle: const Text('About our hotlive app'),
-            leading: const Icon(Icons.align_vertical_bottom_rounded, size: 32),
+            leading: const Icon(Icons.info_outline_rounded, size: 32),
+            onTap: () {
+              showAboutDialog(context: context);
+            },
+          ),
+          ListTile(
+            title: const Text('Check Update'),
+            subtitle: const Text('version 0.9.0'),
+            leading: const Icon(Icons.update_rounded, size: 32),
             onTap: () {
               showAboutDialog(context: context);
             },

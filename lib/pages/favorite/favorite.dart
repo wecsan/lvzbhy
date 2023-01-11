@@ -4,6 +4,7 @@ import 'package:ice_live_viewer/pages/settings.dart';
 
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/provider/favorite_provider.dart';
+import 'package:ice_live_viewer/widgets/empty_view.dart';
 import 'package:ice_live_viewer/widgets/onloading_footer.dart';
 import 'package:ice_live_viewer/widgets/room_card.dart';
 import 'package:provider/provider.dart';
@@ -24,12 +25,18 @@ class _FavoritePageState extends State<FavoritePage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(room.title),
-        content: Text('RoomId' +
-            room.roomId +
-            '\nLiveStatus: ' +
-            room.liveStatus.name +
-            '\ncover' +
-            room.cover),
+        content: Text(
+          'RoomId: ' +
+              room.roomId +
+              '\nPlatform: ' +
+              room.platform +
+              '\nNickName: ' +
+              room.nick +
+              '\nTitle: ' +
+              room.title +
+              '\nLiveStatus: ' +
+              room.liveStatus.name,
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -43,7 +50,7 @@ class _FavoritePageState extends State<FavoritePage> {
               provider.moveToTop(room);
               return Navigator.pop(context);
             },
-            child: const Text("Move to top"),
+            child: const Text("Move To Top"),
           ),
         ],
       ),
@@ -104,42 +111,13 @@ class _FavoritePageState extends State<FavoritePage> {
                   );
                 },
               )
-            : const RoomEmptyView(),
+            : const EmptyView(
+                icon: Icons.favorite_rounded,
+                title: 'No Favorites',
+                subtitle: 'Click the button below\nto add live link',
+              ),
       ),
       floatingActionButton: FavoriteAddButton(provider: provider),
-    );
-  }
-}
-
-class RoomEmptyView extends StatelessWidget {
-  const RoomEmptyView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.post_add_rounded,
-            size: 144,
-            color: Theme.of(context).disabledColor,
-          ),
-          const SizedBox(height: 32),
-          Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                    text: "No Favorites\n\n",
-                    style: Theme.of(context).textTheme.headlineLarge),
-                TextSpan(
-                    text: "Click the button below\nto add live link",
-                    style: Theme.of(context).textTheme.headline3),
-              ]),
-              textAlign: TextAlign.center),
-        ],
-      ),
     );
   }
 }
@@ -161,8 +139,18 @@ class FavoriteAddButton extends StatelessWidget {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text("Add your link"),
-              content: TextField(controller: controller),
+              title: const Text("Add live link"),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Directly input live link to add room\nsee more info in help page.",
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                  TextField(controller: controller),
+                ],
+              ),
               actions: [
                 TextButton(
                     onPressed: () {

@@ -16,13 +16,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PrefsHelper.prefs = await SharedPreferences.getInstance();
 
-  // Android statusbar
-  if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-    ));
-  }
-
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (_) => AppThemeProvider(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/provider/popular_provider.dart';
 import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
+import 'package:ice_live_viewer/widgets/empty_view.dart';
 import 'package:ice_live_viewer/widgets/onloading_footer.dart';
 import 'package:ice_live_viewer/widgets/room_card.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,11 @@ class _PopularPageState extends State<PopularPage> {
                 itemBuilder: (context, index) =>
                     RoomCard(room: provider.roomList[index], dense: true),
               )
-            : const RoomEmptyView(),
+            : const EmptyView(
+                icon: Icons.live_tv_rounded,
+                title: 'No Live Found',
+                subtitle: 'Click the button below\nto switch platform',
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -94,39 +99,6 @@ class _PopularPageState extends State<PopularPage> {
           );
         },
         child: const Icon(Icons.video_collection_rounded),
-      ),
-    );
-  }
-}
-
-class RoomEmptyView extends StatelessWidget {
-  const RoomEmptyView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.live_tv_rounded,
-            size: 144,
-            color: Theme.of(context).disabledColor,
-          ),
-          const SizedBox(height: 32),
-          Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                    text: "No Live Found\n\n",
-                    style: Theme.of(context).textTheme.headlineLarge),
-                TextSpan(
-                    text: "Click the button below\nto switch platform",
-                    style: Theme.of(context).textTheme.headline3),
-              ]),
-              textAlign: TextAlign.center),
-        ],
       ),
     );
   }

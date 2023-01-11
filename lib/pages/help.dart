@@ -70,7 +70,7 @@ class SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title, style: Theme.of(context).textTheme.headline1),
+      title: Text(title, style: Theme.of(context).textTheme.headline2),
     );
   }
 }
