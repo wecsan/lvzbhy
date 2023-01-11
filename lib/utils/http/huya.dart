@@ -126,13 +126,13 @@ class HuyaApi {
     String url =
         "https://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=$realPage";
     dynamic response = await _getJson(url);
-    if (response["status"] == 0) {
+    if (response["status"] == 200) {
       List<dynamic> roomInfoList = response["data"]["datas"];
       for (var roomInfo in roomInfoList) {
         RoomInfo room = RoomInfo(roomInfo["profileRoom"].toString());
         room.platform = 'huya';
         room.nick = roomInfo["nick"];
-        room.title = roomInfo["roomName"];
+        room.title = roomInfo["introduction"];
         room.cover = roomInfo["screenshot"];
         room.avatar = roomInfo["avatar180"];
         room.liveStatus = LiveStatus.live;
