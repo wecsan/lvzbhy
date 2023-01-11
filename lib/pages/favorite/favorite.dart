@@ -1,21 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/pages/settings.dart';
-import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
 
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/provider/favorite_provider.dart';
+import 'package:ice_live_viewer/widgets/onloading_footer.dart';
 import 'package:ice_live_viewer/widgets/room_card.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class FavoritePage extends StatelessWidget {
+class FavoritePage extends StatefulWidget {
   const FavoritePage({Key? key}) : super(key: key);
 
   @override
+  State<FavoritePage> createState() => _FavoritePageState();
+}
+
+class _FavoritePageState extends State<FavoritePage> {
+  late FavoriteProvider provider;
+
+  void onLongPress(BuildContext context, RoomInfo room) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(room.title),
+        content: Text('RoomId' +
+            room.roomId +
+            '\nLiveStatus: ' +
+            room.liveStatus.name +
+            '\ncover' +
+            room.cover),
+        actions: [
+          TextButton(
+            onPressed: () {
+              provider.removeRoom(room);
+              return Navigator.pop(context);
+            },
+            child: const Text("Remove"),
+          ),
+          TextButton(
+            onPressed: () {
+              provider.moveToTop(room);
+              return Navigator.pop(context);
+            },
+            child: const Text("Move to top"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    FavoriteProvider provider = Provider.of<FavoriteProvider>(context);
-    TextEditingController addLinkController = TextEditingController();
+    provider = Provider.of<FavoriteProvider>(context);
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -43,70 +82,32 @@ class FavoritePage extends StatelessWidget {
           ),
         ],
       ),
-      body: RoomGridView(screenWidth: screenWidth, favoritePod: provider),
-      floatingActionButton: FavoriteAddButton(
-          controller: addLinkController, roomsProvider: provider),
+      body: SmartRefresher(
+        enablePullDown: true,
+        header: const WaterDropHeader(),
+        controller: provider.refreshController,
+        onRefresh: provider.onRefresh,
+        child: provider.roomsList.isNotEmpty
+            ? MasonryGridView.count(
+                padding: const EdgeInsets.all(5),
+                controller: ScrollController(),
+                crossAxisCount: screenWidth > 1280
+                    ? 4
+                    : (screenWidth > 960 ? 3 : (screenWidth > 640 ? 2 : 1)),
+                itemCount: provider.roomsList.length,
+                // physics: (const BouncingScrollPhysics()),
+                itemBuilder: (context, index) {
+                  RoomInfo room = provider.roomsList[index];
+                  return RoomCard(
+                    room: room,
+                    onLongPress: () => onLongPress(context, room),
+                  );
+                },
+              )
+            : const RoomEmptyView(),
+      ),
+      floatingActionButton: FavoriteAddButton(provider: provider),
     );
-  }
-}
-
-class RoomGridView extends StatelessWidget {
-  const RoomGridView(
-      {Key? key, required this.screenWidth, required this.favoritePod})
-      : super(key: key);
-
-  final double screenWidth;
-  final FavoriteProvider favoritePod;
-
-  @override
-  Widget build(BuildContext context) {
-    if (favoritePod.roomsList.isNotEmpty) {
-      return KeepAliveWrapper(
-        child: MasonryGridView.count(
-            padding: const EdgeInsets.all(5),
-            controller: ScrollController(),
-            crossAxisCount: screenWidth > 1280
-                ? 4
-                : (screenWidth > 960 ? 3 : (screenWidth > 640 ? 2 : 1)),
-            itemCount: favoritePod.roomsList.length,
-            //physics: (const BouncingScrollPhysics()),
-            itemBuilder: (context, index) {
-              RoomInfo room = favoritePod.roomsList[index];
-              return RoomCard(
-                room: room,
-                onLongPress: () => showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          title: Text(room.title),
-                          content: Text('RoomId' +
-                              room.roomId +
-                              '\nLiveStatus: ' +
-                              room.liveStatus.name +
-                              '\ncover' +
-                              room.cover),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                favoritePod.removeRoom(room);
-                                return Navigator.pop(context);
-                              },
-                              child: const Text("Remove"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                favoritePod.moveToTop(room);
-                                return Navigator.pop(context);
-                              },
-                              child: const Text("Move to top"),
-                            ),
-                          ],
-                        )),
-              );
-            }),
-      );
-    } else {
-      return const RoomEmptyView();
-    }
   }
 }
 
@@ -146,15 +147,14 @@ class RoomEmptyView extends StatelessWidget {
 class FavoriteAddButton extends StatelessWidget {
   const FavoriteAddButton({
     Key? key,
-    required this.controller,
-    required this.roomsProvider,
+    required this.provider,
   }) : super(key: key);
 
-  final TextEditingController controller;
-  final FavoriteProvider roomsProvider;
+  final FavoriteProvider provider;
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController controller = TextEditingController();
     return FloatingActionButton(
       onPressed: () {
         showDialog(
@@ -166,7 +166,7 @@ class FavoriteAddButton extends StatelessWidget {
               actions: [
                 TextButton(
                     onPressed: () {
-                      roomsProvider.addRoomLink(controller.text);
+                      provider.addRoomLink(controller.text);
                       Navigator.pop(context);
                     },
                     child: const Text("Add")),

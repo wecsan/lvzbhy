@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/pages/areas/areas.dart';
 import 'package:ice_live_viewer/pages/favorite/favorite.dart';
 import 'package:ice_live_viewer/pages/popular/popular.dart';
-import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

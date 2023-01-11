@@ -58,7 +58,10 @@ class PopularProvider with ChangeNotifier {
     if (items.isEmpty) {
       refreshController.loadFailed();
     } else {
-      roomList.addAll(items);
+      for (var item in items) {
+        if (roomList.indexWhere((e) => e.roomId == item.roomId) != -1) continue;
+        roomList.add(item);
+      }
       refreshController.loadComplete();
     }
     notifyListeners();

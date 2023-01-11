@@ -23,16 +23,9 @@ class AreasProvider with ChangeNotifier {
     'douyu': [],
     'huya': [],
   };
-  Map<String, int> indexMap = {
-    'bilibili': 0,
-    'douyu': 0,
-    'huya': 0,
-  };
 
-  int get index => indexMap[platform] ?? 0;
   List<String> get labelList => labelMap[platform] ?? [];
-  List<AreaInfo> get areaList =>
-      areaMap[platform]!.isNotEmpty ? areaMap[platform]![index] : [];
+  List<List<AreaInfo>> get areaList => areaMap[platform] ?? [];
 
   void onLoading() async {
     for (var plat in platforms) {
@@ -46,11 +39,6 @@ class AreasProvider with ChangeNotifier {
 
   void setPlatform(String name) {
     platform = name;
-    notifyListeners();
-  }
-
-  void setIndex(int idx) {
-    indexMap[platform] = idx;
     notifyListeners();
   }
 }

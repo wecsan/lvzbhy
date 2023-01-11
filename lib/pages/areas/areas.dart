@@ -15,8 +15,7 @@ class AreasPage extends StatefulWidget {
 }
 
 class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
-  TabController? tabController;
-  int labelIndex = 0;
+  late TabController tabController;
 
   @override
   void initState() {
@@ -56,18 +55,20 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                 isScrollable: true,
                 labelPadding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                labelColor: Theme.of(context).primaryColor,
-                unselectedLabelColor: Theme.of(context).hintColor,
+                labelColor: Theme.of(context).textTheme.bodyText1!.color,
+                unselectedLabelColor: Theme.of(context).disabledColor,
                 labelStyle: Theme.of(context).textTheme.labelLarge,
                 indicatorColor: Theme.of(context).primaryColor,
                 indicatorSize: TabBarIndicatorSize.label,
                 tabs: provider.labelList.map<Widget>((e) => Text(e)).toList(),
-                onTap: (value) {
-                  provider.setIndex(value);
-                },
               ),
       ),
-      body: AreaGridView(provider: provider),
+      body: TabBarView(
+        controller: tabController,
+        children: provider.areaList
+            .map<Widget>((e) => AreaGridView(areaList: e))
+            .toList(),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -83,7 +84,10 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                           onTap: () {
                             provider.setPlatform(e);
                             tabController = TabController(
-                                length: provider.labelList.length, vsync: this);
+                              initialIndex: 0,
+                              length: provider.labelList.length,
+                              vsync: this,
+                            );
                             Navigator.of(context).pop();
                           },
                         ),
@@ -101,30 +105,27 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
 }
 
 class AreaGridView extends StatelessWidget {
-  const AreaGridView({Key? key, required this.provider}) : super(key: key);
+  const AreaGridView({Key? key, required this.areaList}) : super(key: key);
 
-  final AreasProvider provider;
+  final List<AreaInfo> areaList;
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    if (provider.areaList.isNotEmpty) {
-      return KeepAliveWrapper(
-          child: MasonryGridView.count(
-        padding: const EdgeInsets.all(5),
-        controller: ScrollController(),
-        crossAxisCount: screenWidth > 1280
-            ? 10
-            : (screenWidth > 960 ? 8 : (screenWidth > 640 ? 5 : 3)),
-        itemCount: provider.areaList.length,
-        // physics: (const BouncingScrollPhysics()),
-        itemBuilder: (context, index) => AreaCard(
-          area: provider.areaList[index],
-        ),
-      ));
-    } else {
-      return const AreaEmptyView();
-    }
+    return areaList.isNotEmpty
+        ? KeepAliveWrapper(
+            child: MasonryGridView.count(
+              padding: const EdgeInsets.all(5),
+              controller: ScrollController(),
+              crossAxisCount: screenWidth > 1280
+                  ? 10
+                  : (screenWidth > 960 ? 8 : (screenWidth > 640 ? 5 : 3)),
+              itemCount: areaList.length,
+              // physics: (const BouncingScrollPhysics()),
+              itemBuilder: (context, index) => AreaCard(area: areaList[index]),
+            ),
+          )
+        : const AreaEmptyView();
   }
 }
 

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/utils/http/httpapi.dart';
 import 'package:ice_live_viewer/utils/prefs_helper.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FavoriteProvider with ChangeNotifier {
   FavoriteProvider() {
-    _getRoomsFromPrefs();
-    getRoomsInfoFromApi();
+    onRefresh();
   }
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   final List<RoomInfo> _roomsList = [];
   final List<RoomInfo> _tempRoomsList = [];
@@ -26,19 +28,18 @@ class FavoriteProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void getRoomsInfoFromApi() async {
-    for (var item in _roomsList) {
-      RoomInfo singleRoom = await HttpApi.getRoomInfo(item);
-      _roomsList[_roomsList.indexOf(item)] = singleRoom;
+  void _getRoomsInfoFromApi() async {
+    for (int i = 0; i < _roomsList.length; i++) {
+      _roomsList[i] = await HttpApi.getRoomInfo(_roomsList[i]);
       notifyListeners();
     }
+    refreshController.refreshCompleted();
   }
 
-  Future<bool> refreshRooms() async {
+  void onRefresh() {
     _roomsList.clear();
     _getRoomsFromPrefs();
-    getRoomsInfoFromApi();
-    return true;
+    _getRoomsInfoFromApi();
   }
 
   void _saveRoomsToPrefs() {

@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/provider/popular_provider.dart';
-import 'package:ice_live_viewer/utils/http/httpapi.dart';
 import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
+import 'package:ice_live_viewer/widgets/onloading_footer.dart';
 import 'package:ice_live_viewer/widgets/room_card.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -51,26 +49,7 @@ class _PopularPageState extends State<PopularPage> {
         enablePullDown: true,
         enablePullUp: true,
         header: const WaterDropHeader(),
-        footer: CustomFooter(
-          builder: (context, mode) {
-            Widget body;
-            if (mode == LoadStatus.idle) {
-              body = const Text("pull up load");
-            } else if (mode == LoadStatus.loading) {
-              body = const CupertinoActivityIndicator();
-            } else if (mode == LoadStatus.failed) {
-              body = const Text("Load Failed!Click retry!");
-            } else if (mode == LoadStatus.canLoading) {
-              body = const Text("release to load more");
-            } else {
-              body = const Text("No more Data");
-            }
-            return SizedBox(
-              height: 55.0,
-              child: Center(child: body),
-            );
-          },
-        ),
+        footer: const OnLoadingFooter(),
         controller: provider.refreshController,
         onRefresh: provider.onRefresh,
         onLoading: provider.onLoading,
@@ -82,7 +61,6 @@ class _PopularPageState extends State<PopularPage> {
                     ? 8
                     : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2)),
                 itemCount: provider.roomList.length,
-                // physics: (const BouncingScrollPhysics()),
                 itemBuilder: (context, index) =>
                     RoomCard(room: provider.roomList[index], dense: true),
               )
@@ -115,34 +93,6 @@ class _PopularPageState extends State<PopularPage> {
         child: const Icon(Icons.video_collection_rounded),
       ),
     );
-  }
-}
-
-class RoomGridView extends StatelessWidget {
-  const RoomGridView({Key? key, required this.provider}) : super(key: key);
-
-  final PopularProvider provider;
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    if (provider.roomList.isNotEmpty) {
-      return KeepAliveWrapper(
-          child: MasonryGridView.count(
-        padding: const EdgeInsets.all(5),
-        controller: ScrollController(),
-        crossAxisCount: screenWidth > 1280
-            ? 8
-            : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2)),
-        itemCount: provider.roomList.length,
-        // physics: (const BouncingScrollPhysics()),
-        itemBuilder: (context, index) => RoomCard(
-          room: provider.roomList[index],
-          dense: true,
-        ),
-      ));
-    }
-    return const RoomEmptyView();
   }
 }
 
