@@ -21,7 +21,7 @@ class BilibiliApi {
   /// 获取直播间所有清晰度的url
   /// @param urls
   /// @param rid
-  static Future<Map<String, dynamic>> _getRoomStreamLink(RoomInfo room) async {
+  static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) async {
     String defaultQn = '10000';
     String newStreamUrl =
         'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$defaultQn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
@@ -127,12 +127,7 @@ class BilibiliApi {
     room.nick = ownerInfo["uname"];
     room.cover = roomInfo["cover"];
     room.avatar = ownerInfo["face"];
-
-    if (liveStatus == 1) {
-      Map links = await _getRoomStreamLink(room);
-      room.liveStatus = LiveStatus.live;
-      room.cdnMultiLink = links;
-    } else {}
+    room.liveStatus = liveStatus == 1 ? LiveStatus.live : LiveStatus.offline;
     return room;
   }
 

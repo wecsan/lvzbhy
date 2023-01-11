@@ -81,6 +81,9 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                       .map<Widget>(
                         (e) => ListTile(
                           title: Text(e.toUpperCase()),
+                          trailing: provider.platform == e
+                              ? const Icon(Icons.check_circle_rounded)
+                              : const SizedBox(height: 0),
                           onTap: () {
                             provider.setPlatform(e);
                             tabController = TabController(

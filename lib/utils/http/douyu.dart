@@ -21,40 +21,9 @@ class DouyuApi {
     return md5.convert(utf8.encode(input)).toString();
   }
 
-  static Future<Map> _getRoomStreamInfo(RoomInfo douyuRoom) async {
-    Map data = {
-      'rid': douyuRoom.roomId,
-      'did': '10000000000000000000000000001501'
-    };
-    String time = ((DateTime.now().millisecondsSinceEpoch) * 1000).toString();
-    String sign = _generateMd5('${douyuRoom.roomId}$time');
-    Map<String, String> headers = {
-      'rid': douyuRoom.roomId,
-      'time': time,
-      'auth': sign
-    };
-    var resp = await http.post(
-        Uri.parse(
-            'https://playweb.douyucdn.cn/lapi/live/hlsH5Preview/${douyuRoom.roomId}'),
-        headers: headers,
-        body: data);
-    var body = json.decode(resp.body);
-    if (body['error'] == 0) {
-      String rtmpLive = body['data']['rtmp_live'];
-      RegExpMatch? match =
-          RegExp(r'(\d{1,8}[0-9a-zA-Z]+)_?\d{0,4}(/playlist|.m3u8)')
-              .firstMatch(rtmpLive);
-      String? key = match?.group(1);
-      return {'error': 0, 'key': key, 'msg': rtmpLive, 'data': body['data']};
-    } else if (body['error'] == 104) {
-      return {'error': 104, 'msg': '房间不存在'};
-    }
-    throw Exception(body);
-  }
-
-  static Future<Map> _getRoomBasicInfo(RoomInfo douyuRoom) async {
-    var resp = await http.get(Uri.parse(
-        'https://open.douyucdn.cn/api/RoomApi/room/${douyuRoom.roomId}'));
+  static Future<Map> _getRoomBasicInfo(RoomInfo room) async {
+    var resp = await http.get(
+        Uri.parse('https://open.douyucdn.cn/api/RoomApi/room/${room.roomId}'));
     var body = json.decode(resp.body);
     if (resp.statusCode == 200) {
       if (body['error'] == 0) {
@@ -90,39 +59,51 @@ class DouyuApi {
     }
   }
 
-  static Future<Map> _getRoomStreamLink(RoomInfo douyuRoom) async {
-    Map info = await _getRoomStreamInfo(douyuRoom);
-    //print(info);
-    Map<String, dynamic> realUrl = {'hw': {}, 'ws': {}, 'akm': {}};
-    if (info['error'] == 0 || info['error'] == 104) {
-      String key = info['key'];
-      for (String cdn in realUrl.keys) {
-        realUrl[cdn]['原画'] = 'https://$cdn-tct.douyucdn.cn/live/$key.flv?uuid=';
-        realUrl[cdn]['流畅'] =
-            'https://$cdn-tct.douyucdn.cn/live/${key}_900.flv?uuid=';
-      }
-    }
-    return realUrl;
-  }
-
   static Future<String> verifyLink(String link) async {
     return fixErrorroomId(LinkParser.getRoomId(link));
   }
 
-  ///接收url 返回直播信息
-  ///
-  ///liveStatus:直播状态 0未开播 1直播
-  ///name:名字
-  ///avatar:头像
-  ///title:直播标题
-  ///cover:直播封面
-  ///id:直播id
-  ///startTime:直播开始时间
-  ///linkList:直播链接列表[CDN-链接]
-  static Future<RoomInfo> getRoomInfo(RoomInfo douyuRoom) async {
-    //try to get room basic info, if error, try to fix the room id
-    Map roomBasicInfo = await _getRoomBasicInfo(douyuRoom);
-    //print(roomBasicInfo);
+  static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) async {
+    String url =
+        'https://playweb.douyucdn.cn/lapi/live/hlsH5Preview/${room.roomId}';
+
+    String time = ((DateTime.now().millisecondsSinceEpoch) * 1000).toString();
+    String sign = _generateMd5('${room.roomId}$time');
+    Map<String, String> headers = {
+      'rid': room.roomId,
+      'time': time,
+      'auth': sign
+    };
+    Map data = {'rid': room.roomId, 'did': '10000000000000000000000000001501'};
+
+    var resp = await http.post(Uri.parse(url), headers: headers, body: data);
+    var body = json.decode(resp.body);
+    Map info = {};
+    if (body['error'] == 0) {
+      String rtmpLive = body['data']['rtmp_live'];
+      RegExpMatch? match =
+          RegExp(r'(\d{1,8}[0-9a-zA-Z]+)_?\d{0,4}(/playlist|.m3u8)')
+              .firstMatch(rtmpLive);
+      String? key = match?.group(1);
+      info = {'error': 0, 'key': key, 'msg': rtmpLive, 'data': body['data']};
+    } else {
+      info = {'error': 104, 'msg': '房间不存在'};
+    }
+
+    Map<String, dynamic> links = {'hw': {}, 'ws': {}, 'akm': {}};
+    if (info['error'] == 0 || info['error'] == 104) {
+      String key = info['key'];
+      for (String cdn in links.keys) {
+        links[cdn]['原画'] = 'https://$cdn-tct.douyucdn.cn/live/$key.flv?uuid=';
+        links[cdn]['流畅'] =
+            'https://$cdn-tct.douyucdn.cn/live/${key}_900.flv?uuid=';
+      }
+    }
+    return links;
+  }
+
+  static Future<RoomInfo> getRoomInfo(RoomInfo room) async {
+    Map roomBasicInfo = await _getRoomBasicInfo(room);
     dynamic liveStatus = roomBasicInfo['room_status'];
     Map<String, dynamic> data = {
       'name': roomBasicInfo['owner_name'],
@@ -132,19 +113,12 @@ class DouyuApi {
       'id': roomBasicInfo['room_id'],
       'startTime': roomBasicInfo['start_time'],
     };
-    douyuRoom.nick = data['name'];
-    douyuRoom.title = data['title'];
-    douyuRoom.avatar = data['avatar'];
-    douyuRoom.cover = data['cover'];
-
-    if (liveStatus == '1') {
-      Map links = await _getRoomStreamLink(douyuRoom);
-      douyuRoom.liveStatus = LiveStatus.live;
-      douyuRoom.cdnMultiLink = links;
-    } else {
-      douyuRoom.liveStatus = LiveStatus.offline;
-    }
-    return douyuRoom;
+    room.nick = data['name'];
+    room.title = data['title'];
+    room.avatar = data['avatar'];
+    room.cover = data['cover'];
+    room.liveStatus = liveStatus == '1' ? LiveStatus.live : LiveStatus.offline;
+    return room;
   }
 
   static Future<List<RoomInfo>> getRecommend(int page, int size) async {

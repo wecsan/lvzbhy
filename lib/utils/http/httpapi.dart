@@ -6,6 +6,19 @@ import 'package:ice_live_viewer/utils/http/huya.dart';
 
 ///the api interface
 class HttpApi {
+  static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) {
+    switch (room.platform) {
+      case "bilibili":
+        return BilibiliApi.getRoomStreamLink(room);
+      case 'huya':
+        return HuyaApi.getRoomStreamLink(room);
+      case 'douyu':
+        return DouyuApi.getRoomStreamLink(room);
+      default:
+        return Future(() => {});
+    }
+  }
+
   static Future<RoomInfo> getRoomInfo(RoomInfo room) {
     switch (room.platform) {
       case "bilibili":

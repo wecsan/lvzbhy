@@ -112,26 +112,21 @@ class _LivePlayPageState extends State<LivePlayPage> {
         ),
         body: Column(
           children: <Widget>[
-            videoController.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: videoController.value.aspectRatio,
-                    child: Chewie(controller: chewieController),
-                  )
-                : AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Container(
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: videoController.value.isInitialized
+                  ? Container(
+                      child: Chewie(controller: chewieController),
                       color: Colors.black,
-                    ),
-                  ),
+                    )
+                  : Container(color: Colors.black),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Resolution",
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
+                  const Icon(Icons.video_library_rounded, size: 20),
+                  const Spacer(),
                   ...resolutionBtns,
                 ],
               ),

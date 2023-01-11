@@ -15,7 +15,7 @@ class RoomInfo {
   LiveStatus liveStatus = LiveStatus.unknown;
 
   int huyaDanmakuId = 0;
-  Map cdnMultiLink = {};
+  Map<String, dynamic> cdnMultiLink = {};
 
   RoomInfo(this.roomId);
 

@@ -47,6 +47,45 @@ class HuyaApi {
     return path;
   }
 
+  static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) async {
+    Map<String, dynamic> links = {};
+
+    String url =
+        'https://mp.huya.com/cache.php?m=Live&do=profileRoom&roomid=${room.roomId}';
+    dynamic response = await _getJson(url);
+    if (response["status"] == 200) {
+      dynamic roomInfo = response['data'];
+      bool useCustomResolution = PrefsHelper.getUseCustomResolutionPref();
+      Map streamDict = roomInfo['stream']['flv'];
+      List multiLine = streamDict['multiLine'];
+      List rateArray = streamDict['rateArray'];
+      Map supportedResolutions = {};
+
+      for (Map resolutions in rateArray) {
+        String bitrate = resolutions['iBitRate'].toString();
+        supportedResolutions[resolutions['sDisplayName']] = '_$bitrate';
+      }
+      Map reso = useCustomResolution
+          ? {'1080P': '_4000', '720P': '_2000', '540P': '_1500'}
+          : supportedResolutions;
+
+      for (Map item in multiLine) {
+        String url = item['url'];
+        url = url.replaceAll('http://', 'https://');
+        String cdnType = item['cdnType'];
+        Map cdnLinks = {};
+        cdnLinks['原画'] = url;
+        for (String resolution in reso.keys) {
+          String key = reso[resolution];
+          String tempUrl = url.replaceAll('imgplus.flv', 'imgplus$key.flv');
+          cdnLinks[resolution] = tempUrl;
+        }
+        links[cdnType] = cdnLinks;
+      }
+    }
+    return links;
+  }
+
   static Future<RoomInfo> getRoomInfo(RoomInfo room) async {
     String url =
         'https://mp.huya.com/cache.php?m=Live&do=profileRoom&roomid=${room.roomId}';
@@ -67,37 +106,8 @@ class HuyaApi {
         room.liveStatus = LiveStatus.replay;
       } else {
         room.liveStatus = LiveStatus.live;
-        room.huyaDanmakuId = roomInfo['profileInfo']['uid'];
         room.cover = roomInfo['liveData']['screenshot'];
-
-        bool useCustomResolution = PrefsHelper.getUseCustomResolutionPref();
-        Map streamDict = roomInfo['stream']['flv'];
-        List multiLine = streamDict['multiLine'];
-        List rateArray = streamDict['rateArray'];
-        Map supportedResolutions = {};
-        Map finalLinks = {};
-        for (Map resolutions in rateArray) {
-          String bitrate = resolutions['iBitRate'].toString();
-          supportedResolutions[resolutions['sDisplayName']] = '_$bitrate';
-        }
-        Map reso = useCustomResolution
-            ? {'1080P': '_4000', '720P': '_2000', '540P': '_1500'}
-            : supportedResolutions;
-
-        for (Map item in multiLine) {
-          String url = item['url'];
-          url = url.replaceAll('http://', 'https://');
-          String cdnType = item['cdnType'];
-          Map cdnLinks = {};
-          cdnLinks['原画'] = url;
-          for (String resolution in reso.keys) {
-            String key = reso[resolution];
-            String tempUrl = url.replaceAll('imgplus.flv', 'imgplus$key.flv');
-            cdnLinks[resolution] = tempUrl;
-          }
-          finalLinks[cdnType] = cdnLinks;
-        }
-        room.cdnMultiLink = finalLinks;
+        room.huyaDanmakuId = roomInfo['profileInfo']['uid'];
       }
     }
     return room;

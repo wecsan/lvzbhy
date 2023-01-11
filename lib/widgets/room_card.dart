@@ -17,19 +17,19 @@ class RoomCard extends StatelessWidget {
   final bool dense;
 
   void onTap(BuildContext context) async {
-    final fullRoom = await HttpApi.getRoomInfo(room);
+    room.cdnMultiLink = await HttpApi.getRoomStreamLink(room);
     String info = '';
-    if (fullRoom.liveStatus == LiveStatus.live) {
-      if (fullRoom.cdnMultiLink.isEmpty) {
+    if (room.liveStatus == LiveStatus.live) {
+      if (room.cdnMultiLink.isEmpty) {
         info = 'Get live stream link failed';
       } else {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LivePlayPage(room: fullRoom)),
+          MaterialPageRoute(builder: (context) => LivePlayPage(room: room)),
         );
       }
     } else {
-      info = '${fullRoom.nick} is offline.';
+      info = '${room.nick} is offline.';
     }
 
     if (info.isNotEmpty) {
