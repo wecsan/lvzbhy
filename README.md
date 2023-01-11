@@ -15,6 +15,28 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 ## Screenshots
 
+<div style="text-align: center">
+  <table>
+    <tr>
+    <td style="text-align: center">
+      <img src="./screenshots/favorite_page.jpg" width="200"/>
+    </td>
+    <td style="text-align: center">
+      <img src="./screenshots/popular_page.jpg" width="200"/>
+    </td>
+    <td style="text-align: center">
+      <img src="./screenshots/areas_page.jpg" width="200"/>
+    </td>
+    <td style="text-align: center">
+      <img src="./screenshots/search_page.jpg" width="200"/>
+    </td>
+    <td style="text-align: center">
+      <img src="./screenshots/live_play_page.jpg" width="200"/>
+    </td>
+    </tr>
+  </table>
+</div>
+
 ## Platforms
 
 - [x] [哔哩哔哩](https://app.bilibili.com/)
