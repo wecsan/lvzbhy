@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:web_socket_channel/io.dart';
 
+import 'danmaku_text.dart';
+
 class DouYuDanmakuListView extends StatefulWidget {
   const DouYuDanmakuListView({
     Key? key,
@@ -141,14 +143,8 @@ class _LiveDanmakuPageState extends State<DouYuDanmakuListView>
     setState(() {
       _messageList.add(item);
     });
-    widget.barrageController.send([
-      Bullet(
-        child: Text(
-          item.msg,
-          style: const TextStyle(color: Colors.white),
-        ),
-      ),
-    ]);
+    widget.barrageController
+        .send([Bullet(child: DanmakuText(message: item.msg))]);
   }
 
   @override

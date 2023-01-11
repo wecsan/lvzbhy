@@ -5,6 +5,8 @@ import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:ice_live_viewer/utils/dart_tars_protocol/tarscodec.dart';
 import 'package:web_socket_channel/io.dart';
 
+import 'danmaku_text.dart';
+
 class HuyaDanmakuListView extends StatefulWidget {
   const HuyaDanmakuListView({
     Key? key,
@@ -102,14 +104,8 @@ class _HuyaDanmakuListViewState extends State<HuyaDanmakuListView>
       setState(() {
         _messageList.add(item);
       });
-      widget.barrageController.send([
-        Bullet(
-          child: Text(
-            item.msg,
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-      ]);
+      widget.barrageController
+          .send([Bullet(child: DanmakuText(message: item.msg))]);
     }
   }
 

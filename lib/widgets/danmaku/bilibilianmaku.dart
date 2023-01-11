@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:ice_live_viewer/utils/http/bilibili.dart';
+import 'package:ice_live_viewer/widgets/danmaku/danmaku_text.dart';
 import 'package:web_socket_channel/io.dart';
 
 /// https://github.com/Ha2ryZhang/alltv_flutter/blob/master/lib/model/bilibili_host_server.dart
@@ -184,14 +185,8 @@ class _BilibiliDanmakuListViewState extends State<BilibiliDanmakuListView>
       setState(() {
         _messageList.add(item);
       });
-      widget.barrageController.send([
-        Bullet(
-          child: Text(
-            item.msg,
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-      ]);
+      widget.barrageController
+          .send([Bullet(child: DanmakuText(message: item.msg))]);
     }
   }
 

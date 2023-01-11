@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ice_live_viewer/pages/home.dart';
 import 'package:ice_live_viewer/provider/areas_provider.dart';
 import 'package:ice_live_viewer/provider/favorite_provider.dart';
 import 'package:ice_live_viewer/provider/popular_provider.dart';
+import 'package:ice_live_viewer/provider/settings_provider.dart';
 import 'package:ice_live_viewer/utils/prefs_helper.dart';
 import 'package:ice_live_viewer/utils/theme.dart';
 import 'package:ice_live_viewer/provider/theme_provider.dart';
@@ -19,6 +17,10 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (_) => AppThemeProvider(),
+      lazy: false,
+    ),
+    ChangeNotifierProvider(
+      create: (_) => SettingsProvider(),
       lazy: false,
     ),
     ChangeNotifierProvider(
