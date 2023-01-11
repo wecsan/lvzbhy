@@ -14,9 +14,10 @@ class FavoriteProvider with ChangeNotifier {
       RefreshController(initialRefresh: false);
 
   final List<RoomInfo> _roomsList = [];
-  final List<RoomInfo> _tempRoomsList = [];
+  final List<RoomInfo> _onlineRoomList = [];
+  get roomsList => isHideOffline ? _onlineRoomList : _roomsList;
+
   bool _isHideOffline = false;
-  get roomsList => _roomsList;
   get isHideOffline => _isHideOffline;
 
   void _getRoomsFromPrefs() {
@@ -29,8 +30,12 @@ class FavoriteProvider with ChangeNotifier {
   }
 
   void _getRoomsInfoFromApi() async {
+    _onlineRoomList.clear();
     for (int i = 0; i < _roomsList.length; i++) {
       _roomsList[i] = await HttpApi.getRoomInfo(_roomsList[i]);
+      if (_roomsList[i].liveStatus == LiveStatus.live) {
+        _onlineRoomList.add(_roomsList[i]);
+      }
       notifyListeners();
     }
     refreshController.refreshCompleted();
@@ -57,22 +62,21 @@ class FavoriteProvider with ChangeNotifier {
   }
 
   void addRoom(RoomInfo room) async {
+    if (room.title.isEmpty || room.cover.isEmpty) {
+      room = await HttpApi.getRoomInfo(room);
+    }
+
     final idx = _roomsList.indexWhere((e) => e.roomId == room.roomId);
     if (idx != -1) _roomsList[idx] = room;
     _roomsList.add(room);
+    if (room.liveStatus == LiveStatus.live) _onlineRoomList.add(room);
     notifyListeners();
     _saveRoomsToPrefs();
   }
 
   void removeRoom(RoomInfo room) {
     _roomsList.removeWhere((e) => e.roomId == room.roomId);
-    notifyListeners();
-    _saveRoomsToPrefs();
-  }
-
-  void updateRoom(RoomInfo room) {
-    final idx = _roomsList.indexWhere((e) => e.roomId == room.roomId);
-    if (idx != -1) _roomsList[idx] = room;
+    _onlineRoomList.removeWhere((e) => e.roomId == room.roomId);
     notifyListeners();
     _saveRoomsToPrefs();
   }
@@ -86,24 +90,11 @@ class FavoriteProvider with ChangeNotifier {
   }
 
   void hideOfflineRooms() {
-    for (var element in _roomsList) {
-      _tempRoomsList.add(element);
-    }
-    for (var item in _tempRoomsList) {
-      if (item.liveStatus.name != 'live') {
-        _roomsList.removeWhere((element) => element.roomId == item.roomId);
-      }
-    }
-    notifyListeners();
     _isHideOffline = true;
+    notifyListeners();
   }
 
   void showOfflineRooms() {
-    _roomsList.clear();
-    for (var item in _tempRoomsList) {
-      _roomsList.add(item);
-    }
-    _tempRoomsList.clear();
     _isHideOffline = false;
     notifyListeners();
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/pages/help.dart';
 import 'package:ice_live_viewer/provider/theme_provider.dart';
 import 'package:ice_live_viewer/utils/storage.dart';
 import 'package:provider/provider.dart';
@@ -56,17 +55,6 @@ class SettingsPage extends StatelessWidget {
           ),
           const SectionTitle(
             title: 'Others',
-          ),
-          ListTile(
-            title: const Text('Help'),
-            subtitle: const Text('How to use hotlive app'),
-            leading: const Icon(Icons.help_outline_rounded, size: 32),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HelpPage()),
-              );
-            },
           ),
           ListTile(
             title: const Text('About'),

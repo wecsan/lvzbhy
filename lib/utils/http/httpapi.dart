@@ -72,4 +72,18 @@ class HttpApi {
         return Future(() => []);
     }
   }
+
+  static Future<List<RoomInfo>> search(String platform, String keyWords,
+      {bool isLive = false}) {
+    switch (platform) {
+      case "bilibili":
+        return BilibiliApi.search(keyWords, isLive);
+      case 'huya':
+        return HuyaApi.search(keyWords, isLive);
+      case 'douyu':
+        return DouyuApi.search(keyWords, isLive);
+      default:
+        return Future(() => []);
+    }
+  }
 }

@@ -52,37 +52,43 @@ class HuyaApi {
 
     String url =
         'https://mp.huya.com/cache.php?m=Live&do=profileRoom&roomid=${room.roomId}';
-    dynamic response = await _getJson(url);
-    if (response["status"] == 200) {
-      dynamic roomInfo = response['data'];
-      bool useCustomResolution = PrefsHelper.getUseCustomResolutionPref();
-      Map streamDict = roomInfo['stream']['flv'];
-      List multiLine = streamDict['multiLine'];
-      List rateArray = streamDict['rateArray'];
-      Map supportedResolutions = {};
 
-      for (Map resolutions in rateArray) {
-        String bitrate = resolutions['iBitRate'].toString();
-        supportedResolutions[resolutions['sDisplayName']] = '_$bitrate';
-      }
-      Map reso = useCustomResolution
-          ? {'1080P': '_4000', '720P': '_2000', '540P': '_1500'}
-          : supportedResolutions;
+    try {
+      dynamic response = await _getJson(url);
+      if (response["status"] == 200) {
+        dynamic roomInfo = response['data'];
+        bool useCustomResolution = PrefsHelper.getUseCustomResolutionPref();
+        Map streamDict = roomInfo['stream']['flv'];
+        List multiLine = streamDict['multiLine'];
+        List rateArray = streamDict['rateArray'];
+        Map supportedResolutions = {};
 
-      for (Map item in multiLine) {
-        String url = item['url'];
-        url = url.replaceAll('http://', 'https://');
-        String cdnType = item['cdnType'];
-        Map cdnLinks = {};
-        cdnLinks['原画'] = url;
-        for (String resolution in reso.keys) {
-          String key = reso[resolution];
-          String tempUrl = url.replaceAll('imgplus.flv', 'imgplus$key.flv');
-          cdnLinks[resolution] = tempUrl;
+        for (Map resolutions in rateArray) {
+          String bitrate = resolutions['iBitRate'].toString();
+          supportedResolutions[resolutions['sDisplayName']] = '_$bitrate';
         }
-        links[cdnType] = cdnLinks;
+        Map reso = useCustomResolution
+            ? {'1080P': '_4000', '720P': '_2000', '540P': '_1500'}
+            : supportedResolutions;
+
+        for (Map item in multiLine) {
+          String url = item['url'];
+          url = url.replaceAll('http://', 'https://');
+          String cdnType = item['cdnType'];
+          Map cdnLinks = {};
+          cdnLinks['原画'] = url;
+          for (String resolution in reso.keys) {
+            String key = reso[resolution];
+            String tempUrl = url.replaceAll('imgplus.flv', 'imgplus$key.flv');
+            cdnLinks[resolution] = tempUrl;
+          }
+          links[cdnType] = cdnLinks;
+        }
       }
+    } catch (e) {
+      return links;
     }
+
     return links;
   }
 
@@ -187,8 +193,8 @@ class HuyaApi {
       start = (page - 1) * size % 120;
     }
 
-    String url =
-        "https://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&gameId=${area.areaId}&tagAll=0&page=$realPage";
+    String url = "https://www.huya.com/cache.php?m=LiveList" +
+        "&do=getLiveListByPage&gameId=${area.areaId}&tagAll=0&page=$realPage";
     dynamic response = await _getJson(url);
     if (response["status"] == 200) {
       List<dynamic> roomInfoList = response["data"]["datas"];
@@ -206,8 +212,24 @@ class HuyaApi {
     return list;
   }
 
-  static Future<List<RoomInfo>> searchRoom(String platform, AreaInfo area,
-      {int page = 1}) {
-    throw UnimplementedError();
+  static Future<List<RoomInfo>> search(String keyWords, bool isLive) async {
+    List<RoomInfo> list = [];
+
+    String url = "https://search.cdn.huya.com/?m=Search&do=getSearchContent&" +
+        "q=$keyWords&uid=0&v=4&typ=-5&livestate=$isLive&rows=5&start=0";
+
+    dynamic response = await _getJson(url);
+    List<dynamic> ownerList = response["response"]["1"]["docs"];
+    for (var ownerInfo in ownerList) {
+      RoomInfo owner = RoomInfo(ownerInfo["room_id"].toString());
+      owner.platform = 'huya';
+      owner.nick = ownerInfo["game_nick"];
+      owner.areaName = ownerInfo["game_name"];
+      owner.avatar = ownerInfo["game_avatarUrl52"];
+      owner.liveStatus =
+          ownerInfo["gameLiveOn"] ? LiveStatus.live : LiveStatus.offline;
+      list.add(owner);
+    }
+    return list;
   }
 }

@@ -64,6 +64,7 @@ class DouyuApi {
   }
 
   static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) async {
+    Map<String, dynamic> links = {'hw': {}, 'ws': {}, 'akm': {}};
     String url =
         'https://playweb.douyucdn.cn/lapi/live/hlsH5Preview/${room.roomId}';
 
@@ -76,29 +77,33 @@ class DouyuApi {
     };
     Map data = {'rid': room.roomId, 'did': '10000000000000000000000000001501'};
 
-    var resp = await http.post(Uri.parse(url), headers: headers, body: data);
-    var body = json.decode(resp.body);
-    Map info = {};
-    if (body['error'] == 0) {
-      String rtmpLive = body['data']['rtmp_live'];
-      RegExpMatch? match =
-          RegExp(r'(\d{1,8}[0-9a-zA-Z]+)_?\d{0,4}(/playlist|.m3u8)')
-              .firstMatch(rtmpLive);
-      String? key = match?.group(1);
-      info = {'error': 0, 'key': key, 'msg': rtmpLive, 'data': body['data']};
-    } else {
-      info = {'error': 104, 'msg': '房间不存在'};
+    try {
+      Map info = {};
+      var resp = await http.post(Uri.parse(url), headers: headers, body: data);
+      var body = json.decode(resp.body);
+      if (body['error'] == 0) {
+        String rtmpLive = body['data']['rtmp_live'];
+        RegExpMatch? match =
+            RegExp(r'(\d{1,8}[0-9a-zA-Z]+)_?\d{0,4}(/playlist|.m3u8)')
+                .firstMatch(rtmpLive);
+        String? key = match?.group(1);
+        info = {'error': 0, 'key': key, 'msg': rtmpLive, 'data': body['data']};
+      } else {
+        info = {'error': 104, 'msg': '房间不存在'};
+      }
+
+      if (info['error'] == 0 || info['error'] == 104) {
+        String key = info['key'];
+        for (String cdn in links.keys) {
+          links[cdn]['原画'] = 'https://$cdn-tct.douyucdn.cn/live/$key.flv?uuid=';
+          links[cdn]['流畅'] =
+              'https://$cdn-tct.douyucdn.cn/live/${key}_900.flv?uuid=';
+        }
+      }
+    } catch (e) {
+      return links;
     }
 
-    Map<String, dynamic> links = {'hw': {}, 'ws': {}, 'akm': {}};
-    if (info['error'] == 0 || info['error'] == 104) {
-      String key = info['key'];
-      for (String cdn in links.keys) {
-        links[cdn]['原画'] = 'https://$cdn-tct.douyucdn.cn/live/$key.flv?uuid=';
-        links[cdn]['流畅'] =
-            'https://$cdn-tct.douyucdn.cn/live/${key}_900.flv?uuid=';
-      }
-    }
     return links;
   }
 
@@ -222,8 +227,26 @@ class DouyuApi {
     return list;
   }
 
-  static Future<List<RoomInfo>> searchRoom(String platform, AreaInfo area,
-      {int page = 1}) {
-    throw UnimplementedError();
+  static Future<List<RoomInfo>> search(String keyWords, bool isLive) async {
+    List<RoomInfo> list = [];
+    String url = "https://www.douyu.com/japi/search/api/searchAnchor?kw=" +
+        const Utf8Encoder().convert(keyWords).toString() +
+        "&page=1&pageSize=5&filterType=${isLive ? 1 : 0}";
+
+    dynamic response = await _getJson(url);
+    if (response["error"] == 0) {
+      List<dynamic> ownerList = response["data"]["relateAnchor"];
+      for (var ownerInfo in ownerList) {
+        RoomInfo owner = RoomInfo(ownerInfo['rid'].toString());
+        owner.platform = "douyu";
+        owner.nick = ownerInfo["nickName"];
+        owner.areaName = ownerInfo["cateName"];
+        owner.avatar = ownerInfo["avatar"];
+        owner.liveStatus =
+            ownerInfo["isLive"] == 1 ? LiveStatus.live : LiveStatus.offline;
+        list.add(owner);
+      }
+    }
+    return list;
   }
 }

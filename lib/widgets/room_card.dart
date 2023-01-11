@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/pages/live_play/live_play.dart';

@@ -14,6 +14,8 @@ class RoomInfo {
   String platform = 'UNKNOWN';
   LiveStatus liveStatus = LiveStatus.unknown;
 
+  String areaName = '';
+
   int huyaDanmakuId = 0;
   Map<String, dynamic> cdnMultiLink = {};
 

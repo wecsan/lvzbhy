@@ -12,7 +12,8 @@ class BilibiliApi {
       Uri.parse(url),
       headers: {
         'User-Agent':
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/108.0.0.0'
+            'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Mobile Safari/537.36 Edg/108.0.1462.76',
+        'cookie': 'buvid3=EC8BE6F6-EC10-73D6-0C7E-3E67DCFC633C10860infoc',
       },
     );
     return await jsonDecode(const Utf8Codec().decode(resp.bodyBytes));
@@ -25,88 +26,95 @@ class BilibiliApi {
     String defaultQn = '10000';
     String newStreamUrl =
         'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$defaultQn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
-    dynamic streamJson = await _getJson(newStreamUrl);
-    List<dynamic> qualityReferenceList =
-        streamJson['data']['playurl_info']['playurl']['g_qn_desc'];
 
-    Map<int, String> qualityRefMap = {};
-    for (var i = 0; i < qualityReferenceList.length; i++) {
-      qualityRefMap[qualityReferenceList[i]['qn']] =
-          qualityReferenceList[i]['desc'];
-    }
-    List<dynamic> streamMultiList =
-        streamJson['data']['playurl_info']['playurl']['stream'];
-
-    //get m3u8 default, if not, get unplayable flv
-    Map streamProtocol =
-        streamMultiList[1]['format'][0] ?? streamMultiList[0]['format'][0];
     Map<String, List> finalStream = {};
+    try {
+      dynamic streamJson = await _getJson(newStreamUrl);
+      List<dynamic> qualityReferenceList =
+          streamJson['data']['playurl_info']['playurl']['g_qn_desc'];
 
-    //Find the m3u8-fmp4 link
-    for (int i = 0; i < streamMultiList.length; i++) {
-      if (streamMultiList[i]['protocol_name'] == 'http_hls') {
-        for (int j = 0; j < streamMultiList[i]['format'].length; j++) {
-          if (streamMultiList[i]['format'][j]['format_name'] == 'fmp4') {
-            streamProtocol = streamMultiList[i]['format'][j];
-            break;
+      Map<int, String> qualityRefMap = {};
+      for (var i = 0; i < qualityReferenceList.length; i++) {
+        qualityRefMap[qualityReferenceList[i]['qn']] =
+            qualityReferenceList[i]['desc'];
+      }
+      List<dynamic> streamMultiList =
+          streamJson['data']['playurl_info']['playurl']['stream'];
+
+      //get m3u8 default, if not, get unplayable flv
+      Map streamProtocol =
+          streamMultiList[1]['format'][0] ?? streamMultiList[0]['format'][0];
+
+      //Find the m3u8-fmp4 link
+      for (int i = 0; i < streamMultiList.length; i++) {
+        if (streamMultiList[i]['protocol_name'] == 'http_hls') {
+          for (int j = 0; j < streamMultiList[i]['format'].length; j++) {
+            if (streamMultiList[i]['format'][j]['format_name'] == 'fmp4') {
+              streamProtocol = streamMultiList[i]['format'][j];
+              break;
+            }
           }
         }
       }
-    }
-    List<dynamic> acceptQn = streamProtocol['codec'][0]['accept_qn'];
-    for (int i = 0; i < acceptQn.length; i++) {
-      int qn = acceptQn[i].toInt();
-      String qnName = qualityRefMap[qn] ?? qn.toString();
-      if (qn == 10000) {
-        List urlInfo = streamProtocol['codec'][0]['url_info'];
-        String baseUrl = streamProtocol['codec'][0]['base_url'];
+      List<dynamic> acceptQn = streamProtocol['codec'][0]['accept_qn'];
+      for (int i = 0; i < acceptQn.length; i++) {
+        int qn = acceptQn[i].toInt();
+        String qnName = qualityRefMap[qn] ?? qn.toString();
+        if (qn == 10000) {
+          List urlInfo = streamProtocol['codec'][0]['url_info'];
+          String baseUrl = streamProtocol['codec'][0]['base_url'];
+          List urlMap = [];
+          for (int i = 0; i < urlInfo.length; i++) {
+            String finalUrl =
+                urlInfo[i]['host'] + baseUrl + urlInfo[i]['extra'];
+            urlMap.add(finalUrl);
+          }
+          finalStream[qnName] = urlMap;
+          continue;
+        }
+
+        String qnUrl =
+            'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$qn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
+        dynamic qnJson = await _getJson(qnUrl);
+        List<dynamic> qnStreamMultiList =
+            qnJson['data']['playurl_info']['playurl']['stream'];
+
+        //get m3u8 default, if not, get unplayable flv
+        Map qnStreamProtocol = qnStreamMultiList[1]['format'][0] ??
+            qnStreamMultiList[0]['format'][0];
+        for (int i = 0; i < qnStreamMultiList.length; i++) {
+          if (qnStreamMultiList[i]['protocol_name'] == 'http_hls') {
+            for (int j = 0; j < qnStreamMultiList[i]['format'].length; j++) {
+              if (qnStreamMultiList[i]['format'][j]['format_name'] == 'fmp4') {
+                qnStreamProtocol = qnStreamMultiList[i]['format'][j];
+                break;
+              }
+            }
+          }
+        }
+        List urlInfo = qnStreamProtocol['codec'][0]['url_info'];
+        String baseUrl = qnStreamProtocol['codec'][0]['base_url'];
         List urlMap = [];
         for (int i = 0; i < urlInfo.length; i++) {
           String finalUrl = urlInfo[i]['host'] + baseUrl + urlInfo[i]['extra'];
           urlMap.add(finalUrl);
         }
         finalStream[qnName] = urlMap;
-        continue;
       }
-
-      String qnUrl =
-          'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$qn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
-      dynamic qnJson = await _getJson(qnUrl);
-      List<dynamic> qnStreamMultiList =
-          qnJson['data']['playurl_info']['playurl']['stream'];
-
-      //get m3u8 default, if not, get unplayable flv
-      Map qnStreamProtocol = qnStreamMultiList[1]['format'][0] ??
-          qnStreamMultiList[0]['format'][0];
-      for (int i = 0; i < qnStreamMultiList.length; i++) {
-        if (qnStreamMultiList[i]['protocol_name'] == 'http_hls') {
-          for (int j = 0; j < qnStreamMultiList[i]['format'].length; j++) {
-            if (qnStreamMultiList[i]['format'][j]['format_name'] == 'fmp4') {
-              qnStreamProtocol = qnStreamMultiList[i]['format'][j];
-              break;
-            }
-          }
-        }
-      }
-      List urlInfo = qnStreamProtocol['codec'][0]['url_info'];
-      String baseUrl = qnStreamProtocol['codec'][0]['base_url'];
-      List urlMap = [];
-      for (int i = 0; i < urlInfo.length; i++) {
-        String finalUrl = urlInfo[i]['host'] + baseUrl + urlInfo[i]['extra'];
-        urlMap.add(finalUrl);
-      }
-      finalStream[qnName] = urlMap;
+    } catch (e) {
+      return {};
     }
 
-    Map<String, Map<String, String>> result = {};
+    // transform stream to app format
+    Map<String, Map<String, String>> links = {};
     for (var key in finalStream.keys) {
       List<dynamic> list = finalStream[key] ?? [];
-      result[key] = {};
+      links[key] = {};
       for (int i = 0; i < list.length; i++) {
-        result[key]!["线路$i"] = list[i];
+        links[key]!["线路$i"] = list[i];
       }
     }
-    return result;
+    return links;
   }
 
   /// 获取单个直播间信息
@@ -218,13 +226,47 @@ class BilibiliApi {
     return list;
   }
 
+  static List<String> regexMatch(String text, RegExp regExp) =>
+      regExp.allMatches(text).map((m) => m.group(0)!).toList();
+
   /// 搜索
   /// @param keyWords  搜索关键字
   /// @param isLive 是否搜索直播中的信息
   /// @return
-  static Future<List<Map<String, String>>> search(
-      String keyWords, String isLive) async {
-    return [];
+  static Future<List<RoomInfo>> search(String keyWords, bool isLive) async {
+    List<RoomInfo> list = [];
+    String url = "https://api.bilibili.com/x/web-interface/search/" +
+        "type?context=&search_type=live_user&cover_type=user_cover" +
+        "&page=1&order=&keyword=" +
+        keyWords +
+        "&category_id=&__refresh__=true" +
+        "&_extra=&highlight=1&single_column=0";
+
+    dynamic response = await _getJson(url);
+    if (response["code"] == 0) {
+      List<dynamic> ownerList = response["data"]["result"];
+      for (var ownerInfo in ownerList) {
+        RoomInfo owner = RoomInfo(ownerInfo['roomid'].toString());
+        owner.platform = "bilibili";
+        owner.nick = regexMatch(
+            ownerInfo["uname"], RegExp(r"(?<=\>)(.*)(?=\<\/em\>)"))[0];
+        owner.areaName = ownerInfo["cate_name"];
+        owner.avatar = ownerInfo["uface"];
+        if (!owner.avatar.contains("http")) {
+          owner.avatar = "https:${owner.avatar}";
+        }
+        owner.liveStatus =
+            ownerInfo["is_live"] ? LiveStatus.live : LiveStatus.offline;
+
+        // controll islive status
+        if (isLive && owner.liveStatus == LiveStatus.offline) continue;
+        list.add(owner);
+
+        // if room exists
+        if (list.indexWhere((e) => e.roomId == owner.roomId) != -1) continue;
+      }
+    }
+    return list;
   }
 }
 
