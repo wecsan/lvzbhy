@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ice_live_viewer/pages/about.dart';
 import 'package:ice_live_viewer/provider/theme_provider.dart';
 import 'package:ice_live_viewer/utils/prefs_helper.dart';
 import 'package:ice_live_viewer/utils/storage.dart';
@@ -92,22 +93,7 @@ class SettingsPage extends StatelessWidget {
           const SectionTitle(
             title: 'Others',
           ),
-          ListTile(
-            title: const Text('About'),
-            subtitle: const Text('About our hotlive app'),
-            leading: const Icon(Icons.info_outline_rounded, size: 32),
-            onTap: () {
-              showAboutDialog(context: context);
-            },
-          ),
-          ListTile(
-            title: const Text('Check Update'),
-            subtitle: const Text('version 0.9.0'),
-            leading: const Icon(Icons.update_rounded, size: 32),
-            onTap: () {
-              showAboutDialog(context: context);
-            },
-          ),
+          const About(),
         ],
       ),
     );
