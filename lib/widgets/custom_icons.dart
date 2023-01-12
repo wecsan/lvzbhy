@@ -12,18 +12,6 @@
 ///       - asset: fonts/CustomIcons.ttf
 ///
 ///
-/// * Entypo, Copyright (C) 2012 by Daniel Bruce
-///         Author:    Daniel Bruce
-///         License:   SIL (http://scripts.sil.org/OFL)
-///         Homepage:  http://www.entypo.com
-/// * Elusive, Copyright (C) 2013 by Aristeides Stathopoulos
-///         Author:    Aristeides Stathopoulos
-///         License:   SIL (http://scripts.sil.org/OFL)
-///         Homepage:  http://aristeides.com/
-/// * MFG Labs, Copyright (C) 2012 by Daniel Bruce
-///         Author:    MFG Labs
-///         License:   SIL (http://scripts.sil.org/OFL)
-///         Homepage:  http://www.mfglabs.com/
 ///
 import 'package:flutter/widgets.dart';
 
@@ -33,12 +21,14 @@ class CustomIcons {
   static const _kFontFam = 'CustomIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData search =
+  static const IconData danmaku_close =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData search_circled =
+  static const IconData danmaku_open =
       IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData popular =
+  static const IconData danmaku_setting =
       IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData search_1 =
-      IconData(0xf50d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData popular =
+      IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData search =
+      IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

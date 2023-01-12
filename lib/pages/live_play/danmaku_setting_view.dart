@@ -2,29 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/provider/settings_provider.dart';
 import 'package:provider/provider.dart';
 
-class DanmakuController extends StatefulWidget {
-  const DanmakuController({Key? key}) : super(key: key);
+class DanmakuSettingView extends StatefulWidget {
+  const DanmakuSettingView({Key? key}) : super(key: key);
 
   @override
-  State<DanmakuController> createState() => _DanmakuControllerState();
+  State<DanmakuSettingView> createState() => _DanmakuSettingViewState();
 }
 
-class _DanmakuControllerState extends State<DanmakuController> {
-  final TextStyle fontStyle = TextStyle(color: Colors.white.withOpacity(0.8));
+class _DanmakuSettingViewState extends State<DanmakuSettingView> {
+  final double opcity = 0.7;
 
   @override
   Widget build(BuildContext context) {
     SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
+    final Color backgroundColor = Colors.black.withOpacity(opcity);
+    final Color fontColor = Colors.white.withOpacity(opcity);
+    final TextStyle labelStyle =
+        Theme.of(context).textTheme.labelMedium?.copyWith(color: fontColor) ??
+            TextStyle(color: fontColor);
+    final TextStyle digitStyle =
+        Theme.of(context).textTheme.caption?.copyWith(color: fontColor) ??
+            TextStyle(color: fontColor);
+
     return AlertDialog(
-      backgroundColor: Colors.black.withOpacity(0.6),
+      backgroundColor: backgroundColor,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-            leading: Text('显示区域', style: fontStyle),
+            leading: Text('显示区域', style: labelStyle),
             title: Slider(
               value: settings.danmakuArea,
               min: 0.0,
@@ -32,14 +41,14 @@ class _DanmakuControllerState extends State<DanmakuController> {
               onChanged: (val) => settings.danmakuArea = val,
             ),
             trailing: Text(
-              settings.danmakuArea.toStringAsPrecision(2),
-              style: fontStyle,
+              (settings.danmakuArea * 100).toInt().toString() + '%',
+              style: digitStyle,
             ),
           ),
           ListTile(
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-            leading: Text('不透明度', style: fontStyle),
+            leading: Text('不透明度', style: labelStyle),
             title: Slider(
               value: settings.danmakuOpcity,
               min: 0.0,
@@ -47,14 +56,14 @@ class _DanmakuControllerState extends State<DanmakuController> {
               onChanged: (val) => settings.danmakuOpcity = val,
             ),
             trailing: Text(
-              settings.danmakuOpcity.toStringAsPrecision(2),
-              style: fontStyle,
+              (settings.danmakuOpcity * 100).toInt().toString() + '%',
+              style: digitStyle,
             ),
           ),
           ListTile(
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-            leading: Text('弹幕速度', style: fontStyle),
+            leading: Text('弹幕速度', style: labelStyle),
             title: Slider(
               value: settings.danmakuSpeed,
               min: 1.0,
@@ -62,23 +71,23 @@ class _DanmakuControllerState extends State<DanmakuController> {
               onChanged: (val) => settings.danmakuSpeed = val,
             ),
             trailing: Text(
-              settings.danmakuSpeed.toStringAsPrecision(2),
-              style: fontStyle,
+              settings.danmakuSpeed.toInt().toString(),
+              style: digitStyle,
             ),
           ),
           ListTile(
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-            leading: Text('弹幕字号', style: fontStyle),
+            leading: Text('弹幕字号', style: labelStyle),
             title: Slider(
               value: settings.danmakuFontSize,
               min: 10.0,
-              max: 40.0,
+              max: 30.0,
               onChanged: (val) => settings.danmakuFontSize = val,
             ),
             trailing: Text(
-              settings.danmakuFontSize.toStringAsPrecision(2),
-              style: fontStyle,
+              settings.danmakuFontSize.toInt().toString(),
+              style: digitStyle,
             ),
           ),
         ],

@@ -77,7 +77,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 MaterialPageRoute(builder: (context) => const SearchPage()),
               );
             },
-            icon: const Icon(CustomIcons.search_1, size: 22),
+            icon: const Icon(CustomIcons.search, size: 22),
           ),
           IconButton(
             onPressed: () {

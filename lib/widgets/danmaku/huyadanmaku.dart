@@ -11,11 +11,11 @@ class HuyaDanmakuListView extends StatefulWidget {
   const HuyaDanmakuListView({
     Key? key,
     required this.danmakuId,
-    required this.barrageController,
+    required this.danmakuContoller,
   }) : super(key: key);
 
   final int danmakuId;
-  final BarrageWallController barrageController;
+  final BarrageWallController danmakuContoller;
 
   @override
   State<HuyaDanmakuListView> createState() => _HuyaDanmakuListViewState();
@@ -104,7 +104,7 @@ class _HuyaDanmakuListViewState extends State<HuyaDanmakuListView>
       setState(() {
         _messageList.add(item);
       });
-      widget.barrageController
+      widget.danmakuContoller
           .send([Bullet(child: DanmakuText(message: item.msg))]);
     }
   }

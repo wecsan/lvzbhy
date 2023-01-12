@@ -8,10 +8,10 @@ import 'huyadanmaku.dart';
 
 class DanmakuListView extends StatelessWidget {
   final RoomInfo room;
-  final BarrageWallController barrageController;
+  final BarrageWallController danmakuContoller;
 
   const DanmakuListView(
-      {Key? key, required this.room, required this.barrageController})
+      {Key? key, required this.room, required this.danmakuContoller})
       : super(key: key);
 
   @override
@@ -20,17 +20,17 @@ class DanmakuListView extends StatelessWidget {
       case 'bilibili':
         return BilibiliDanmakuListView(
           roomId: int.parse(room.roomId),
-          barrageController: barrageController,
+          danmakuContoller: danmakuContoller,
         );
       case 'douyu':
         return DouYuDanmakuListView(
           roomId: int.parse(room.roomId),
-          barrageController: barrageController,
+          danmakuContoller: danmakuContoller,
         );
       case 'huya':
         return HuyaDanmakuListView(
           danmakuId: room.huyaDanmakuId,
-          barrageController: barrageController,
+          danmakuContoller: danmakuContoller,
         );
       default:
         return Container();

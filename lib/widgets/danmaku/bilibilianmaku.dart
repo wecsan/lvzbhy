@@ -16,11 +16,11 @@ class BilibiliDanmakuListView extends StatefulWidget {
   const BilibiliDanmakuListView({
     Key? key,
     required this.roomId,
-    required this.barrageController,
+    required this.danmakuContoller,
   }) : super(key: key);
 
   final int roomId;
-  final BarrageWallController barrageController;
+  final BarrageWallController danmakuContoller;
 
   @override
   _BilibiliDanmakuListViewState createState() =>
@@ -185,7 +185,7 @@ class _BilibiliDanmakuListViewState extends State<BilibiliDanmakuListView>
       setState(() {
         _messageList.add(item);
       });
-      widget.barrageController
+      widget.danmakuContoller
           .send([Bullet(child: DanmakuText(message: item.msg))]);
     }
   }

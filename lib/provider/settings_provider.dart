@@ -58,7 +58,7 @@ class SettingsProvider with ChangeNotifier {
 
   double get danmakuFontSize => _danmakuFontSize;
   set danmakuFontSize(value) {
-    if (value < 10 || value > 40) return;
+    if (value < 10 || value > 30) return;
     _danmakuFontSize = value;
     save();
     notifyListeners();

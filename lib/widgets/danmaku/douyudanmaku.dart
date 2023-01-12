@@ -12,11 +12,11 @@ class DouYuDanmakuListView extends StatefulWidget {
   const DouYuDanmakuListView({
     Key? key,
     required this.roomId,
-    required this.barrageController,
+    required this.danmakuContoller,
   }) : super(key: key);
 
   final int roomId;
-  final BarrageWallController barrageController;
+  final BarrageWallController danmakuContoller;
 
   @override
   _LiveDanmakuPageState createState() => _LiveDanmakuPageState();
@@ -143,7 +143,7 @@ class _LiveDanmakuPageState extends State<DouYuDanmakuListView>
     setState(() {
       _messageList.add(item);
     });
-    widget.barrageController
+    widget.danmakuContoller
         .send([Bullet(child: DanmakuText(message: item.msg))]);
   }
 

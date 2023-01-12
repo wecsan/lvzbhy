@@ -26,7 +26,6 @@ class FavoriteProvider with ChangeNotifier {
       RoomInfo singleRoom = RoomInfo.fromJson(jsonDecode(item));
       _roomsList.add(singleRoom);
     }
-    notifyListeners();
   }
 
   void _getRoomsInfoFromApi() async {

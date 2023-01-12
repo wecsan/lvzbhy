@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
-import 'mychewie_controller.dart';
+import 'danmaku_chewie_controller.dart';
 
 class LivePlayPage extends StatefulWidget {
   const LivePlayPage({Key? key, required this.room}) : super(key: key);
@@ -22,7 +22,7 @@ class LivePlayPage extends StatefulWidget {
 class _LivePlayPageState extends State<LivePlayPage> {
   late VideoPlayerController videoController;
   late ChewieController chewieController;
-  late BarrageWallController barrageController;
+  late BarrageWallController danmakuContoller;
 
   late String title;
   late Map<dynamic, dynamic> cdnMultiLink;
@@ -34,7 +34,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     title = widget.room.title;
     cdnMultiLink = widget.room.cdnMultiLink;
 
-    barrageController = BarrageWallController();
+    danmakuContoller = BarrageWallController();
     _initVideoController(cdnMultiLink.values.toList()[0].values.toList()[0]);
   }
 
@@ -46,8 +46,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
           if (swap) chewieController.dispose();
           chewieController = ChewieController(
             videoPlayerController: videoController,
-            customControls: MyChewieMaterialControls(
-              barrageController: barrageController,
+            customControls: DanmakuChewieControllers(
+              danmakuContoller: danmakuContoller,
             ),
             autoPlay: true,
             isLive: true,
@@ -136,7 +136,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
               Expanded(
                 child: DanmakuListView(
                   room: widget.room,
-                  barrageController: barrageController,
+                  danmakuContoller: danmakuContoller,
                 ),
               ),
               OwnerListTile(
