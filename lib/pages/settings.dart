@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
+  final String appVersion = '0.9.2';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,9 +24,7 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          const SectionTitle(
-            title: 'General',
-          ),
+          const SectionTitle(title: 'General'),
           ListTile(
             title: const Text('Change Theme Color'),
             subtitle: const Text('Change the theme color of the app'),
@@ -49,6 +49,7 @@ class SettingsPage extends StatelessWidget {
             leading: const Icon(Icons.translate_rounded, size: 32),
             onTap: () {},
           ),
+          const SectionTitle(title: 'Custom'),
           ListTile(
             title: const Text('Set custom bilibili cookie for search'),
             subtitle: const Text(
@@ -90,10 +91,9 @@ class SettingsPage extends StatelessWidget {
                 'Use custom resolution for Huya, if you want to use a custom resolution',
             settingKey: 'use_custom_resolution_for_huya',
           ),
-          const SectionTitle(
-            title: 'Others',
-          ),
-          const About(),
+          const SectionTitle(title: 'About'),
+          CheckForUpdate(version: appVersion),
+          About(version: appVersion),
         ],
       ),
     );

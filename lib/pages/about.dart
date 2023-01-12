@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
   const About({
-    this.version = '0.9.2',
+    required this.version,
     Key? key,
   }) : super(key: key);
 
@@ -13,8 +13,11 @@ class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('About'),
-      leading: const Icon(Icons.info_outline_rounded),
+      title: const Text('About HotLive'),
+      leading: const Icon(
+        Icons.info_outline_rounded,
+        size: 32,
+      ),
       onTap: () {
         showAboutDialog(
           context: context,
@@ -27,7 +30,6 @@ class About extends StatelessWidget {
             ),
           ),
           children: [
-            CheckForUpdate(version: version),
             ListTile(
               title: const Text('Github'),
               leading: const Icon(
@@ -56,7 +58,8 @@ class CheckForUpdate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('Check for updates'),
+      title: const Text('Check Update'),
+      subtitle: Text('v$version'),
       leading: const Icon(
         Icons.file_upload_outlined,
         size: 32,
@@ -87,7 +90,6 @@ class CheckForUpdate extends StatelessWidget {
                           Navigator.pop(context);
                           _launchUrl(
                               'https://github.com/Jackiu1997/hot_live/releases');
-                          //launch(snapshot.data);
                         },
                       ),
                     ],
@@ -138,7 +140,10 @@ class CheckForUpdate extends StatelessWidget {
 
 Future<void> _launchUrl(_url) async {
   //print('launching $_url');
-  if (!await launchUrl(Uri.parse(_url))) {
+  if (!await launchUrl(
+    Uri.parse(_url),
+    mode: LaunchMode.externalApplication,
+  )) {
     throw 'Could not launch $_url';
   }
 }
