@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/model/liveroom.dart';
+import 'package:hot_live/model/livearea.dart';
+import 'package:hot_live/model/liveroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
-import 'package:ice_live_viewer/utils/linkparser.dart';
+import 'package:hot_live/utils/linkparser.dart';
 
 class DouyuApi {
   static Future<dynamic> _getJson(String url) async {

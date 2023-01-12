@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
-import 'package:ice_live_viewer/utils/dart_tars_protocol/tarscodec.dart';
+import 'package:hot_live/utils/dart_tars_protocol/tarscodec.dart';
 import 'package:web_socket_channel/io.dart';
 
 import 'danmaku_text.dart';

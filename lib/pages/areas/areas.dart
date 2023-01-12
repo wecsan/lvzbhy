@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/provider/areas_provider.dart';
-import 'package:ice_live_viewer/widgets/keepalivewrapper.dart';
-import 'package:ice_live_viewer/widgets/empty_view.dart';
+import 'package:hot_live/model/livearea.dart';
+import 'package:hot_live/provider/areas_provider.dart';
+import 'package:hot_live/widgets/keepalivewrapper.dart';
+import 'package:hot_live/widgets/empty_view.dart';
 import 'package:provider/provider.dart';
 
 import 'areas_room.dart';

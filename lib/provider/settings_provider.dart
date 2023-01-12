@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/utils/pref_util.dart';
+import 'package:hot_live/utils/pref_util.dart';
 
 class SettingsProvider with ChangeNotifier {
   SettingsProvider() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/pages/about.dart';
-import 'package:ice_live_viewer/provider/settings_provider.dart';
-import 'package:ice_live_viewer/provider/theme_provider.dart';
+import 'package:hot_live/pages/about.dart';
+import 'package:hot_live/provider/settings_provider.dart';
+import 'package:hot_live/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatelessWidget {

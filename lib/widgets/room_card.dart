@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/model/liveroom.dart';
-import 'package:ice_live_viewer/pages/live_play/live_play.dart';
-import 'package:ice_live_viewer/utils/http/httpapi.dart';
-import 'package:ice_live_viewer/widgets/keepalivewrapper.dart';
+import 'package:hot_live/model/liveroom.dart';
+import 'package:hot_live/pages/live_play/live_play.dart';
+import 'package:hot_live/utils/http/httpapi.dart';
+import 'package:hot_live/widgets/keepalivewrapper.dart';
 
 class RoomCard extends StatelessWidget {
   const RoomCard({

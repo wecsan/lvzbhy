@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
-import 'package:ice_live_viewer/model/liveroom.dart';
-import 'package:ice_live_viewer/provider/favorite_provider.dart';
-import 'package:ice_live_viewer/widgets/danmaku/danmaku_listview.dart';
+import 'package:hot_live/model/liveroom.dart';
+import 'package:hot_live/provider/favorite_provider.dart';
+import 'package:hot_live/widgets/danmaku/danmaku_listview.dart';
 import 'package:chewie/chewie.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';

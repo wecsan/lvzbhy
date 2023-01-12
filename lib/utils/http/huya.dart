@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/model/liveroom.dart';
-import 'package:ice_live_viewer/utils/pref_util.dart';
+import 'package:hot_live/model/livearea.dart';
+import 'package:hot_live/model/liveroom.dart';
+import 'package:hot_live/utils/pref_util.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
 

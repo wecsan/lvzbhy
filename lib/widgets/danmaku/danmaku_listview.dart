@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
-import 'package:ice_live_viewer/model/liveroom.dart';
+import 'package:hot_live/model/liveroom.dart';
 
 import 'bilibilianmaku.dart';
 import 'douyudanmaku.dart';

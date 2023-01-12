@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/pages/home.dart';
-import 'package:ice_live_viewer/provider/areas_provider.dart';
-import 'package:ice_live_viewer/provider/favorite_provider.dart';
-import 'package:ice_live_viewer/provider/popular_provider.dart';
-import 'package:ice_live_viewer/provider/settings_provider.dart';
-import 'package:ice_live_viewer/utils/pref_util.dart';
-import 'package:ice_live_viewer/utils/theme.dart';
-import 'package:ice_live_viewer/provider/theme_provider.dart';
+import 'package:hot_live/pages/home.dart';
+import 'package:hot_live/provider/areas_provider.dart';
+import 'package:hot_live/provider/favorite_provider.dart';
+import 'package:hot_live/provider/popular_provider.dart';
+import 'package:hot_live/provider/settings_provider.dart';
+import 'package:hot_live/utils/pref_util.dart';
+import 'package:hot_live/utils/theme.dart';
+import 'package:hot_live/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

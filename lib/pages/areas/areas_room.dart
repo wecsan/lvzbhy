@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/model/liveroom.dart';
-import 'package:ice_live_viewer/utils/http/httpapi.dart';
-import 'package:ice_live_viewer/widgets/onloading_footer.dart';
-import 'package:ice_live_viewer/widgets/room_card.dart';
+import 'package:hot_live/model/livearea.dart';
+import 'package:hot_live/model/liveroom.dart';
+import 'package:hot_live/utils/http/httpapi.dart';
+import 'package:hot_live/widgets/onloading_footer.dart';
+import 'package:hot_live/widgets/room_card.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AreasRoomPage extends StatefulWidget {

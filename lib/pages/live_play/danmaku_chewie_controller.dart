@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
-import 'package:ice_live_viewer/pages/live_play/danmaku_setting_view.dart';
-import 'package:ice_live_viewer/provider/settings_provider.dart';
-import 'package:ice_live_viewer/widgets/custom_icons.dart';
+import 'package:hot_live/pages/live_play/danmaku_setting_view.dart';
+import 'package:hot_live/provider/settings_provider.dart';
+import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/model/livearea.dart';
-import 'package:ice_live_viewer/utils/http/httpapi.dart';
+import 'package:hot_live/model/livearea.dart';
+import 'package:hot_live/utils/http/httpapi.dart';
 
 class AreasProvider with ChangeNotifier {
   AreasProvider() {

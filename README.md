@@ -49,6 +49,10 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 ## Problems
 
+### 解决中的问题
+
+- [ ] 大量弹幕时会有水平弹幕遮挡
+
 ### 部分链接无法播放
 
 - 对于部分IP，哔哩哔哩的`.flv`格式的直播流无法播放，尝试使用`.m3u8`格式的直播流
@@ -73,6 +77,7 @@ No user privacy is ever collected, the app directly requests the official interf
 
 ## Thanks
  - [ice_live_viewer](https://github.com/iiijam/ice_live_viewer)
+ - [JustLive-Api](https://github.com/guyijie1211/JustLive-Api)
  - [real-url](https://github.com/wbt5/real-url)
  - [dart_tars_protocol](https://github.com/xiaoyaocz/dart_tars_protocol)
  - [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/provider/settings_provider.dart';
+import 'package:hot_live/provider/settings_provider.dart';
 import 'package:provider/provider.dart';
 
 class DanmakuText extends StatelessWidget {

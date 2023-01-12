@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/utils/http/checkupdate.dart';
+import 'package:hot_live/utils/http/checkupdate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {

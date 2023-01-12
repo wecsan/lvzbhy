@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:ice_live_viewer/pages/areas/areas.dart';
-import 'package:ice_live_viewer/pages/favorite/favorite.dart';
-import 'package:ice_live_viewer/pages/popular/popular.dart';
-import 'package:ice_live_viewer/widgets/custom_icons.dart';
+import 'package:hot_live/pages/areas/areas.dart';
+import 'package:hot_live/pages/favorite/favorite.dart';
+import 'package:hot_live/pages/popular/popular.dart';
+import 'package:hot_live/widgets/custom_icons.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
