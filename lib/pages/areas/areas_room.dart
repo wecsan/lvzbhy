@@ -47,7 +47,12 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
     if (items.isEmpty) {
       _refreshController.loadFailed();
     } else {
-      roomsList.addAll(items);
+      for (var item in items) {
+        if (roomsList.indexWhere((e) => e.roomId == item.roomId) != -1) {
+          continue;
+        }
+        roomsList.add(item);
+      }
       _refreshController.loadComplete();
     }
     setState(() {});
