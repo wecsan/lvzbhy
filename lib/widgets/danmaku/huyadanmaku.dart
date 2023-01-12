@@ -88,7 +88,6 @@ class _HuyaDanmakuListViewState extends State<HuyaDanmakuListView>
     List danmaku = danmakuDecode(list);
     String nickname = danmaku[0];
     String message = danmaku[1];
-    //TODO: 屏蔽词功能
     if (message != '') {
       addDanmaku(LiveDanmakuItem(nickname, message));
     }

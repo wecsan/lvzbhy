@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/pages/about.dart';
+import 'package:ice_live_viewer/provider/settings_provider.dart';
 import 'package:ice_live_viewer/provider/theme_provider.dart';
-import 'package:ice_live_viewer/utils/prefs_helper.dart';
-import 'package:ice_live_viewer/utils/storage.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -12,6 +11,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SettingsProvider settings = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -56,7 +56,7 @@ class SettingsPage extends StatelessWidget {
               'Use custom cookie for bilibili search api, because bilibili search need cookie vaildation',
             ),
             onTap: () {
-              final cookie = PrefsHelper.getBilibiliCustomCookie();
+              final cookie = settings.bilibiliCustomCookie;
               final controller = TextEditingController(text: cookie);
               showDialog(
                 context: context,
@@ -75,7 +75,7 @@ class SettingsPage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        PrefsHelper.setBilibiliCustomCookie(controller.text);
+                        settings.bilibiliCustomCookie = controller.text;
                         return Navigator.pop(context);
                       },
                       child: const Text("Confirm"),
@@ -85,11 +85,15 @@ class SettingsPage extends StatelessWidget {
               );
             },
           ),
-          const SwitchTile(
-            title: 'Use custom resolution for Huya',
-            subtitle:
-                'Use custom resolution for Huya, if you want to use a custom resolution',
-            settingKey: 'use_custom_resolution_for_huya',
+          SwitchListTile(
+            title: const Text('Use custom resolution for Huya'),
+            subtitle: const Text(
+                'Use custom resolution for Huya, if you want to use a custom resolution'),
+            value: settings.useCustomResolutionForHuya,
+            activeColor: Provider.of<AppThemeProvider>(context).themeColor,
+            onChanged: (bool value) {
+              settings.useCustomResolutionForHuya = value;
+            },
           ),
           const SectionTitle(title: 'About'),
           CheckForUpdate(version: appVersion),
@@ -111,49 +115,5 @@ class SectionTitle extends StatelessWidget {
     return ListTile(
       title: Text(title, style: Theme.of(context).textTheme.headline2),
     );
-  }
-}
-
-class SwitchTile extends StatefulWidget {
-  const SwitchTile({
-    Key? key,
-    required this.title,
-    required this.subtitle,
-    required this.settingKey,
-  }) : super(key: key);
-
-  final String title;
-  final String subtitle;
-  final String settingKey;
-
-  @override
-  State<SwitchTile> createState() => _SwitchTileState();
-}
-
-class _SwitchTileState extends State<SwitchTile> {
-  bool? _toggled = false;
-
-  @override
-  void initState() {
-    getSwitchPref(widget.settingKey).then((value) {
-      _toggled = value;
-      setState(() {});
-    });
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SwitchListTile(
-        title: Text(widget.title),
-        subtitle: Text(widget.subtitle),
-        value: _toggled!,
-        activeColor: Provider.of<AppThemeProvider>(context).themeColor,
-        onChanged: (bool value) {
-          switchPref(widget.settingKey);
-          setState(() {
-            _toggled = value;
-          });
-        });
   }
 }

@@ -5,11 +5,11 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:ice_live_viewer/model/livearea.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
-import 'package:ice_live_viewer/utils/prefs_helper.dart';
+import 'package:ice_live_viewer/utils/pref_util.dart';
 
 class BilibiliApi {
   static Future<dynamic> _getJson(String url) async {
-    final cookie = PrefsHelper.getBilibiliCustomCookie();
+    final cookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     Map<String, String> _headers = {
       'User-Agent':
           'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Mobile Safari/537.36 Edg/108.0.1462.76'

@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/utils/http/httpapi.dart';
-import 'package:ice_live_viewer/utils/prefs_helper.dart';
+import 'package:ice_live_viewer/utils/pref_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FavoriteProvider with ChangeNotifier {
   FavoriteProvider() {
     onRefresh();
   }
+
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
@@ -21,11 +22,19 @@ class FavoriteProvider with ChangeNotifier {
   get isHideOffline => _isHideOffline;
 
   void _getRoomsFromPrefs() {
-    var prefs = PrefsHelper.getFavoriteRoomsPref();
+    List<String> prefs = PrefUtil.getStringList('favorites') ?? [];
     for (var item in prefs) {
       RoomInfo singleRoom = RoomInfo.fromJson(jsonDecode(item));
       _roomsList.add(singleRoom);
     }
+  }
+
+  void _saveRoomsToPrefs() {
+    var roomJsons = <String>[];
+    for (var element in _roomsList) {
+      roomJsons.add(jsonEncode(element.toJson()));
+    }
+    PrefUtil.setStringList('favorites', roomJsons);
   }
 
   void _getRoomsInfoFromApi() async {
@@ -44,10 +53,6 @@ class FavoriteProvider with ChangeNotifier {
     _roomsList.clear();
     _getRoomsFromPrefs();
     _getRoomsInfoFromApi();
-  }
-
-  void _saveRoomsToPrefs() {
-    PrefsHelper.setFavoriteRoomsPref(_roomsList);
   }
 
   bool isFavorite(String roomId) {

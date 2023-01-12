@@ -1,28 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ice_live_viewer/utils/pref_util.dart';
 
 class SettingsProvider with ChangeNotifier {
   SettingsProvider() {
-    load();
+    _loadFromPref();
   }
 
-  late SharedPreferences prefs;
-
-  void load() async {
-    prefs = await SharedPreferences.getInstance();
-    _danmakuArea = prefs.getDouble('danmakuArea') ?? 0.5;
-    _danmakuSpeed = prefs.getDouble('danmakuSpeed') ?? 8;
-    _danmakuFontBorder = prefs.getDouble('danmakuFontBorder') ?? 0.8;
-    _danmakuFontSize = prefs.getDouble('danmakuFontSize') ?? 16;
-    _danmakuOpcity = prefs.getDouble('danmakuOpcity') ?? 1.0;
+  void _loadFromPref() async {
+    _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
+    _useCustomResolutionForHuya =
+        PrefUtil.getBool('useCustomResolutionForHuya') ?? false;
+    _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
+    _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
+    _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.8;
+    _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
+    _danmakuOpcity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
   }
 
-  void save() {
-    prefs.setDouble('danmakuArea', _danmakuArea);
-    prefs.setDouble('danmakuSpeed', _danmakuSpeed);
-    prefs.setDouble('danmakuFontBorder', _danmakuFontBorder);
-    prefs.setDouble('danmakuFontSize', _danmakuFontSize);
-    prefs.setDouble('danmakuOpcity', _danmakuOpcity);
+  void _saveToPref() {
+    PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
+    PrefUtil.setBool('useCustomResolutionForHuya', _useCustomResolutionForHuya);
+    PrefUtil.setDouble('danmakuArea', _danmakuArea);
+    PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
+    PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
+    PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
+    PrefUtil.setDouble('danmakuOpcity', _danmakuOpcity);
+  }
+
+  // Theme settings
+
+  // Custom settings
+  String _bilibiliCustomCookie = '';
+  String get bilibiliCustomCookie => _bilibiliCustomCookie;
+  set bilibiliCustomCookie(value) {
+    _bilibiliCustomCookie = value;
+    _saveToPref();
+    notifyListeners();
+  }
+
+  bool _useCustomResolutionForHuya = false;
+  bool get useCustomResolutionForHuya => _useCustomResolutionForHuya;
+  set useCustomResolutionForHuya(value) {
+    _useCustomResolutionForHuya = value;
+    _saveToPref();
+    notifyListeners();
   }
 
   // Danmaku settings
@@ -36,7 +57,7 @@ class SettingsProvider with ChangeNotifier {
   set danmakuArea(value) {
     if (value < 0 || value > 1) return;
     _danmakuArea = value;
-    save();
+    _saveToPref();
     notifyListeners();
   }
 
@@ -44,7 +65,7 @@ class SettingsProvider with ChangeNotifier {
   set danmakuSpeed(value) {
     if (value < 1 || value > 20) return;
     _danmakuSpeed = value;
-    save();
+    _saveToPref();
     notifyListeners();
   }
 
@@ -52,7 +73,7 @@ class SettingsProvider with ChangeNotifier {
   set danmakuFontBorder(value) {
     if (value < 0 || value > 5) return;
     _danmakuFontBorder = value;
-    save();
+    _saveToPref();
     notifyListeners();
   }
 
@@ -60,7 +81,7 @@ class SettingsProvider with ChangeNotifier {
   set danmakuFontSize(value) {
     if (value < 10 || value > 30) return;
     _danmakuFontSize = value;
-    save();
+    _saveToPref();
     notifyListeners();
   }
 
@@ -68,7 +89,7 @@ class SettingsProvider with ChangeNotifier {
   set danmakuOpcity(value) {
     if (value < 0 || value > 1) return;
     _danmakuOpcity = value;
-    save();
+    _saveToPref();
     notifyListeners();
   }
 }

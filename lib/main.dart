@@ -4,7 +4,7 @@ import 'package:ice_live_viewer/provider/areas_provider.dart';
 import 'package:ice_live_viewer/provider/favorite_provider.dart';
 import 'package:ice_live_viewer/provider/popular_provider.dart';
 import 'package:ice_live_viewer/provider/settings_provider.dart';
-import 'package:ice_live_viewer/utils/prefs_helper.dart';
+import 'package:ice_live_viewer/utils/pref_util.dart';
 import 'package:ice_live_viewer/utils/theme.dart';
 import 'package:ice_live_viewer/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PrefsHelper.prefs = await SharedPreferences.getInstance();
+  PrefUtil.prefs = await SharedPreferences.getInstance();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(

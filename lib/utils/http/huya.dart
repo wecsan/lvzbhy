@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:ice_live_viewer/model/livearea.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
-import 'package:ice_live_viewer/utils/prefs_helper.dart';
+import 'package:ice_live_viewer/utils/pref_util.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
 
@@ -57,7 +57,8 @@ class HuyaApi {
       dynamic response = await _getJson(url);
       if (response["status"] == 200) {
         dynamic roomInfo = response['data'];
-        bool useCustomResolution = PrefsHelper.getUseCustomResolutionPref();
+        bool useCustomResolution =
+            PrefUtil.getBool('useCustomResolutionForHuya') ?? false;
         Map streamDict = roomInfo['stream']['flv'];
         List multiLine = streamDict['multiLine'];
         List rateArray = streamDict['rateArray'];

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ice_live_viewer/utils/prefs_helper.dart';
+import 'package:ice_live_viewer/utils/pref_util.dart';
 
 class AppThemeProvider extends ChangeNotifier {
   AppThemeProvider() {
-    changeThemeColor(PrefsHelper.getThemeColorPrefIndex());
-    changeThemeMode(PrefsHelper.getThemeModePrefIndex());
+    changeThemeColor(PrefUtil.getInt('theme_color') ?? 0);
+    changeThemeMode(PrefUtil.getInt('theme_mode') ?? 0);
   }
 
   static Map<String, ThemeMode> themeModes = {
@@ -21,7 +21,7 @@ class AppThemeProvider extends ChangeNotifier {
     _themeMode = AppThemeProvider.themeModes.values.toList()[index];
     _themeModeName = AppThemeProvider.themeModes.keys.toList()[index];
     notifyListeners();
-    PrefsHelper.setThemeModePrefIndex(index);
+    PrefUtil.setInt('theme_mode', index);
   }
 
   void showThemeModeSelectorDialog(BuildContext context) {
@@ -76,7 +76,7 @@ class AppThemeProvider extends ChangeNotifier {
     _themeColor = AppThemeProvider.themeColors.values.toList()[index];
     _themeColorName = AppThemeProvider.themeColors.keys.toList()[index];
     notifyListeners();
-    PrefsHelper.setThemeColorPrefIndex(index);
+    PrefUtil.setInt('theme_color', index);
   }
 
   List<Widget> _createThemeColorSelectorWidget(BuildContext context) {
@@ -92,7 +92,6 @@ class AppThemeProvider extends ChangeNotifier {
           changeThemeColor(
               AppThemeProvider.themeColors.keys.toList().indexOf(item));
           Navigator.of(context).pop();
-          //Navigator.of(context).pop();
         },
       ));
     }

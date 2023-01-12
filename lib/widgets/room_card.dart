@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/pages/live_play/live_play.dart';
 import 'package:ice_live_viewer/utils/http/httpapi.dart';
-import 'package:ice_live_viewer/utils/keepalivewrapper.dart';
+import 'package:ice_live_viewer/widgets/keepalivewrapper.dart';
 
 class RoomCard extends StatelessWidget {
   const RoomCard({
