@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/pages/live_play/live_play.dart';
@@ -149,8 +150,9 @@ class OwnerCard extends StatelessWidget {
       child: ListTile(
         onTap: () => _onTap(context),
         leading: CircleAvatar(
-          foregroundImage:
-              (room.avatar == '') ? null : NetworkImage(room.avatar),
+          foregroundImage: room.avatar.isNotEmpty
+              ? CachedNetworkImageProvider(room.avatar)
+              : null,
           radius: 20,
           backgroundColor: Theme.of(context).disabledColor,
         ),
@@ -164,10 +166,6 @@ class OwnerCard extends StatelessWidget {
           maxLines: 1,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
-        // trailing: Text(
-        //   room.platform,
-        //   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-        // ),
         trailing: favoritePod.isFavorite(room.roomId)
             ? ElevatedButton(
                 onPressed: () => favoritePod.removeRoom(room),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_live_viewer/model/liveroom.dart';
 import 'package:ice_live_viewer/pages/live_play/live_play.dart';
@@ -74,10 +75,10 @@ class RoomCard extends StatelessWidget {
                   color: Theme.of(context).focusColor,
                   elevation: 0,
                   child: room.liveStatus.name == 'live'
-                      ? Image.network(
-                          room.cover,
+                      ? CachedNetworkImage(
+                          imageUrl: room.cover,
                           fit: BoxFit.fill,
-                          errorBuilder: (context, error, stackTrace) =>
+                          errorWidget: (context, error, stackTrace) =>
                               const Center(
                             child: Icon(Icons.live_tv_rounded, size: 48),
                           ),
@@ -102,8 +103,9 @@ class RoomCard extends StatelessWidget {
                   dense ? const EdgeInsets.only(left: 8, right: 10) : null,
               horizontalTitleGap: dense ? 8 : null,
               leading: CircleAvatar(
-                foregroundImage:
-                    (room.avatar == '') ? null : NetworkImage(room.avatar),
+                foregroundImage: room.avatar.isNotEmpty
+                    ? CachedNetworkImageProvider(room.avatar)
+                    : null,
                 radius: 20,
                 backgroundColor: Theme.of(context).disabledColor,
               ),

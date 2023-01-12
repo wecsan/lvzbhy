@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ice_live_viewer/model/livearea.dart';
@@ -177,10 +178,10 @@ class AreaCard extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 color: Theme.of(context).focusColor,
                 elevation: 0,
-                child: Image.network(
-                  area.areaPic,
+                child: CachedNetworkImage(
+                  imageUrl: area.areaPic,
                   fit: BoxFit.fill,
-                  errorBuilder: (context, error, stackTrace) => const Center(
+                  errorWidget: (context, error, stackTrace) => const Center(
                     child: Text(
                       'Cover\nNot Found',
                       textAlign: TextAlign.center,
