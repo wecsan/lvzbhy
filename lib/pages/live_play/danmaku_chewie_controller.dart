@@ -4,12 +4,31 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
-import 'package:hot_live/pages/live_play/danmaku_listview.dart';
 import 'package:hot_live/pages/live_play/danmaku_setting_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+
+class DanmakuText extends StatelessWidget {
+  const DanmakuText({Key? key, required this.message}) : super(key: key);
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    SettingsProvider settings = Provider.of<SettingsProvider>(context);
+
+    return Text(
+      message,
+      style: TextStyle(
+        fontSize: settings.danmakuFontSize,
+        fontWeight: FontWeight.w400,
+        color: Colors.white.withOpacity(settings.danmakuOpcity),
+      ),
+    );
+  }
+}
 
 class DanmakuChewieControllers extends StatefulWidget {
   const DanmakuChewieControllers({Key? key, required this.danmakuStream})

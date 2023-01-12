@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
+import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_listview.dart';
@@ -20,35 +21,44 @@ class LivePlayPage extends StatefulWidget {
 }
 
 class _LivePlayPageState extends State<LivePlayPage> {
-  late VideoPlayerController videoController;
-  late ChewieController chewieController;
-  late DanmakuStream danmakuStream;
+  VideoPlayerController? videoController;
+  ChewieController? chewieController;
+  DanmakuStream? danmakuStream;
 
-  late String title;
-  late Map<dynamic, dynamic> cdnMultiLink;
+  String errorInfo = '';
+  Map<dynamic, dynamic> streamList = {};
 
   @override
   void initState() {
     super.initState();
-
-    title = widget.room.title;
-    cdnMultiLink = widget.room.cdnMultiLink;
-
-    // 设置弹幕监控流
-    danmakuStream = DanmakuStream(room: widget.room);
-    _initVideoController(cdnMultiLink.values.toList()[0].values.toList()[0]);
+    initLive();
   }
 
-  void _initVideoController(String url, {bool swap = false}) {
-    if (swap) videoController.dispose();
+  void initLive() async {
+    streamList = await LiveApi.getRoomStreamLink(widget.room);
+    if (streamList.isNotEmpty) {
+      // 设置弹幕监控流
+      danmakuStream = DanmakuStream(room: widget.room);
+      // 设置直播视频流
+      _changeLiveStream(
+        streamList.values.toList().first.values.toList().first,
+      );
+    } else {
+      errorInfo = 'Get Live Stream Failed';
+    }
+    setState(() {});
+  }
+
+  void _changeLiveStream(String url, {bool swap = false}) {
+    if (swap) videoController?.dispose();
     videoController = VideoPlayerController.network(url)
       ..initialize().then(
         (_) {
-          if (swap) chewieController.dispose();
+          if (swap) chewieController?.dispose();
           chewieController = ChewieController(
-            videoPlayerController: videoController,
+            videoPlayerController: videoController!,
             customControls: DanmakuChewieControllers(
-              danmakuStream: danmakuStream,
+              danmakuStream: danmakuStream!,
             ),
             autoPlay: true,
             isLive: true,
@@ -60,27 +70,24 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   void dispose() {
-    chewieController.dispose();
-    videoController.dispose();
-    danmakuStream.dispose();
     super.dispose();
+    chewieController?.dispose();
+    videoController?.dispose();
+    danmakuStream?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    FavoriteProvider favoritePod = Provider.of<FavoriteProvider>(context);
+    FavoriteProvider favoriteProvider = Provider.of<FavoriteProvider>(context);
     Wakelock.enable();
 
-    final resolutionBtns = [];
-    cdnMultiLink.forEach(((key, value) {
-      resolutionBtns.add(
+    final streamButtons = [];
+    streamList.forEach((key, value) {
+      streamButtons.add(
         PopupMenuButton(
           iconSize: 24,
-          icon: Text(
-            key,
-            style: Theme.of(context).textTheme.labelSmall,
-          ),
-          onSelected: (String link) => _initVideoController(link, swap: true),
+          icon: Text(key, style: Theme.of(context).textTheme.labelSmall),
+          onSelected: (String link) => _changeLiveStream(link, swap: true),
           itemBuilder: (context) {
             final menuList = <PopupMenuItem<String>>[];
             value.forEach((k, v) {
@@ -93,11 +100,11 @@ class _LivePlayPageState extends State<LivePlayPage> {
           },
         ),
       );
-    }));
+    });
 
     return WillPopScope(
       onWillPop: () async {
-        videoController.pause();
+        videoController?.pause();
         Wakelock.disable();
         return true;
       },
@@ -110,19 +117,22 @@ class _LivePlayPageState extends State<LivePlayPage> {
               Wakelock.disable();
             },
           ),
-          title: Text(title),
+          title: Text(widget.room.title),
         ),
         body: SafeArea(
           child: Column(
             children: <Widget>[
               AspectRatio(
                 aspectRatio: 16 / 9,
-                child: videoController.value.isInitialized
+                child: videoController?.value.isInitialized ?? false
                     ? Container(
-                        child: Chewie(controller: chewieController),
+                        child: Chewie(controller: chewieController!),
                         color: Colors.black,
                       )
-                    : Container(color: Colors.black),
+                    : Container(
+                        color: Colors.black,
+                        child: Center(child: Text(errorInfo)),
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
@@ -130,20 +140,23 @@ class _LivePlayPageState extends State<LivePlayPage> {
                   children: [
                     const Icon(Icons.video_library_rounded, size: 20),
                     const Spacer(),
-                    ...resolutionBtns,
+                    const IconButton(onPressed: null, icon: Text('')),
+                    ...streamButtons,
                   ],
                 ),
               ),
               const Divider(height: 1),
               Expanded(
-                child: DanmakuListView(
-                  room: widget.room,
-                  danmakuStream: danmakuStream,
-                ),
+                child: danmakuStream != null
+                    ? DanmakuListView(
+                        room: widget.room,
+                        danmakuStream: danmakuStream!,
+                      )
+                    : Container(),
               ),
               OwnerListTile(
                 room: widget.room,
-                favoritePod: favoritePod,
+                favoriteProvider: favoriteProvider,
               ),
             ],
           ),
@@ -157,11 +170,11 @@ class OwnerListTile extends StatelessWidget {
   const OwnerListTile({
     Key? key,
     required this.room,
-    required this.favoritePod,
+    required this.favoriteProvider,
   }) : super(key: key);
 
   final RoomInfo room;
-  final FavoriteProvider favoritePod;
+  final FavoriteProvider favoriteProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -181,16 +194,16 @@ class OwnerListTile extends StatelessWidget {
         maxLines: 1,
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
-      trailing: favoritePod.isFavorite(room.roomId)
+      trailing: favoriteProvider.isFavorite(room.roomId)
           ? ElevatedButton(
               onPressed: () {
-                favoritePod.removeRoom(room);
+                favoriteProvider.removeRoom(room);
               },
               child: Text('Followed', style: followedStyle),
             )
           : ElevatedButton(
               onPressed: () {
-                favoritePod.addRoom(room);
+                favoriteProvider.addRoom(room);
               },
               child: const Text('Follow'),
             ),

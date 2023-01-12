@@ -21,7 +21,6 @@ class HuyaDanmaku {
   int totleTime = 0;
 
   void dispose() {
-    controller.close();
     timer?.cancel();
     _channel?.sink.close();
   }

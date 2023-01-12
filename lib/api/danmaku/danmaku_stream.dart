@@ -43,7 +43,7 @@ class DanmakuStream {
   }
 
   void dispose() {
-    _damakuStream.dispose();
     _controller.close();
+    _damakuStream.dispose();
   }
 }

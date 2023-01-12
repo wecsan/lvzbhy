@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/api/liveapi.dart';
+import 'package:hot_live/widgets/empty_view.dart';
 import 'package:hot_live/widgets/onloading_footer.dart';
 import 'package:hot_live/widgets/room_card.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -84,40 +85,11 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
                 itemBuilder: (context, index) =>
                     RoomCard(room: roomsList[index], dense: true),
               )
-            : const RoomEmptyView(),
-      ),
-    );
-  }
-}
-
-class RoomEmptyView extends StatelessWidget {
-  const RoomEmptyView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.live_tv_rounded,
-            size: 144,
-            color: Theme.of(context).disabledColor,
-          ),
-          const SizedBox(height: 32),
-          Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                    text: "No Live Found\n\n",
-                    style: Theme.of(context).textTheme.headlineLarge),
-                TextSpan(
-                    text: "Drag page to refresh data",
-                    style: Theme.of(context).textTheme.headline3),
-              ]),
-              textAlign: TextAlign.center),
-        ],
+            : const EmptyView(
+                icon: Icons.live_tv_rounded,
+                title: 'No Live Found',
+                subtitle: 'Drag page to refresh data',
+              ),
       ),
     );
   }

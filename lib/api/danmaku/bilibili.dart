@@ -26,7 +26,6 @@ class BilibiliDanmaku {
   BiliBiliHostServerConfig? config;
 
   void dispose() {
-    controller.close();
     timer?.cancel();
     _channel?.sink.close();
   }
