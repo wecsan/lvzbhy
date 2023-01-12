@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
-import 'package:hot_live/widgets/danmaku/danmaku_listview.dart';
+import 'package:hot_live/pages/live_play/danmaku_listview.dart';
 import 'package:chewie/chewie.dart';
+import 'package:hot_live/utils/danmaku/danmaku_stream.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
@@ -22,7 +23,8 @@ class LivePlayPage extends StatefulWidget {
 class _LivePlayPageState extends State<LivePlayPage> {
   late VideoPlayerController videoController;
   late ChewieController chewieController;
-  late BarrageWallController danmakuContoller;
+  late DanmakuStream danmakuStream;
+  late BarrageWallController barrageWallController;
 
   late String title;
   late Map<dynamic, dynamic> cdnMultiLink;
@@ -34,7 +36,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
     title = widget.room.title;
     cdnMultiLink = widget.room.cdnMultiLink;
 
-    danmakuContoller = BarrageWallController();
+    // 设置弹幕监控流
+    danmakuStream = DanmakuStream(room: widget.room);
+    barrageWallController = BarrageWallController();
     _initVideoController(cdnMultiLink.values.toList()[0].values.toList()[0]);
   }
 
@@ -47,7 +51,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
           chewieController = ChewieController(
             videoPlayerController: videoController,
             customControls: DanmakuChewieControllers(
-              danmakuContoller: danmakuContoller,
+              danmakuContoller: barrageWallController,
             ),
             autoPlay: true,
             isLive: true,
@@ -60,8 +64,10 @@ class _LivePlayPageState extends State<LivePlayPage> {
   @override
   void dispose() {
     super.dispose();
-    videoController.dispose();
     chewieController.dispose();
+    videoController.dispose();
+    barrageWallController.dispose();
+    danmakuStream.dispose();
   }
 
   @override
@@ -136,7 +142,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
               Expanded(
                 child: DanmakuListView(
                   room: widget.room,
-                  danmakuContoller: danmakuContoller,
+                  danmakuStream: danmakuStream,
+                  barrageWallController: barrageWallController,
                 ),
               ),
               OwnerListTile(
