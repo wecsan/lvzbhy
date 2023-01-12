@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/live_play.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
-import 'package:hot_live/utils/http/httpapi.dart';
+import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/widgets/empty_view.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +35,7 @@ class _SearchPageState extends State<SearchPage> {
   void _onSearch(String key) async {
     ownerList.clear();
     for (var plat in platforms) {
-      var items = await HttpApi.search(plat, key, isLive: isLive);
+      var items = await LiveApi.search(plat, key, isLive: isLive);
       ownerList.addAll(items);
     }
     setState(() {});
@@ -108,8 +108,8 @@ class OwnerCard extends StatelessWidget {
   final FavoriteProvider favoritePod;
 
   void _onTap(BuildContext context) async {
-    final fullRoom = await HttpApi.getRoomInfo(room);
-    fullRoom.cdnMultiLink = await HttpApi.getRoomStreamLink(room);
+    final fullRoom = await LiveApi.getRoomInfo(room);
+    fullRoom.cdnMultiLink = await LiveApi.getRoomStreamLink(room);
     String info = '';
     if (room.liveStatus == LiveStatus.live) {
       if (room.cdnMultiLink.isEmpty) {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/provider/areas_provider.dart';
-import 'package:hot_live/widgets/keepalivewrapper.dart';
+import 'package:hot_live/widgets/keep_alive_wrapper.dart';
 import 'package:hot_live/widgets/empty_view.dart';
 import 'package:provider/provider.dart';
 

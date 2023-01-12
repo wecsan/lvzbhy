@@ -1,11 +1,12 @@
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
-import 'package:hot_live/utils/http/bilibili.dart';
-import 'package:hot_live/utils/http/douyu.dart';
-import 'package:hot_live/utils/http/huya.dart';
+
+import 'bilibili.dart';
+import 'douyu.dart';
+import 'huya.dart';
 
 ///the api interface
-class HttpApi {
+class LiveApi {
   static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) {
     switch (room.platform) {
       case "bilibili":

@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/live_play.dart';
-import 'package:hot_live/utils/http/httpapi.dart';
-import 'package:hot_live/widgets/keepalivewrapper.dart';
+import 'package:hot_live/api/liveapi.dart';
+import 'package:hot_live/widgets/keep_alive_wrapper.dart';
 
 class RoomCard extends StatelessWidget {
   const RoomCard({
@@ -18,7 +18,7 @@ class RoomCard extends StatelessWidget {
   final bool dense;
 
   void onTap(BuildContext context) async {
-    room.cdnMultiLink = await HttpApi.getRoomStreamLink(room);
+    room.cdnMultiLink = await LiveApi.getRoomStreamLink(room);
     String info = '';
     if (room.liveStatus == LiveStatus.live) {
       if (room.cdnMultiLink.isEmpty) {

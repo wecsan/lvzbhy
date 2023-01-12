@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
-import 'package:hot_live/utils/http/httpapi.dart';
+import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/widgets/onloading_footer.dart';
 import 'package:hot_live/widgets/room_card.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -30,7 +30,7 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
 
   void _onRefresh() async {
     pageIndex = 0;
-    final items = await HttpApi.getAreaRooms(widget.area, page: pageIndex);
+    final items = await LiveApi.getAreaRooms(widget.area, page: pageIndex);
     if (items.isEmpty) {
       _refreshController.refreshFailed();
     } else {
@@ -43,7 +43,7 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
 
   void _onLoading() async {
     pageIndex++;
-    final items = await HttpApi.getAreaRooms(widget.area, page: pageIndex);
+    final items = await LiveApi.getAreaRooms(widget.area, page: pageIndex);
     if (items.isEmpty) {
       _refreshController.loadFailed();
     } else {

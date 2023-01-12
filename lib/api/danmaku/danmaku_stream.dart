@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hot_live/model/danmaku.dart';
 import 'package:hot_live/model/liveroom.dart';
-import 'package:hot_live/utils/danmaku/bilibili_danmaku.dart';
-import 'package:hot_live/utils/danmaku/douyu_danmaku.dart';
-import 'package:hot_live/utils/danmaku/huya_danmaku.dart';
+
+import 'bilibili.dart';
+import 'douyu.dart';
+import 'huya.dart';
 
 class DanmakuStream with ChangeNotifier {
   final RoomInfo room;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/livearea.dart';
-import 'package:hot_live/utils/http/httpapi.dart';
+import 'package:hot_live/api/liveapi.dart';
 
 class AreasProvider with ChangeNotifier {
   AreasProvider() {
@@ -29,7 +29,7 @@ class AreasProvider with ChangeNotifier {
 
   void onLoading() async {
     for (var plat in platforms) {
-      areaMap[plat] = await HttpApi.getAreaList(plat);
+      areaMap[plat] = await LiveApi.getAreaList(plat);
       for (var list in areaMap[plat]!) {
         labelMap[plat]!.add(list[0].typeName);
       }

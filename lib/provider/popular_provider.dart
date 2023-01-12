@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/liveroom.dart';
-import 'package:hot_live/utils/http/httpapi.dart';
+import 'package:hot_live/api/liveapi.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PopularProvider with ChangeNotifier {
@@ -36,14 +36,14 @@ class PopularProvider with ChangeNotifier {
 
   void initRefresh() async {
     for (var plat in platforms) {
-      roomsMap[plat] = await HttpApi.getRecommend(plat, page: 0);
+      roomsMap[plat] = await LiveApi.getRecommend(plat, page: 0);
     }
     notifyListeners();
   }
 
   void onRefresh() async {
     page = 0;
-    roomList = await HttpApi.getRecommend(platform, page: page);
+    roomList = await LiveApi.getRecommend(platform, page: page);
     if (roomList.isEmpty) {
       refreshController.refreshFailed();
     } else {
@@ -54,7 +54,7 @@ class PopularProvider with ChangeNotifier {
 
   void onLoading() async {
     page++;
-    final items = await HttpApi.getRecommend(platform, page: page);
+    final items = await LiveApi.getRecommend(platform, page: page);
     if (items.isEmpty) {
       refreshController.loadFailed();
     } else {

@@ -1,5 +1,3 @@
-import 'package:hot_live/utils/linkparser.dart';
-
 enum LiveStatus { live, offline, replay, unknown }
 
 enum Platform { huya, bilibili, douyu, unknown }
@@ -39,11 +37,6 @@ class RoomInfo {
         'platform': platform,
         'liveStatus': liveStatus.index
       };
-
-  RoomInfo.fromLink(String rawLink)
-      : link = rawLink,
-        platform = LinkParser.checkType(rawLink),
-        roomId = LinkParser.getRoomId(rawLink);
 
   @override
   String toString() =>

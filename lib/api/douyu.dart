@@ -3,7 +3,6 @@ import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
-import 'package:hot_live/utils/linkparser.dart';
 
 class DouyuApi {
   static Future<dynamic> _getJson(String url) async {
@@ -59,8 +58,25 @@ class DouyuApi {
     }
   }
 
+  /// Parses a link and returns its id.
+  static String getRoomId(String url) {
+    String path = url.split("/").last;
+    if (url.contains('topic')) {
+      RegExpMatch? match = RegExp(r'[?&]rid=([^&#]+)').firstMatch(url);
+      String? key = match?.group(1);
+      return key!;
+    } else {
+      for (var i = 0; i < path.length; i++) {
+        if (path[i] == "?") {
+          return path.substring(0, i);
+        }
+      }
+    }
+    return path;
+  }
+
   static Future<String> verifyLink(String link) async {
-    return fixErrorroomId(LinkParser.getRoomId(link));
+    return fixErrorroomId(getRoomId(link));
   }
 
   static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) async {

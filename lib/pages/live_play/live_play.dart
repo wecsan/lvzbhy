@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
+import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_listview.dart';
 import 'package:chewie/chewie.dart';
-import 'package:hot_live/utils/danmaku/danmaku_stream.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';

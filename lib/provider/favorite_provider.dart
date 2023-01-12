@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/liveroom.dart';
-import 'package:hot_live/utils/http/httpapi.dart';
+import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/utils/pref_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -40,7 +40,7 @@ class FavoriteProvider with ChangeNotifier {
   void _getRoomsInfoFromApi() async {
     _onlineRoomList.clear();
     for (int i = 0; i < _roomsList.length; i++) {
-      _roomsList[i] = await HttpApi.getRoomInfo(_roomsList[i]);
+      _roomsList[i] = await LiveApi.getRoomInfo(_roomsList[i]);
       if (_roomsList[i].liveStatus == LiveStatus.live) {
         _onlineRoomList.add(_roomsList[i]);
       }
@@ -59,15 +59,9 @@ class FavoriteProvider with ChangeNotifier {
     return _roomsList.indexWhere((e) => e.roomId == roomId) != -1;
   }
 
-  void addRoomLink(String link) async {
-    RoomInfo singleRoom = RoomInfo.fromLink(link);
-    singleRoom = await HttpApi.getRoomInfo(singleRoom);
-    addRoom(singleRoom);
-  }
-
   void addRoom(RoomInfo room) async {
     if (room.title.isEmpty || room.cover.isEmpty) {
-      room = await HttpApi.getRoomInfo(room);
+      room = await LiveApi.getRoomInfo(room);
     }
 
     final idx = _roomsList.indexWhere((e) => e.roomId == room.roomId);
