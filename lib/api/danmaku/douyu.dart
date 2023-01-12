@@ -2,41 +2,38 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:hot_live/model/danmaku.dart';
 import 'package:web_socket_channel/io.dart';
 
-class DouyuDanmakuSteam with ChangeNotifier {
-  DouyuDanmakuSteam({
+class DouyuDanmaku {
+  final int danmakuId;
+  final StreamController<DanmakuInfo> controller;
+
+  DouyuDanmaku({
     required this.danmakuId,
+    required this.controller,
   }) {
     initLive();
   }
 
-  final int danmakuId;
   Timer? timer;
   IOWebSocketChannel? _channel;
   int totleTime = 0;
 
-  /// ----- danmaku output stream ------
-  final StreamController<DanmakuInfo> damakuSteam = StreamController();
-
-  void setDanmakuListener(void Function(DanmakuInfo)? listener) {
-    damakuSteam.stream.listen(listener);
-  }
-
-  @override
   void dispose() {
-    damakuSteam.close();
+    controller.close();
     timer?.cancel();
     _channel?.sink.close();
-    super.dispose();
   }
 
   void initLive() {
     _channel = IOWebSocketChannel.connect("wss://danmuproxy.douyu.com:8506");
     login();
-    setListener();
+    // 设置监听
+    _channel!.stream.listen((msg) {
+      Uint8List list = Uint8List.fromList(msg);
+      decode(list);
+    });
     timer = Timer.periodic(const Duration(seconds: 45), (callback) {
       totleTime += 45;
       heartBeat();
@@ -48,14 +45,6 @@ class DouyuDanmakuSteam with ChangeNotifier {
   void heartBeat() {
     String heartbeat = 'type@=mrkl/';
     _channel!.sink.add(encode(heartbeat));
-  }
-
-  /// 设置监听
-  void setListener() {
-    _channel!.stream.listen((msg) {
-      Uint8List list = Uint8List.fromList(msg);
-      decode(list);
-    });
   }
 
   void login() {
@@ -111,7 +100,7 @@ class DouyuDanmakuSteam with ChangeNotifier {
         var content = byteDatas
             .substring(byteDatas.indexOf("txt@="), byteDatas.indexOf("/cid"))
             .replaceAll("txt@=", "");
-        damakuSteam.add(DanmakuInfo(nickname, content));
+        controller.add(DanmakuInfo(nickname, content));
       }
     }
   }

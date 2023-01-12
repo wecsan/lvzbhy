@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
 import 'package:hot_live/model/danmaku.dart';
 import 'package:hot_live/model/liveroom.dart';
 
@@ -6,31 +7,43 @@ import 'bilibili.dart';
 import 'douyu.dart';
 import 'huya.dart';
 
-class DanmakuStream with ChangeNotifier {
+class DanmakuStream {
   final RoomInfo room;
-  late final dynamic _damakuSteam;
+  final StreamController<DanmakuInfo> _controller =
+      StreamController.broadcast(sync: true);
+  late final dynamic _damakuStream;
+
+  Stream<DanmakuInfo> get stream => _controller.stream;
 
   DanmakuStream({required this.room}) {
     switch (room.platform) {
       case 'bilibili':
-        _damakuSteam = BilibiliDanmakuStream(danmakuId: int.parse(room.roomId));
+        _damakuStream = BilibiliDanmaku(
+          danmakuId: int.parse(room.roomId),
+          controller: _controller,
+        );
         break;
       case 'douyu':
-        _damakuSteam = DouyuDanmakuSteam(danmakuId: int.parse(room.roomId));
+        _damakuStream = DouyuDanmaku(
+          danmakuId: int.parse(room.roomId),
+          controller: _controller,
+        );
         break;
       case 'huya':
-        _damakuSteam = HuyaDanmakuStream(danmakuId: room.huyaDanmakuId);
+        _damakuStream = HuyaDanmaku(
+          danmakuId: room.huyaDanmakuId,
+          controller: _controller,
+        );
         break;
     }
   }
 
-  void setDanmakuListener(void Function(DanmakuInfo)? onData) {
-    _damakuSteam.setDanmakuListener(onData);
+  void listen(void Function(DanmakuInfo)? onData) {
+    stream.listen(onData);
   }
 
-  @override
   void dispose() {
-    _damakuSteam.dispose();
-    super.dispose();
+    _damakuStream.dispose();
+    _controller.close();
   }
 }

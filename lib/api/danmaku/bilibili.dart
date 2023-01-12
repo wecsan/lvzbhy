@@ -9,30 +9,26 @@ import 'package:flutter/material.dart';
 import 'package:hot_live/model/danmaku.dart';
 import 'package:web_socket_channel/io.dart';
 
-class BilibiliDanmakuStream with ChangeNotifier {
-  BilibiliDanmakuStream({required this.danmakuId}) {
+class BilibiliDanmaku {
+  final int danmakuId;
+  final StreamController<DanmakuInfo> controller;
+
+  BilibiliDanmaku({
+    required this.danmakuId,
+    required this.controller,
+  }) {
     initState();
   }
 
-  final int danmakuId;
   Timer? timer;
   IOWebSocketChannel? _channel;
   int totleTime = 0;
   BiliBiliHostServerConfig? config;
 
-  /// ----- danmaku output stream ------
-  final StreamController<DanmakuInfo> damakuSteam = StreamController();
-
-  void setDanmakuListener(void Function(DanmakuInfo)? listener) {
-    damakuSteam.stream.listen(listener);
-  }
-
-  @override
   void dispose() {
-    damakuSteam.close();
+    controller.close();
     timer?.cancel();
     _channel?.sink.close();
-    super.dispose();
   }
 
   initState() {
@@ -54,7 +50,12 @@ class BilibiliDanmakuStream with ChangeNotifier {
         config!.hostServerList![2].wssPort.toString() +
         "/sub");
     joinRoom(danmakuId);
-    setListener();
+
+    // 设置监听
+    _channel!.stream.listen((msg) {
+      Uint8List list = Uint8List.fromList(msg);
+      decode(list);
+    });
   }
 
   void sendHeartBeat() {
@@ -77,14 +78,6 @@ class BilibiliDanmakuStream with ChangeNotifier {
     debugPrint(msg);
     _channel!.sink.add(encode(7, msg: msg));
     sendHeartBeat();
-  }
-
-  /// 设置监听
-  void setListener() {
-    _channel!.stream.listen((msg) {
-      Uint8List list = Uint8List.fromList(msg);
-      decode(list);
-    });
   }
 
   /// 对消息编码
@@ -130,7 +123,7 @@ class BilibiliDanmakuStream with ChangeNotifier {
             case "DANMU_MSG":
               String msg = jd["info"][1].toString();
               String name = jd["info"][2][1].toString();
-              damakuSteam.add(DanmakuInfo(name, msg));
+              controller.add(DanmakuInfo(name, msg));
               break;
             default:
           }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
@@ -24,7 +23,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
   late VideoPlayerController videoController;
   late ChewieController chewieController;
   late DanmakuStream danmakuStream;
-  late BarrageWallController barrageWallController;
 
   late String title;
   late Map<dynamic, dynamic> cdnMultiLink;
@@ -38,7 +36,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
     // 设置弹幕监控流
     danmakuStream = DanmakuStream(room: widget.room);
-    barrageWallController = BarrageWallController();
     _initVideoController(cdnMultiLink.values.toList()[0].values.toList()[0]);
   }
 
@@ -51,7 +48,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
           chewieController = ChewieController(
             videoPlayerController: videoController,
             customControls: DanmakuChewieControllers(
-              danmakuContoller: barrageWallController,
+              danmakuStream: danmakuStream,
             ),
             autoPlay: true,
             isLive: true,
@@ -63,11 +60,10 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   void dispose() {
-    super.dispose();
     chewieController.dispose();
     videoController.dispose();
-    barrageWallController.dispose();
     danmakuStream.dispose();
+    super.dispose();
   }
 
   @override
@@ -143,7 +139,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 child: DanmakuListView(
                   room: widget.room,
                   danmakuStream: danmakuStream,
-                  barrageWallController: barrageWallController,
                 ),
               ),
               OwnerListTile(

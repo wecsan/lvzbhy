@@ -22,6 +22,8 @@ class FavoriteProvider with ChangeNotifier {
   get isHideOffline => _isHideOffline;
 
   void _getRoomsFromPrefs() {
+    _roomsList.clear();
+    _onlineRoomList.clear();
     List<String> prefs = PrefUtil.getStringList('favorites') ?? [];
     for (var item in prefs) {
       RoomInfo singleRoom = RoomInfo.fromJson(jsonDecode(item));
@@ -44,13 +46,12 @@ class FavoriteProvider with ChangeNotifier {
       if (_roomsList[i].liveStatus == LiveStatus.live) {
         _onlineRoomList.add(_roomsList[i]);
       }
-      notifyListeners();
     }
     refreshController.refreshCompleted();
+    notifyListeners();
   }
 
   void onRefresh() {
-    _roomsList.clear();
     _getRoomsFromPrefs();
     _getRoomsInfoFromApi();
   }

@@ -5,39 +5,36 @@ import 'package:hot_live/model/danmaku.dart';
 import 'package:hot_live/utils/dart_tars_protocol/tarscodec.dart';
 import 'package:web_socket_channel/io.dart';
 
-class HuyaDanmakuStream with ChangeNotifier {
-  HuyaDanmakuStream({
-    Key? key,
+class HuyaDanmaku {
+  final int danmakuId;
+  final StreamController<DanmakuInfo> controller;
+
+  HuyaDanmaku({
     required this.danmakuId,
+    required this.controller,
   }) {
     initLive();
   }
 
-  final int danmakuId;
   Timer? timer;
   IOWebSocketChannel? _channel;
   int totleTime = 0;
 
-  /// ----- danmaku output stream ------
-  final StreamController<DanmakuInfo> damakuSteam = StreamController();
-
-  void setDanmakuListener(void Function(DanmakuInfo)? listener) {
-    damakuSteam.stream.listen(listener);
-  }
-
-  @override
   void dispose() {
-    damakuSteam.close();
+    controller.close();
     timer?.cancel();
     _channel?.sink.close();
-    super.dispose();
   }
 
   //初始化
   void initLive() {
     _channel = IOWebSocketChannel.connect("wss://cdnws.api.huya.com");
     login();
-    setListener();
+    // 设置监听
+    _channel!.stream.listen((msg) {
+      Uint8List list = Uint8List.fromList(msg);
+      decode(list);
+    });
     timer = Timer.periodic(const Duration(seconds: 30), (callback) {
       totleTime += 30;
       heartBeat();
@@ -49,14 +46,6 @@ class HuyaDanmakuStream with ChangeNotifier {
   void heartBeat() {
     Uint8List heartbeat = huyaWsHeartbeat();
     _channel!.sink.add(heartbeat);
-  }
-
-  /// 设置监听
-  void setListener() {
-    _channel!.stream.listen((msg) {
-      Uint8List list = Uint8List.fromList(msg);
-      decode(list);
-    });
   }
 
   void login() {
@@ -74,7 +63,7 @@ class HuyaDanmakuStream with ChangeNotifier {
     String nickname = danmaku[0];
     String message = danmaku[1];
     if (message != '') {
-      damakuSteam.add(DanmakuInfo(nickname, message));
+      controller.add(DanmakuInfo(nickname, message));
     }
   }
 }

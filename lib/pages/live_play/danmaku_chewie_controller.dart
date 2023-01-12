@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
+import 'package:hot_live/api/danmaku/danmaku_stream.dart';
+import 'package:hot_live/pages/live_play/danmaku_listview.dart';
 import 'package:hot_live/pages/live_play/danmaku_setting_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
@@ -10,10 +12,10 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class DanmakuChewieControllers extends StatefulWidget {
-  const DanmakuChewieControllers({Key? key, required this.danmakuContoller})
+  const DanmakuChewieControllers({Key? key, required this.danmakuStream})
       : super(key: key);
 
-  final BarrageWallController danmakuContoller;
+  final DanmakuStream danmakuStream;
 
   @override
   State<StatefulWidget> createState() {
@@ -41,12 +43,23 @@ class _DanmakuChewieControllersState extends State<DanmakuChewieControllers>
 
   late VideoPlayerController controller;
   ChewieController? _chewieController;
+  final BarrageWallController _barrageWallController = BarrageWallController();
 
   // We know that _chewieController is set in didChangeDependencies
   ChewieController get chewieController => _chewieController!;
 
   @override
+  void initState() {
+    widget.danmakuStream.listen((info) {
+      _barrageWallController
+          .send([Bullet(child: DanmakuText(message: info.msg))]);
+    });
+    super.initState();
+  }
+
+  @override
   void dispose() {
+    _barrageWallController.dispose();
     _dispose();
     super.dispose();
   }
@@ -128,7 +141,7 @@ class _DanmakuChewieControllersState extends State<DanmakuChewieControllers>
                     width: MediaQuery.of(context).size.width,
                     height: danmukuHeight,
                     speed: settings.danmakuSpeed.toInt(),
-                    controller: widget.danmakuContoller,
+                    controller: _barrageWallController,
                     massiveMode: false,
                     safeBottomHeight: settings.danmakuFontSize.toInt(),
                     child: Container(),

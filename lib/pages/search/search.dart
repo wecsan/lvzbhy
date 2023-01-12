@@ -69,9 +69,7 @@ class _SearchPageState extends State<SearchPage> {
             onPressed: _toggleIsLive,
             icon: Icon(
               Icons.live_tv_rounded,
-              color: isLive
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).disabledColor,
+              color: isLive ? null : Theme.of(context).disabledColor,
             ),
           ),
         ],
