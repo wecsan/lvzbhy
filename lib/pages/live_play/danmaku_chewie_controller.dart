@@ -4,6 +4,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
+import 'package:hot_live/model/danmaku.dart';
 import 'package:hot_live/pages/live_play/danmaku_setting_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
@@ -31,10 +32,11 @@ class DanmakuText extends StatelessWidget {
 }
 
 class DanmakuChewieControllers extends StatefulWidget {
-  const DanmakuChewieControllers({Key? key, required this.danmakuStream})
+  DanmakuChewieControllers({Key? key, required this.danmakuStream})
       : super(key: key);
 
   final DanmakuStream danmakuStream;
+  final BarrageWallController barrageWallController = BarrageWallController();
 
   @override
   State<StatefulWidget> createState() {
@@ -45,40 +47,44 @@ class DanmakuChewieControllers extends StatefulWidget {
 class _DanmakuChewieControllersState extends State<DanmakuChewieControllers>
     with SingleTickerProviderStateMixin {
   late VideoPlayerValue _latestValue;
-  bool _hideStuff = true;
-  bool _hideDanmaku = false;
-
-  double? _latestVolume;
-  Timer? _hideTimer;
-  Timer? _initTimer;
-  Timer? _showAfterExpandCollapseTimer;
-  final bool _dragging = false;
-  bool _displayTapped = false;
-  Timer? _bufferingDisplayTimer;
-  bool _displayBufferingIndicator = false;
 
   final barHeight = 56.0;
   final marginSize = 5.0;
 
+  double? _latestVolume;
+
+  // ignore: prefer_final_fields
+  bool _dragging = false;
+  bool _hideStuff = true;
+  bool _hideDanmaku = false;
+  bool _displayTapped = false;
+  bool _displayBufferingIndicator = false;
+
+  Timer? _hideTimer;
+  Timer? _initTimer;
+  Timer? _showAfterExpandCollapseTimer;
+  Timer? _bufferingDisplayTimer;
+
   late VideoPlayerController controller;
   ChewieController? _chewieController;
-  final BarrageWallController _barrageWallController = BarrageWallController();
+  late SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
   // We know that _chewieController is set in didChangeDependencies
   ChewieController get chewieController => _chewieController!;
 
   @override
   void initState() {
-    widget.danmakuStream.listen((info) {
-      _barrageWallController
-          .send([Bullet(child: DanmakuText(message: info.msg))]);
-    });
+    widget.danmakuStream.listen(sendDanmaku);
     super.initState();
+  }
+
+  void sendDanmaku(DanmakuInfo info) {
+    widget.barrageWallController
+        .send([Bullet(child: DanmakuText(message: info.msg))]);
   }
 
   @override
   void dispose() {
-    _barrageWallController.dispose();
     _dispose();
     super.dispose();
   }
@@ -104,11 +110,8 @@ class _DanmakuChewieControllersState extends State<DanmakuChewieControllers>
     super.didChangeDependencies();
   }
 
-  late SettingsProvider settings;
-
   @override
   Widget build(BuildContext context) {
-    settings = Provider.of<SettingsProvider>(context);
     if (_latestValue.hasError) {
       return chewieController.errorBuilder?.call(
             context,
@@ -160,7 +163,7 @@ class _DanmakuChewieControllersState extends State<DanmakuChewieControllers>
                     width: MediaQuery.of(context).size.width,
                     height: danmukuHeight,
                     speed: settings.danmakuSpeed.toInt(),
-                    controller: _barrageWallController,
+                    controller: widget.barrageWallController,
                     massiveMode: false,
                     safeBottomHeight: settings.danmakuFontSize.toInt(),
                     child: Container(),

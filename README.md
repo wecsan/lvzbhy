@@ -51,7 +51,7 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 ### 解决中的问题
 
-- [ ] 大量弹幕时会有水平弹幕遮挡
+- [x] 大量弹幕时会有水平弹幕遮挡
 
 ### 部分链接无法播放
 
