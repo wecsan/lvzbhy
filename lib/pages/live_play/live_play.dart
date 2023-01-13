@@ -131,7 +131,11 @@ class _LivePlayPageState extends State<LivePlayPage> {
                     )
                   : Container(
                       color: Colors.black,
-                      child: Center(child: Text(errorInfo)),
+                      child: Center(
+                        child: errorInfo.isNotEmpty
+                            ? Text(errorInfo)
+                            : const CircularProgressIndicator(),
+                      ),
                     ),
             ),
             Padding(
@@ -195,15 +199,11 @@ class OwnerListTile extends StatelessWidget {
       ),
       trailing: favoriteProvider.isFavorite(room.roomId)
           ? ElevatedButton(
-              onPressed: () {
-                favoriteProvider.removeRoom(room);
-              },
+              onPressed: () => favoriteProvider.removeRoom(room),
               child: Text('Followed', style: followedStyle),
             )
           : ElevatedButton(
-              onPressed: () {
-                favoriteProvider.addRoom(room);
-              },
+              onPressed: () => favoriteProvider.addRoom(room),
               child: const Text('Follow'),
             ),
     );

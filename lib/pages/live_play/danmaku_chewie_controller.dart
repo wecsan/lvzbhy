@@ -72,22 +72,19 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   bool? isDargVerLeft;
   double? updateDargVarVal;
 
-  late VideoPlayerController controller;
+  VideoPlayerController? _controller;
   ChewieController? _chewieController;
-  BarrageWallController barrageWallController = BarrageWallController();
-  late SettingsProvider settings = Provider.of<SettingsProvider>(context);
+  final BarrageWallController barrageWallController = BarrageWallController();
+  late final SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
   // We know that _chewieController is set in didChangeDependencies
+  VideoPlayerController get controller => _controller!;
   ChewieController get chewieController => _chewieController!;
 
   @override
   void initState() {
     widget.danmakuStream.listen(sendDanmaku);
     super.initState();
-  }
-
-  void sendDanmaku(DanmakuInfo info) {
-    barrageWallController.send([Bullet(child: DanmakuText(message: info.msg))]);
   }
 
   @override
@@ -107,7 +104,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   void didChangeDependencies() {
     final oldController = _chewieController;
     _chewieController = ChewieController.of(context);
-    controller = chewieController.videoPlayerController;
+    _controller = chewieController.videoPlayerController;
 
     if (oldController != chewieController) {
       _dispose();
@@ -148,15 +145,17 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                   ? const Center(child: CircularProgressIndicator())
                   : _buildHitArea(),
               _buildActionBar(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[_buildBottomBar()],
-              ),
+              _buildBottomBar(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // Danmaku widget and send
+  void sendDanmaku(DanmakuInfo info) {
+    barrageWallController.send([Bullet(child: DanmakuText(message: info.msg))]);
   }
 
   Widget _buildDanmakuView() {
@@ -188,7 +187,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     );
   }
 
-  // Contoller view components
+  // Center hit and controller widgets
   Widget _buildHitArea() {
     Widget centerArea;
     if (_displayDanmakuSetting) {
@@ -215,7 +214,6 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
           }
         } else {
           _playPause();
-
           setState(() {
             _hideStuff = true;
           });
@@ -278,6 +276,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
         opacity: _dragging ? 0.8 : 0.0,
         duration: const Duration(milliseconds: 300),
         child: Card(
+          color: Colors.black,
           child: Container(
             padding: const EdgeInsets.all(10),
             child: Row(
@@ -295,7 +294,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                         value: updateDargVarVal,
                         backgroundColor: Colors.white38,
                         valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).progressIndicatorTheme.color,
+                          Theme.of(context).indicatorColor,
                         ),
                       ),
                     ),
@@ -310,16 +309,16 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   }
 
   Widget _buildDanmakuSettingView() {
-    const double opacity = 0.8;
     SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
-    final Color fontColor = Colors.white.withOpacity(opacity);
-    final TextStyle labelStyle =
-        Theme.of(context).textTheme.labelMedium?.copyWith(color: fontColor) ??
-            TextStyle(color: fontColor);
+    final TextStyle labelStyle = Theme.of(context)
+            .textTheme
+            .labelMedium
+            ?.copyWith(color: Colors.white60) ??
+        const TextStyle(color: Colors.white60);
     final TextStyle digitStyle =
-        Theme.of(context).textTheme.caption?.copyWith(color: fontColor) ??
-            TextStyle(color: fontColor);
+        Theme.of(context).textTheme.caption?.copyWith(color: Colors.white60) ??
+            const TextStyle(color: Colors.white60);
 
     return Container(
       alignment: Alignment.center,
@@ -327,9 +326,10 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
         opacity: _displayDanmakuSetting ? 0.8 : 0.0,
         duration: const Duration(milliseconds: 300),
         child: Card(
+          color: Colors.black,
           child: Container(
             width: 350,
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -401,30 +401,21 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     );
   }
 
+  // Action bar widgets
   Widget _buildActionBar() {
     return Positioned(
       top: 0,
-      height: barHeight,
+      height: barHeight + 10,
       width: MediaQuery.of(context).size.width,
-      child: SafeArea(
-        child: AnimatedOpacity(
-          opacity: _hideStuff ? 0.0 : 1,
-          duration: const Duration(milliseconds: 300),
-          child: Container(
-            height: barHeight,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [Color.fromRGBO(0, 0, 0, 0.02), Colors.black]),
-            ),
-            child: chewieController.isFullScreen
-                ? Row(
-                    children: <Widget>[
-                      _buildBackButton(),
-                    ],
-                  )
-                : null,
+      child: AnimatedOpacity(
+        opacity: _hideStuff ? 0.0 : 1,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          height: barHeight,
+          child: Row(
+            children: <Widget>[
+              if (chewieController.isFullScreen) _buildBackButton(),
+            ],
           ),
         ),
       ),
@@ -448,27 +439,33 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     );
   }
 
+  // Bottom bar widgets
   Widget _buildBottomBar() {
-    return AnimatedOpacity(
-      opacity: _hideStuff ? 0.0 : 1,
-      duration: const Duration(milliseconds: 300),
-      child: Container(
-        height: barHeight,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color.fromRGBO(0, 0, 0, 0.02), Colors.black]),
-        ),
-        child: Row(
-          children: <Widget>[
-            _buildPlayPauseButton(),
-            _buildMuteButton(),
-            _buildDanmakuHideButton(),
-            if (chewieController.isFullScreen) _buildDanmakuSettingButton(),
-            const Spacer(),
-            if (chewieController.allowFullScreen) _buildExpandButton(),
-          ],
+    return Positioned(
+      bottom: 0,
+      height: barHeight,
+      width: MediaQuery.of(context).size.width,
+      child: AnimatedOpacity(
+        opacity: _hideStuff ? 0.0 : 1,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          height: barHeight,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color.fromRGBO(0, 0, 0, 0.02), Colors.black]),
+          ),
+          child: Row(
+            children: <Widget>[
+              _buildPlayPauseButton(),
+              _buildMuteButton(),
+              _buildDanmakuHideButton(),
+              if (chewieController.isFullScreen) _buildDanmakuSettingButton(),
+              const Spacer(),
+              if (chewieController.allowFullScreen) _buildExpandButton(),
+            ],
+          ),
         ),
       ),
     );
