@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/model/liveroom.dart';
@@ -27,10 +28,12 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   String errorInfo = '';
   Map<dynamic, dynamic> streamList = {};
+  double? _originalBrightness;
 
   @override
   void initState() {
     super.initState();
+    FlutterScreenWake.brightness.then((value) => _originalBrightness = value);
     initLive();
   }
 
@@ -57,9 +60,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
           if (swap) chewieController?.dispose();
           chewieController = ChewieController(
             videoPlayerController: videoController!,
-            customControls: DanmakuChewieControllers(
-              danmakuStream: danmakuStream!,
-            ),
+            customControls:
+                DanmakuChewieController(danmakuStream: danmakuStream!),
             autoPlay: true,
             isLive: true,
           );
@@ -71,6 +73,10 @@ class _LivePlayPageState extends State<LivePlayPage> {
   @override
   void dispose() {
     super.dispose();
+    if (_originalBrightness != null) {
+      FlutterScreenWake.setBrightness(_originalBrightness!);
+    }
+    videoController?.pause();
     chewieController?.dispose();
     videoController?.dispose();
     danmakuStream?.dispose();
@@ -102,64 +108,57 @@ class _LivePlayPageState extends State<LivePlayPage> {
       );
     });
 
-    return WillPopScope(
-      onWillPop: () async {
-        videoController?.pause();
-        Wakelock.disable();
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-              Wakelock.disable();
-            },
-          ),
-          title: Text(widget.room.title),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            Wakelock.disable();
+          },
         ),
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: videoController?.value.isInitialized ?? false
-                    ? Container(
-                        child: Chewie(controller: chewieController!),
-                        color: Colors.black,
-                      )
-                    : Container(
-                        color: Colors.black,
-                        child: Center(child: Text(errorInfo)),
-                      ),
+        title: Text(widget.room.title),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: videoController?.value.isInitialized ?? false
+                  ? Container(
+                      child: Chewie(controller: chewieController!),
+                      color: Colors.black,
+                    )
+                  : Container(
+                      color: Colors.black,
+                      child: Center(child: Text(errorInfo)),
+                    ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Row(
+                children: [
+                  const Icon(Icons.video_library_rounded, size: 20),
+                  const Spacer(),
+                  const IconButton(onPressed: null, icon: Text('')),
+                  ...streamButtons,
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Row(
-                  children: [
-                    const Icon(Icons.video_library_rounded, size: 20),
-                    const Spacer(),
-                    const IconButton(onPressed: null, icon: Text('')),
-                    ...streamButtons,
-                  ],
-                ),
-              ),
-              const Divider(height: 1),
-              Expanded(
-                child: danmakuStream != null
-                    ? DanmakuListView(
-                        room: widget.room,
-                        danmakuStream: danmakuStream!,
-                      )
-                    : Container(),
-              ),
-              OwnerListTile(
-                room: widget.room,
-                favoriteProvider: favoriteProvider,
-              ),
-            ],
-          ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: danmakuStream != null
+                  ? DanmakuListView(
+                      room: widget.room,
+                      danmakuStream: danmakuStream!,
+                    )
+                  : Container(),
+            ),
+            OwnerListTile(
+              room: widget.room,
+              favoriteProvider: favoriteProvider,
+            ),
+          ],
         ),
       ),
     );
