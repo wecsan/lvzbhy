@@ -16,15 +16,14 @@ class PopularPage extends StatefulWidget {
 
 class _PopularPageState extends State<PopularPage> {
   late PopularProvider provider = Provider.of<PopularProvider>(context);
-  late double screenWidth = MediaQuery.of(context).size.width;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = screenWidth > 1280
+        ? 8
+        : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -55,9 +54,7 @@ class _PopularPageState extends State<PopularPage> {
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
                 controller: ScrollController(),
-                crossAxisCount: screenWidth > 1280
-                    ? 8
-                    : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2)),
+                crossAxisCount: crossAxisCount,
                 itemCount: provider.roomList.length,
                 itemBuilder: (context, index) =>
                     RoomCard(room: provider.roomList[index], dense: true),

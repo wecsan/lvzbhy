@@ -62,6 +62,9 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = screenWidth > 1280
+        ? 8
+        : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2));
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.area.areaName)),
@@ -77,11 +80,8 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
                 controller: ScrollController(),
-                crossAxisCount: screenWidth > 1280
-                    ? 8
-                    : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2)),
+                crossAxisCount: crossAxisCount,
                 itemCount: roomsList.length,
-                // physics: (const BouncingScrollPhysics()),
                 itemBuilder: (context, index) =>
                     RoomCard(room: roomsList[index], dense: true),
               )

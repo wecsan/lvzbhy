@@ -8,8 +8,6 @@ class SettingsProvider with ChangeNotifier {
 
   void _loadFromPref() async {
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
-    _useCustomResolutionForHuya =
-        PrefUtil.getBool('useCustomResolutionForHuya') ?? false;
     _enbaleAutoCheckUpdate = PrefUtil.getBool('enbaleAutoCheckUpdate') ?? true;
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
@@ -20,7 +18,6 @@ class SettingsProvider with ChangeNotifier {
 
   void _saveToPref() {
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
-    PrefUtil.setBool('useCustomResolutionForHuya', _useCustomResolutionForHuya);
     PrefUtil.setBool('enbaleAutoCheckUpdate', _enbaleAutoCheckUpdate);
     PrefUtil.setDouble('danmakuArea', _danmakuArea);
     PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
@@ -36,14 +33,6 @@ class SettingsProvider with ChangeNotifier {
   String get bilibiliCustomCookie => _bilibiliCustomCookie;
   set bilibiliCustomCookie(value) {
     _bilibiliCustomCookie = value;
-    _saveToPref();
-    notifyListeners();
-  }
-
-  bool _useCustomResolutionForHuya = false;
-  bool get useCustomResolutionForHuya => _useCustomResolutionForHuya;
-  set useCustomResolutionForHuya(value) {
-    _useCustomResolutionForHuya = value;
     _saveToPref();
     notifyListeners();
   }

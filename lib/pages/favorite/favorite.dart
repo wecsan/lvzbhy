@@ -20,7 +20,6 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> {
   late FavoriteProvider provider = Provider.of<FavoriteProvider>(context);
-  late double screenWidth = MediaQuery.of(context).size.width;
 
   void onLongPress(BuildContext context, RoomInfo room) {
     showDialog(
@@ -61,6 +60,10 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = screenWidth > 1280
+        ? 4
+        : (screenWidth > 960 ? 3 : (screenWidth > 640 ? 2 : 1));
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -97,11 +100,8 @@ class _FavoritePageState extends State<FavoritePage> {
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
                 controller: ScrollController(),
-                crossAxisCount: screenWidth > 1280
-                    ? 4
-                    : (screenWidth > 960 ? 3 : (screenWidth > 640 ? 2 : 1)),
+                crossAxisCount: crossAxisCount,
                 itemCount: provider.roomsList.length,
-                // physics: (const BouncingScrollPhysics()),
                 itemBuilder: (context, index) {
                   RoomInfo room = provider.roomsList[index];
                   return RoomCard(

@@ -67,9 +67,9 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           ListTile(
-            title: const Text('Set custom bilibili cookie for search'),
+            title: const Text('Enable custom bilibili cookie'),
             subtitle: const Text(
-              'Use custom cookie for bilibili search api, because bilibili search need cookie vaildation',
+              'Because bilibili search need cookie vaildation, you can enable custom cookie for bilibili',
             ),
             onTap: () {
               final cookie = settings.bilibiliCustomCookie;
@@ -99,16 +99,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               );
-            },
-          ),
-          SwitchListTile(
-            title: const Text('Use custom resolution for Huya'),
-            subtitle: const Text(
-                'Use custom resolution for Huya, if you want to use a custom resolution'),
-            value: settings.useCustomResolutionForHuya,
-            activeColor: Provider.of<AppThemeProvider>(context).themeColor,
-            onChanged: (bool value) {
-              settings.useCustomResolutionForHuya = value;
             },
           ),
           const SectionTitle(title: 'About'),

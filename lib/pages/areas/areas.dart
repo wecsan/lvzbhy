@@ -107,25 +107,33 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   }
 }
 
-class AreaGridView extends StatelessWidget {
+class AreaGridView extends StatefulWidget {
   const AreaGridView({Key? key, required this.areaList}) : super(key: key);
 
   final List<AreaInfo> areaList;
 
   @override
+  State<AreaGridView> createState() => _AreaGridViewState();
+}
+
+class _AreaGridViewState extends State<AreaGridView> {
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    return areaList.isNotEmpty
+    int crossAxisCount = screenWidth > 1280
+        ? 12
+        : (screenWidth > 960 ? 9 : (screenWidth > 640 ? 6 : 3));
+
+    return widget.areaList.isNotEmpty
         ? KeepAliveWrapper(
             child: MasonryGridView.count(
               padding: const EdgeInsets.all(5),
               controller: ScrollController(),
-              crossAxisCount: screenWidth > 1280
-                  ? 10
-                  : (screenWidth > 960 ? 8 : (screenWidth > 640 ? 5 : 3)),
-              itemCount: areaList.length,
+              crossAxisCount: crossAxisCount,
+              itemCount: widget.areaList.length,
               // physics: (const BouncingScrollPhysics()),
-              itemBuilder: (context, index) => AreaCard(area: areaList[index]),
+              itemBuilder: (context, index) =>
+                  AreaCard(area: widget.areaList[index]),
             ),
           )
         : const EmptyView(
