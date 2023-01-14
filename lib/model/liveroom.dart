@@ -4,6 +4,7 @@ enum Platform { huya, bilibili, douyu, unknown }
 
 class RoomInfo {
   String roomId;
+  String danmakuId = '';
   String link = '';
   String title = '';
   String nick = '';
@@ -12,10 +13,8 @@ class RoomInfo {
   String platform = 'UNKNOWN';
   LiveStatus liveStatus = LiveStatus.unknown;
 
+  // special for search
   String areaName = '';
-
-  int huyaDanmakuId = 0;
-  Map<String, dynamic> cdnMultiLink = {};
 
   RoomInfo(this.roomId);
 

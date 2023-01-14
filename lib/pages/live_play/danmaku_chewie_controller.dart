@@ -26,7 +26,7 @@ class DanmakuText extends StatelessWidget {
       style: TextStyle(
         fontSize: settings.danmakuFontSize,
         fontWeight: FontWeight.w400,
-        color: Colors.white.withOpacity(settings.danmakuOpcity),
+        color: Colors.white,
       ),
     );
   }
@@ -162,20 +162,17 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   }
 
   Widget _buildDanmakuView() {
-    double danmukuHeight =
-        MediaQuery.of(context).size.height * settings.danmakuArea;
-    double danmakuOpacity = !_hideDanmaku ? 1 : 0.0;
-    if (!chewieController.isFullScreen) {
-      danmukuHeight =
-          (MediaQuery.of(context).size.width / 16 * 9) * settings.danmakuArea;
-    }
+    double danmukuHeight = (chewieController.isFullScreen
+            ? MediaQuery.of(context).size.height
+            : (MediaQuery.of(context).size.width / 16 * 9)) *
+        settings.danmakuArea;
 
     return Positioned(
       top: 4,
       width: MediaQuery.of(context).size.width,
       height: danmukuHeight,
       child: AnimatedOpacity(
-        opacity: danmakuOpacity,
+        opacity: !_hideDanmaku ? settings.danmakuOpacity : 0.0,
         duration: const Duration(milliseconds: 300),
         child: BarrageWall(
           width: MediaQuery.of(context).size.width,
@@ -356,13 +353,13 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
                   leading: Text('不透明度', style: labelStyle),
                   title: Slider(
-                    value: settings.danmakuOpcity,
+                    value: settings.danmakuOpacity,
                     min: 0.0,
                     max: 1.0,
-                    onChanged: (val) => settings.danmakuOpcity = val,
+                    onChanged: (val) => settings.danmakuOpacity = val,
                   ),
                   trailing: Text(
-                    (settings.danmakuOpcity * 100).toInt().toString() + '%',
+                    (settings.danmakuOpacity * 100).toInt().toString() + '%',
                     style: digitStyle,
                   ),
                 ),
@@ -413,7 +410,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
       child: AnimatedOpacity(
         opacity: _hideStuff ? 0.0 : 1,
         duration: const Duration(milliseconds: 300),
-        child: Container(
+        child: SizedBox(
           height: barHeight,
           child: Row(
             children: <Widget>[

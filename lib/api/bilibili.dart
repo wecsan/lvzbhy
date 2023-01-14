@@ -239,11 +239,9 @@ class BilibiliApi {
   /// @return
   static Future<List<RoomInfo>> search(String keyWords, bool isLive) async {
     List<RoomInfo> list = [];
-    String url = "https://api.bilibili.com/x/web-interface/search/" +
-        "type?context=&search_type=live_user&cover_type=user_cover" +
-        "&page=1&order=&keyword=" +
-        keyWords +
-        "&category_id=&__refresh__=true" +
+    String url = "https://api.bilibili.com/x/web-interface/search/"
+        "type?context=&search_type=live_user&cover_type=user_cover"
+        "&page=1&order=&keyword=$keyWords&category_id=&__refresh__=true"
         "&_extra=&highlight=1&single_column=0";
 
     dynamic response = await _getJson(url);

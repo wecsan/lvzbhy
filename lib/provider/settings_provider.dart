@@ -14,7 +14,7 @@ class SettingsProvider with ChangeNotifier {
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.8;
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
-    _danmakuOpcity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
+    _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
   }
 
   void _saveToPref() {
@@ -24,7 +24,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
-    PrefUtil.setDouble('danmakuOpcity', _danmakuOpcity);
+    PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
   }
 
   // Theme settings
@@ -51,7 +51,7 @@ class SettingsProvider with ChangeNotifier {
   double _danmakuSpeed = 8;
   double _danmakuFontBorder = 0.8;
   double _danmakuFontSize = 16;
-  double _danmakuOpcity = 1;
+  double _danmakuOpacity = 1;
 
   double get danmakuArea => _danmakuArea;
   set danmakuArea(value) {
@@ -85,10 +85,10 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  double get danmakuOpcity => _danmakuOpcity;
-  set danmakuOpcity(value) {
+  double get danmakuOpacity => _danmakuOpacity;
+  set danmakuOpacity(value) {
     if (value < 0 || value > 1) return;
-    _danmakuOpcity = value;
+    _danmakuOpacity = value;
     _saveToPref();
     notifyListeners();
   }

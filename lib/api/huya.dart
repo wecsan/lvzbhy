@@ -114,7 +114,7 @@ class HuyaApi {
       } else {
         room.liveStatus = LiveStatus.live;
         room.cover = roomInfo['liveData']['screenshot'];
-        room.huyaDanmakuId = roomInfo['profileInfo']['uid'];
+        room.danmakuId = roomInfo['profileInfo']['uid'];
       }
     }
     return room;
@@ -124,10 +124,8 @@ class HuyaApi {
     List<RoomInfo> list = [];
 
     int realPage = page ~/ 6 + 1;
-    int start = (page - 1) * size % 120;
     if (size == 10) {
       realPage = page ~/ 12 + 1;
-      start = (page - 1) * size % 120;
     }
 
     String url =
@@ -142,6 +140,7 @@ class HuyaApi {
         room.title = roomInfo["introduction"];
         room.cover = roomInfo["screenshot"];
         room.avatar = roomInfo["avatar180"];
+        room.danmakuId = roomInfo["uid"];
         room.liveStatus = LiveStatus.live;
         list.add(room);
       }
@@ -188,13 +187,11 @@ class HuyaApi {
     List<RoomInfo> list = [];
 
     int realPage = page ~/ 6 + 1;
-    int start = (page - 1) * size % 120;
     if (size == 10) {
       realPage = page ~/ 12 + 1;
-      start = (page - 1) * size % 120;
     }
 
-    String url = "https://www.huya.com/cache.php?m=LiveList" +
+    String url = "https://www.huya.com/cache.php?m=LiveList"
         "&do=getLiveListByPage&gameId=${area.areaId}&tagAll=0&page=$realPage";
     dynamic response = await _getJson(url);
     if (response["status"] == 200) {
@@ -206,6 +203,7 @@ class HuyaApi {
         room.title = roomInfo["introduction"];
         room.cover = roomInfo["screenshot"];
         room.avatar = roomInfo["avatar180"];
+        room.danmakuId = roomInfo["uid"];
         room.liveStatus = LiveStatus.live;
         list.add(room);
       }
@@ -216,7 +214,7 @@ class HuyaApi {
   static Future<List<RoomInfo>> search(String keyWords, bool isLive) async {
     List<RoomInfo> list = [];
 
-    String url = "https://search.cdn.huya.com/?m=Search&do=getSearchContent&" +
+    String url = "https://search.cdn.huya.com/?m=Search&do=getSearchContent&"
         "q=$keyWords&uid=0&v=4&typ=-5&livestate=$isLive&rows=5&start=0";
 
     dynamic response = await _getJson(url);

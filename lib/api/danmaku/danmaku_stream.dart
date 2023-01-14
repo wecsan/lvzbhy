@@ -31,7 +31,7 @@ class DanmakuStream {
         break;
       case 'huya':
         _damakuStream = HuyaDanmaku(
-          danmakuId: room.huyaDanmakuId,
+          danmakuId: int.parse(room.danmakuId),
           controller: _controller,
         );
         break;

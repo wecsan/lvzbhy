@@ -107,28 +107,18 @@ class OwnerCard extends StatelessWidget {
 
   void _onTap(BuildContext context) async {
     final fullRoom = await LiveApi.getRoomInfo(room);
-    fullRoom.cdnMultiLink = await LiveApi.getRoomStreamLink(room);
-    String info = '';
     if (room.liveStatus == LiveStatus.live) {
-      if (room.cdnMultiLink.isEmpty) {
-        info = 'Get live stream link failed';
-      } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LivePlayPage(room: room)),
-        );
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LivePlayPage(room: fullRoom)),
+      );
     } else {
-      info = '${room.nick} is offline.';
-    }
-
-    if (info.isNotEmpty) {
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             content: Text(
-              info,
+              '${room.nick} is offline.',
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           );

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
-  final String appVersion = '0.9.5';
+  final String appVersion = '0.9.6';
 
   @override
   Widget build(BuildContext context) {
