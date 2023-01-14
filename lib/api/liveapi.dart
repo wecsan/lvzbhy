@@ -7,7 +7,8 @@ import 'huya.dart';
 
 ///the api interface
 class LiveApi {
-  static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) {
+  static Future<Map<String, Map<String, String>>> getRoomStreamLink(
+      RoomInfo room) {
     switch (room.platform) {
       case "bilibili":
         return BilibiliApi.getRoomStreamLink(room);
@@ -33,8 +34,11 @@ class LiveApi {
     }
   }
 
-  static Future<List<RoomInfo>> getRecommend(String platform,
-      {int page = 0, int size = 20}) {
+  static Future<List<RoomInfo>> getRecommend(
+    String platform, {
+    int page = 0,
+    int size = 20,
+  }) {
     switch (platform) {
       case "bilibili":
         return BilibiliApi.getRecommend(page, size);
@@ -60,8 +64,11 @@ class LiveApi {
     }
   }
 
-  static Future<List<RoomInfo>> getAreaRooms(AreaInfo area,
-      {int page = 1, int size = 20}) {
+  static Future<List<RoomInfo>> getAreaRooms(
+    AreaInfo area, {
+    int page = 1,
+    int size = 20,
+  }) {
     switch (area.platform) {
       case "bilibili":
         return BilibiliApi.getAreaRooms(area, page, size);
@@ -74,8 +81,11 @@ class LiveApi {
     }
   }
 
-  static Future<List<RoomInfo>> search(String platform, String keyWords,
-      {bool isLive = false}) {
+  static Future<List<RoomInfo>> search(
+    String platform,
+    String keyWords, {
+    bool isLive = false,
+  }) {
     switch (platform) {
       case "bilibili":
         return BilibiliApi.search(keyWords, isLive);

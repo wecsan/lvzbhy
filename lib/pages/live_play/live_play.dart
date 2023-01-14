@@ -27,7 +27,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   DanmakuStream? danmakuStream;
 
   bool _hasError = false;
-  Map<dynamic, dynamic> streamList = {};
+  Map<String, Map<String, String>> streamList = {};
 
   late FavoriteProvider favoriteProvider =
       Provider.of<FavoriteProvider>(context);
@@ -83,25 +83,28 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   Widget build(BuildContext context) {
-    final streamButtons = [];
-    streamList.forEach((key, value) {
-      streamButtons.add(
-        PopupMenuButton(
-          iconSize: 24,
-          icon: Text(key, style: Theme.of(context).textTheme.labelSmall),
-          onSelected: (String link) => _changeLiveStream(link, swap: true),
-          itemBuilder: (context) {
-            final menuList = <PopupMenuItem<String>>[];
-            value.forEach((k, v) {
-              menuList.add(PopupMenuItem(
-                child: Text(k, style: const TextStyle(fontSize: 14.0)),
-                value: v,
-              ));
-            });
-            return menuList;
-          },
+    final resolutionBtns = [];
+    streamList.forEach((resolution, cdns) {
+      final btn = PopupMenuButton(
+        iconSize: 24,
+        icon: Text(
+          resolution.substring(resolution.length - 2, resolution.length),
+          style: Theme.of(context).textTheme.labelSmall,
         ),
+        onSelected: (String link) => _changeLiveStream(link, swap: true),
+        itemBuilder: (context) {
+          final menuList = <PopupMenuItem<String>>[];
+          cdns.forEach((cdn, url) {
+            final menuItem = PopupMenuItem<String>(
+              child: Text(cdn, style: const TextStyle(fontSize: 14.0)),
+              value: url,
+            );
+            menuList.add(menuItem);
+          });
+          return menuList;
+        },
       );
+      resolutionBtns.add(btn);
     });
 
     return Scaffold(
@@ -141,7 +144,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                   const Icon(Icons.video_library_rounded, size: 20),
                   const Spacer(),
                   const IconButton(onPressed: null, icon: Text('')),
-                  ...streamButtons,
+                  ...resolutionBtns,
                 ],
               ),
             ),

@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
 import 'dart:convert';
-import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
@@ -26,12 +25,16 @@ class BilibiliApi {
   /// 获取直播间所有清晰度的url
   /// @param urls
   /// @param rid
-  static Future<Map<String, dynamic>> getRoomStreamLink(RoomInfo room) async {
+  static Future<Map<String, Map<String, String>>> getRoomStreamLink(
+      RoomInfo room) async {
+    Map<String, Map<String, String>> links = {};
+
     String defaultQn = '10000';
     String newStreamUrl =
-        'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$defaultQn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
+        'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo'
+        '?room_id=${room.roomId}&qn=$defaultQn&platform=h5&ptype=8'
+        '&codec=0,1&format=0,1,2&protocol=0,1';
 
-    Map<String, List> finalStream = {};
     try {
       dynamic streamJson = await _getJson(newStreamUrl);
       List<dynamic> qualityReferenceList =
@@ -45,11 +48,11 @@ class BilibiliApi {
       List<dynamic> streamMultiList =
           streamJson['data']['playurl_info']['playurl']['stream'];
 
-      //get m3u8 default, if not, get unplayable flv
+      // Get m3u8 default, if not, get unplayable flv
       Map streamProtocol =
           streamMultiList[1]['format'][0] ?? streamMultiList[0]['format'][0];
 
-      //Find the m3u8-fmp4 link
+      // Find the m3u8-fmp4 link
       for (int i = 0; i < streamMultiList.length; i++) {
         if (streamMultiList[i]['protocol_name'] == 'http_hls') {
           for (int j = 0; j < streamMultiList[i]['format'].length; j++) {
@@ -60,25 +63,29 @@ class BilibiliApi {
           }
         }
       }
+
       List<dynamic> acceptQn = streamProtocol['codec'][0]['accept_qn'];
       for (int i = 0; i < acceptQn.length; i++) {
         int qn = acceptQn[i].toInt();
         String qnName = qualityRefMap[qn] ?? qn.toString();
+
         if (qn == 10000) {
           List urlInfo = streamProtocol['codec'][0]['url_info'];
           String baseUrl = streamProtocol['codec'][0]['base_url'];
-          List urlMap = [];
+          Map<String, String> urlMap = {};
           for (int i = 0; i < urlInfo.length; i++) {
             String finalUrl =
                 urlInfo[i]['host'] + baseUrl + urlInfo[i]['extra'];
-            urlMap.add(finalUrl);
+            urlMap["线路$i"] = finalUrl;
           }
-          finalStream[qnName] = urlMap;
+          links[qnName] = urlMap;
           continue;
         }
 
         String qnUrl =
-            'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room.roomId}&qn=$qn&platform=h5&ptype=8&codec=0,1&format=0,1,2&protocol=0,1';
+            'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo'
+            '?room_id=${room.roomId}&qn=$qn&platform=h5&ptype=8'
+            '&codec=0,1&format=0,1,2&protocol=0,1';
         dynamic qnJson = await _getJson(qnUrl);
         List<dynamic> qnStreamMultiList =
             qnJson['data']['playurl_info']['playurl']['stream'];
@@ -98,25 +105,15 @@ class BilibiliApi {
         }
         List urlInfo = qnStreamProtocol['codec'][0]['url_info'];
         String baseUrl = qnStreamProtocol['codec'][0]['base_url'];
-        List urlMap = [];
+        Map<String, String> urlMap = {};
         for (int i = 0; i < urlInfo.length; i++) {
           String finalUrl = urlInfo[i]['host'] + baseUrl + urlInfo[i]['extra'];
-          urlMap.add(finalUrl);
+          urlMap["线路$i"] = finalUrl;
         }
-        finalStream[qnName] = urlMap;
+        links[qnName] = urlMap;
       }
     } catch (e) {
-      return {};
-    }
-
-    // transform stream to app format
-    Map<String, Map<String, String>> links = {};
-    for (var key in finalStream.keys) {
-      List<dynamic> list = finalStream[key] ?? [];
-      links[key] = {};
-      for (int i = 0; i < list.length; i++) {
-        links[key]!["线路$i"] = list[i];
-      }
+      return links;
     }
     return links;
   }
@@ -127,19 +124,23 @@ class BilibiliApi {
   static Future<RoomInfo> getRoomInfo(RoomInfo room) async {
     String reqUrl =
         "https://api.live.bilibili.com/xlive/web-room/v1/index/getH5InfoByRoom?room_id=${room.roomId}";
-    dynamic response = await _getJson(reqUrl);
-    dynamic data = response["data"];
-    dynamic roomInfo = data["room_info"];
-    dynamic ownerInfo = data["anchor_info"]["base_info"];
-    dynamic liveStatus = roomInfo["live_status"];
+    try {
+      dynamic response = await _getJson(reqUrl);
+      dynamic data = response["data"];
+      dynamic roomInfo = data["room_info"];
+      dynamic ownerInfo = data["anchor_info"]["base_info"];
+      dynamic liveStatus = roomInfo["live_status"];
 
-    room.platform = "bilibili";
-    room.roomId = roomInfo["room_id"].toString();
-    room.title = roomInfo["title"];
-    room.nick = ownerInfo["uname"];
-    room.cover = roomInfo["cover"];
-    room.avatar = ownerInfo["face"];
-    room.liveStatus = liveStatus == 1 ? LiveStatus.live : LiveStatus.offline;
+      room.platform = "bilibili";
+      room.roomId = roomInfo["room_id"].toString();
+      room.title = roomInfo["title"];
+      room.nick = ownerInfo["uname"];
+      room.cover = roomInfo["cover"];
+      room.avatar = ownerInfo["face"];
+      room.liveStatus = liveStatus == 1 ? LiveStatus.live : LiveStatus.offline;
+    } catch (e) {
+      return room;
+    }
     return room;
   }
 
@@ -148,25 +149,27 @@ class BilibiliApi {
   /// @param size 每页大小
   /// @return
   static Future<List<RoomInfo>> getRecommend(int page, int size) async {
-    List<RoomInfo> list = <RoomInfo>[];
+    List<RoomInfo> list = [];
 
     String url =
         "https://api.live.bilibili.com/room/v1/room/get_user_recommend?page=$page&page_size=$size";
-    dynamic response = await _getJson(url);
-    if (response["code"] == 0) {
-      List<dynamic> data = response["data"];
-      data.forEach((roomInfo) {
-        var room = RoomInfo(roomInfo["roomid"].toString());
-        room.platform = "bilibili";
-        room.title = roomInfo["title"];
-        room.nick = roomInfo["uname"];
-        room.cover = roomInfo["system_cover"];
-        room.avatar = roomInfo["face"];
-        room.liveStatus = LiveStatus.live;
-        list.add(room);
-      });
-    } else {
-      log("BILIBILI---获取推荐直播间异常");
+    try {
+      dynamic response = await _getJson(url);
+      if (response["code"] == 0) {
+        List<dynamic> data = response["data"];
+        data.forEach((roomInfo) {
+          var room = RoomInfo(roomInfo["roomid"].toString());
+          room.platform = "bilibili";
+          room.title = roomInfo["title"];
+          room.nick = roomInfo["uname"];
+          room.cover = roomInfo["system_cover"];
+          room.avatar = roomInfo["face"];
+          room.liveStatus = LiveStatus.live;
+          list.add(room);
+        });
+      }
+    } catch (e) {
+      return list;
     }
     return list;
   }
@@ -178,24 +181,28 @@ class BilibiliApi {
     String url =
         "https://api.live.bilibili.com/xlive/web-interface/v1/index/getWebAreaList?source_id=2";
 
-    dynamic response = await _getJson(url);
-    if (response["code"] == 0) {
-      List<dynamic> data = response["data"]["data"];
-      data.forEach((areaType) {
-        List<AreaInfo> subAreaList = [];
-        List<dynamic> areaInfoList = areaType["list"];
-        areaInfoList.forEach((areaInfo) {
-          AreaInfo area = AreaInfo();
-          area.platform = "bilibili";
-          area.areaType = areaInfo["parent_id"].toString();
-          area.typeName = areaInfo["parent_name"];
-          area.areaId = areaInfo["id"].toString();
-          area.areaName = areaInfo["name"];
-          area.areaPic = areaInfo["pic"];
-          subAreaList.add(area);
+    try {
+      dynamic response = await _getJson(url);
+      if (response["code"] == 0) {
+        List<dynamic> data = response["data"]["data"];
+        data.forEach((areaType) {
+          List<AreaInfo> subAreaList = [];
+          List<dynamic> areaInfoList = areaType["list"];
+          areaInfoList.forEach((areaInfo) {
+            AreaInfo area = AreaInfo();
+            area.platform = "bilibili";
+            area.areaType = areaInfo["parent_id"].toString();
+            area.typeName = areaInfo["parent_name"];
+            area.areaId = areaInfo["id"].toString();
+            area.areaName = areaInfo["name"];
+            area.areaPic = areaInfo["pic"];
+            subAreaList.add(area);
+          });
+          areaList.add(subAreaList);
         });
-        areaList.add(subAreaList);
-      });
+      }
+    } catch (e) {
+      return areaList;
     }
     return areaList;
   }
@@ -213,19 +220,23 @@ class BilibiliApi {
     String url =
         "https://api.live.bilibili.com/xlive/web-interface/v1/second/getList?platform=web&parent_area_id=${area.areaType}&area_id=${area.areaId}&sort_type=&page=$page";
 
-    dynamic response = await _getJson(url);
-    if (response["code"] == 0) {
-      List<dynamic> roomInfoList = response["data"]["list"];
-      for (var roomInfo in roomInfoList) {
-        var room = RoomInfo(roomInfo["roomid"].toString());
-        room.platform = "bilibili";
-        room.title = roomInfo["title"];
-        room.nick = roomInfo["uname"];
-        room.cover = roomInfo["cover"];
-        room.avatar = roomInfo["face"];
-        room.liveStatus = LiveStatus.live;
-        list.add(room);
+    try {
+      dynamic response = await _getJson(url);
+      if (response["code"] == 0) {
+        List<dynamic> roomInfoList = response["data"]["list"];
+        for (var roomInfo in roomInfoList) {
+          var room = RoomInfo(roomInfo["roomid"].toString());
+          room.platform = "bilibili";
+          room.title = roomInfo["title"];
+          room.nick = roomInfo["uname"];
+          room.cover = roomInfo["cover"];
+          room.avatar = roomInfo["face"];
+          room.liveStatus = LiveStatus.live;
+          list.add(room);
+        }
       }
+    } catch (e) {
+      return list;
     }
     return list;
   }
@@ -244,29 +255,33 @@ class BilibiliApi {
         "&page=1&order=&keyword=$keyWords&category_id=&__refresh__=true"
         "&_extra=&highlight=1&single_column=0";
 
-    dynamic response = await _getJson(url);
-    if (response["code"] == 0) {
-      List<dynamic> ownerList = response["data"]["result"];
-      for (var ownerInfo in ownerList) {
-        RoomInfo owner = RoomInfo(ownerInfo['roomid'].toString());
-        owner.platform = "bilibili";
-        owner.nick = regexMatch(
-            ownerInfo["uname"], RegExp(r"(?<=\>)(.*)(?=\<\/em\>)"))[0];
-        owner.areaName = ownerInfo["cate_name"];
-        owner.avatar = ownerInfo["uface"];
-        if (!owner.avatar.contains("http")) {
-          owner.avatar = "https:${owner.avatar}";
+    try {
+      dynamic response = await _getJson(url);
+      if (response["code"] == 0) {
+        List<dynamic> ownerList = response["data"]["result"];
+        for (var ownerInfo in ownerList) {
+          RoomInfo owner = RoomInfo(ownerInfo['roomid'].toString());
+          owner.platform = "bilibili";
+          owner.nick = regexMatch(
+              ownerInfo["uname"], RegExp(r"(?<=\>)(.*)(?=\<\/em\>)"))[0];
+          owner.areaName = ownerInfo["cate_name"];
+          owner.avatar = ownerInfo["uface"];
+          if (!owner.avatar.contains("http")) {
+            owner.avatar = "https:${owner.avatar}";
+          }
+          owner.liveStatus =
+              ownerInfo["is_live"] ? LiveStatus.live : LiveStatus.offline;
+
+          // controll islive status
+          if (isLive && owner.liveStatus == LiveStatus.offline) continue;
+          list.add(owner);
+
+          // if room exists
+          if (list.indexWhere((e) => e.roomId == owner.roomId) != -1) continue;
         }
-        owner.liveStatus =
-            ownerInfo["is_live"] ? LiveStatus.live : LiveStatus.offline;
-
-        // controll islive status
-        if (isLive && owner.liveStatus == LiveStatus.offline) continue;
-        list.add(owner);
-
-        // if room exists
-        if (list.indexWhere((e) => e.roomId == owner.roomId) != -1) continue;
       }
+    } catch (e) {
+      return list;
     }
     return list;
   }
