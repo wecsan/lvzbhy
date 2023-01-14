@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/pages/search/search.dart';
-import 'package:hot_live/pages/settings.dart';
+import 'package:hot_live/pages/settings/settings.dart';
 
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
@@ -19,7 +19,8 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  late FavoriteProvider provider;
+  late FavoriteProvider provider = Provider.of<FavoriteProvider>(context);
+  late double screenWidth = MediaQuery.of(context).size.width;
 
   void onLongPress(BuildContext context, RoomInfo room) {
     showDialog(
@@ -60,9 +61,6 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   Widget build(BuildContext context) {
-    provider = Provider.of<FavoriteProvider>(context);
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(

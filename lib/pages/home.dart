@@ -6,7 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:hot_live/pages/areas/areas.dart';
 import 'package:hot_live/pages/favorite/favorite.dart';
 import 'package:hot_live/pages/popular/popular.dart';
+import 'package:hot_live/provider/settings_provider.dart';
+import 'package:hot_live/utils/version_util.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -26,6 +29,46 @@ class HomePageRouter extends StatefulWidget {
 
 class _HomePageRouterState extends State<HomePageRouter> {
   int _selectedIndex = 0;
+  late SettingsProvider settings =
+      Provider.of<SettingsProvider>(context, listen: false);
+
+  @override
+  void initState() {
+    super.initState();
+    // check update overlay ui
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        await VersionUtil.checkUpdate();
+        if (settings.enbaleAutoCheckUpdate && VersionUtil.hasNewVersion()) {
+          OverlayEntry entry = OverlayEntry(
+            builder: (context) => Container(
+              alignment: Alignment.center,
+              color: Colors.black54,
+              child: AlertDialog(
+                title: Text('Version ${VersionUtil.latestVersion}'),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Please check update in settings'),
+                    const SizedBox(height: 20),
+                    Text(
+                      VersionUtil.latestUpdateLog,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+          Overlay.of(context)?.insert(entry);
+          Future.delayed(const Duration(seconds: 3)).then((value) {
+            entry.remove();
+          });
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

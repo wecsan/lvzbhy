@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:hot_live/pages/about.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-class SettingsPage extends StatelessWidget {
+import 'about.dart';
+import 'check_update.dart';
+
+class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
-  final String appVersion = '0.9.6';
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
   @override
   Widget build(BuildContext context) {
-    SettingsProvider settings = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -50,6 +56,16 @@ class SettingsPage extends StatelessWidget {
             onTap: () {},
           ),
           const SectionTitle(title: 'Custom'),
+          SwitchListTile(
+            title: const Text('Enable auto check update'),
+            subtitle: const Text(
+                'Enable check update when enter into app, if you want check update everytime'),
+            value: settings.enbaleAutoCheckUpdate,
+            activeColor: Provider.of<AppThemeProvider>(context).themeColor,
+            onChanged: (bool value) {
+              settings.enbaleAutoCheckUpdate = value;
+            },
+          ),
           ListTile(
             title: const Text('Set custom bilibili cookie for search'),
             subtitle: const Text(
@@ -96,8 +112,8 @@ class SettingsPage extends StatelessWidget {
             },
           ),
           const SectionTitle(title: 'About'),
-          CheckForUpdate(version: appVersion),
-          About(version: appVersion),
+          const CheckUpdate(),
+          const About(),
         ],
       ),
     );

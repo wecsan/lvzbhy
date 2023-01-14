@@ -15,16 +15,11 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late TextEditingController controller;
+  late TextEditingController controller = TextEditingController();
+  late FavoriteProvider favoritePod = Provider.of<FavoriteProvider>(context);
 
   List<RoomInfo> ownerList = [];
   bool isLive = false;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = TextEditingController();
-  }
 
   final List<String> platforms = [
     'bilibili',
@@ -49,8 +44,6 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    FavoriteProvider favoritePod = Provider.of<FavoriteProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

@@ -15,7 +15,8 @@ class PopularPage extends StatefulWidget {
 }
 
 class _PopularPageState extends State<PopularPage> {
-  late PopularProvider provider;
+  late PopularProvider provider = Provider.of<PopularProvider>(context);
+  late double screenWidth = MediaQuery.of(context).size.width;
 
   @override
   void initState() {
@@ -24,9 +25,6 @@ class _PopularPageState extends State<PopularPage> {
 
   @override
   Widget build(BuildContext context) {
-    provider = Provider.of<PopularProvider>(context);
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(

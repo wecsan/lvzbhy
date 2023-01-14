@@ -10,6 +10,7 @@ class SettingsProvider with ChangeNotifier {
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     _useCustomResolutionForHuya =
         PrefUtil.getBool('useCustomResolutionForHuya') ?? false;
+    _enbaleAutoCheckUpdate = PrefUtil.getBool('enbaleAutoCheckUpdate') ?? false;
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.8;
@@ -20,6 +21,7 @@ class SettingsProvider with ChangeNotifier {
   void _saveToPref() {
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
     PrefUtil.setBool('useCustomResolutionForHuya', _useCustomResolutionForHuya);
+    PrefUtil.setBool('enbaleAutoCheckUpdate', _enbaleAutoCheckUpdate);
     PrefUtil.setDouble('danmakuArea', _danmakuArea);
     PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
@@ -42,6 +44,14 @@ class SettingsProvider with ChangeNotifier {
   bool get useCustomResolutionForHuya => _useCustomResolutionForHuya;
   set useCustomResolutionForHuya(value) {
     _useCustomResolutionForHuya = value;
+    _saveToPref();
+    notifyListeners();
+  }
+
+  bool _enbaleAutoCheckUpdate = true;
+  bool get enbaleAutoCheckUpdate => _enbaleAutoCheckUpdate;
+  set enbaleAutoCheckUpdate(value) {
+    _enbaleAutoCheckUpdate = value;
     _saveToPref();
     notifyListeners();
   }

@@ -29,6 +29,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
   bool _hasError = false;
   Map<dynamic, dynamic> streamList = {};
 
+  late FavoriteProvider favoriteProvider =
+      Provider.of<FavoriteProvider>(context);
+
   @override
   void initState() {
     super.initState();
@@ -80,9 +83,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   Widget build(BuildContext context) {
-    FavoriteProvider favoriteProvider = Provider.of<FavoriteProvider>(context);
-    Wakelock.enable();
-
     final streamButtons = [];
     streamList.forEach((key, value) {
       streamButtons.add(

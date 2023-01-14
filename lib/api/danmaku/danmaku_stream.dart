@@ -16,6 +16,10 @@ class DanmakuStream {
   Stream<DanmakuInfo> get stream => _controller.stream;
 
   DanmakuStream({required this.room}) {
+    initPlatform();
+  }
+
+  void initPlatform() {
     switch (room.platform) {
       case 'bilibili':
         _damakuStream = BilibiliDanmaku(

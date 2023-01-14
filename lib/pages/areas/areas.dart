@@ -17,7 +17,9 @@ class AreasPage extends StatefulWidget {
 }
 
 class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
-  late TabController tabController;
+  late AreasProvider provider = Provider.of<AreasProvider>(context);
+  late TabController tabController =
+      TabController(length: provider.labelList.length, vsync: this);
 
   @override
   void initState() {
@@ -26,10 +28,6 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    AreasProvider provider = Provider.of<AreasProvider>(context);
-    tabController =
-        TabController(length: provider.labelList.length, vsync: this);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
