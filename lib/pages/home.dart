@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:hot_live/pages/areas/areas.dart';
 import 'package:hot_live/pages/favorite/favorite.dart';
 import 'package:hot_live/pages/popular/popular.dart';
+import 'package:hot_live/pages/settings/check_update.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/utils/version_util.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
@@ -39,32 +40,16 @@ class _HomePageRouterState extends State<HomePageRouter> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) async {
         await VersionUtil.checkUpdate();
-        if (settings.enbaleAutoCheckUpdate && VersionUtil.hasNewVersion()) {
-          OverlayEntry entry = OverlayEntry(
+        if (settings.enbaleAutoCheckUpdate && !VersionUtil.hasNewVersion()) {
+          late OverlayEntry entry;
+          entry = OverlayEntry(
             builder: (context) => Container(
               alignment: Alignment.center,
               color: Colors.black54,
-              child: AlertDialog(
-                title: Text('Version ${VersionUtil.latestVersion}'),
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('Please check update in settings'),
-                    const SizedBox(height: 20),
-                    Text(
-                      VersionUtil.latestUpdateLog,
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                  ],
-                ),
-              ),
+              child: NewVersionDialog(entry: entry),
             ),
           );
           Overlay.of(context)?.insert(entry);
-          Future.delayed(const Duration(seconds: 3)).then((value) {
-            entry.remove();
-          });
         }
       },
     );

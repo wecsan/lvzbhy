@@ -49,7 +49,9 @@ class NoNewVersionDialog extends StatelessWidget {
 }
 
 class NewVersionDialog extends StatelessWidget {
-  const NewVersionDialog({Key? key}) : super(key: key);
+  const NewVersionDialog({Key? key, this.entry}) : super(key: key);
+
+  final OverlayEntry? entry;
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +73,21 @@ class NewVersionDialog extends StatelessWidget {
         TextButton(
           child: const Text('Cancel'),
           onPressed: () {
-            Navigator.pop(context);
+            if (entry != null) {
+              entry!.remove();
+            } else {
+              Navigator.pop(context);
+            }
           },
         ),
         ElevatedButton(
           child: const Text('Update'),
           onPressed: () {
-            Navigator.pop(context);
+            if (entry != null) {
+              entry!.remove();
+            } else {
+              Navigator.pop(context);
+            }
             launchUrl(
               Uri.parse('https://github.com/Jackiu1997/hot_live/releases'),
               mode: LaunchMode.externalApplication,
