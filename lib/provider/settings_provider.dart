@@ -10,7 +10,7 @@ class SettingsProvider with ChangeNotifier {
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     _useCustomResolutionForHuya =
         PrefUtil.getBool('useCustomResolutionForHuya') ?? false;
-    _enbaleAutoCheckUpdate = PrefUtil.getBool('enbaleAutoCheckUpdate') ?? false;
+    _enbaleAutoCheckUpdate = PrefUtil.getBool('enbaleAutoCheckUpdate') ?? true;
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.8;
