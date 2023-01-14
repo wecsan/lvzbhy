@@ -40,7 +40,6 @@ class FavoriteProvider with ChangeNotifier {
   }
 
   void _getRoomsInfoFromApi() async {
-    _onlineRoomList.clear();
     for (int i = 0; i < _roomsList.length; i++) {
       _roomsList[i] = await LiveApi.getRoomInfo(_roomsList[i]);
       if (_roomsList[i].liveStatus == LiveStatus.live) {

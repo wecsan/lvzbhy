@@ -114,7 +114,7 @@ class HuyaApi {
       } else {
         room.liveStatus = LiveStatus.live;
         room.cover = roomInfo['liveData']['screenshot'];
-        room.danmakuId = roomInfo['profileInfo']['uid'];
+        room.danmakuId = roomInfo['profileInfo']['uid'].toString();
       }
     }
     return room;
