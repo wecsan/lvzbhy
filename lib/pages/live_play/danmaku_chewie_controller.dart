@@ -23,6 +23,7 @@ class DanmakuText extends StatelessWidget {
 
     return Text(
       message,
+      maxLines: 1,
       style: TextStyle(
         fontSize: settings.danmakuFontSize,
         fontWeight: FontWeight.w400,
@@ -66,7 +67,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   Timer? _bufferingDisplayTimer;
 
   // 滑动调节控制
-  bool _dragging = false;
+  bool _dragingBV = false;
   double? updatePrevDx;
   double? updatePrevDy;
   int? updatePosX;
@@ -189,12 +190,12 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
 
   // Center hit and controller widgets
   Widget _buildHitArea() {
-    Widget centerArea;
+    Widget centerArea = Container();
     if (_displayDanmakuSetting) {
       centerArea = _buildDanmakuSettingView();
-    } else if (_dragging) {
+    } else if (_dragingBV) {
       centerArea = _buildDargVolumeAndBrightness();
-    } else {
+    } else if (!_latestValue.isPlaying) {
       centerArea = _buildCenterPlayButton();
     }
 
@@ -234,7 +235,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     return Container(
       alignment: Alignment.center,
       child: AnimatedOpacity(
-        opacity: !_latestValue.isPlaying && !_dragging ? 0.3 : 0.0,
+        opacity: !_latestValue.isPlaying ? 0.4 : 0.0,
         duration: const Duration(milliseconds: 300),
         child: GestureDetector(
           onTap: _playPause,
@@ -259,21 +260,26 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   Widget _buildDargVolumeAndBrightness() {
     IconData iconData = Icons.volume_up;
 
-    if (_dragging) {
-      if (updateDargVarVal! <= 0) {
-        iconData = !isDargVerLeft! ? Icons.volume_mute : Icons.brightness_low;
-      } else if (updateDargVarVal! < 0.5) {
-        iconData =
-            !isDargVerLeft! ? Icons.volume_down : Icons.brightness_medium;
+    if (_dragingBV) {
+      if (isDargVerLeft!) {
+        iconData = updateDargVarVal! <= 0
+            ? Icons.brightness_low
+            : updateDargVarVal! < 0.5
+                ? Icons.brightness_medium
+                : Icons.brightness_high;
       } else {
-        iconData = !isDargVerLeft! ? Icons.volume_up : Icons.brightness_high;
+        iconData = updateDargVarVal! <= 0
+            ? Icons.volume_mute
+            : updateDargVarVal! < 0.5
+                ? Icons.volume_down
+                : Icons.volume_up;
       }
     }
 
     return Container(
       alignment: Alignment.center,
       child: AnimatedOpacity(
-        opacity: _dragging ? 0.8 : 0.0,
+        opacity: _dragingBV ? 0.8 : 0.0,
         duration: const Duration(milliseconds: 300),
         child: Card(
           color: Colors.black,
@@ -311,14 +317,8 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   Widget _buildDanmakuSettingView() {
     SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
-    final TextStyle labelStyle = Theme.of(context)
-            .textTheme
-            .labelMedium
-            ?.copyWith(color: Colors.white60) ??
-        const TextStyle(color: Colors.white60);
-    final TextStyle digitStyle =
-        Theme.of(context).textTheme.caption?.copyWith(color: Colors.white60) ??
-            const TextStyle(color: Colors.white60);
+    const TextStyle label = TextStyle(color: Colors.white);
+    const TextStyle digit = TextStyle(color: Colors.white);
 
     return Container(
       alignment: Alignment.center,
@@ -336,7 +336,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text('显示区域', style: labelStyle),
+                  leading: const Text('显示区域', style: label),
                   title: Slider(
                     value: settings.danmakuArea,
                     min: 0.0,
@@ -345,13 +345,13 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                   ),
                   trailing: Text(
                     (settings.danmakuArea * 100).toInt().toString() + '%',
-                    style: digitStyle,
+                    style: digit,
                   ),
                 ),
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text('不透明度', style: labelStyle),
+                  leading: const Text('不透明度', style: label),
                   title: Slider(
                     value: settings.danmakuOpacity,
                     min: 0.0,
@@ -360,13 +360,13 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                   ),
                   trailing: Text(
                     (settings.danmakuOpacity * 100).toInt().toString() + '%',
-                    style: digitStyle,
+                    style: digit,
                   ),
                 ),
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text('弹幕速度', style: labelStyle),
+                  leading: const Text('弹幕速度', style: label),
                   title: Slider(
                     value: settings.danmakuSpeed,
                     min: 1.0,
@@ -375,13 +375,13 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                   ),
                   trailing: Text(
                     settings.danmakuSpeed.toInt().toString(),
-                    style: digitStyle,
+                    style: digit,
                   ),
                 ),
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text('弹幕字号', style: labelStyle),
+                  leading: const Text('弹幕字号', style: label),
                   title: Slider(
                     value: settings.danmakuFontSize,
                     min: 10.0,
@@ -390,7 +390,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
                   ),
                   trailing: Text(
                     settings.danmakuFontSize.toInt().toString(),
-                    style: digitStyle,
+                    style: digit,
                   ),
                 ),
               ],
@@ -600,7 +600,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     if (!isDargVerLeft!) {
       // 音量
       await volumeController.getVolume().then((double v) {
-        _dragging = true;
+        _dragingBV = true;
         setState(() {
           updateDargVarVal = v;
         });
@@ -608,7 +608,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     } else {
       // 亮度
       await brightnessController.current.then((double v) {
-        _dragging = true;
+        _dragingBV = true;
         setState(() {
           updateDargVarVal = v;
         });
@@ -617,7 +617,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   }
 
   void _onVerticalDragUpdate(detills) {
-    if (!_dragging) return;
+    if (!_dragingBV) return;
     double curDragDy = detills.globalPosition.dy;
     // 确定当前是前进或者后退
     int cdy = curDragDy.toInt();
@@ -637,7 +637,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     }
     setState(() {
       updatePrevDy = curDragDy;
-      _dragging = true;
+      _dragingBV = true;
       updateDargVarVal = dragRange;
       // 音量
       if (!isDargVerLeft!) {
@@ -650,7 +650,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
 
   void _onVerticalDragEnd(detills) {
     setState(() {
-      _dragging = false;
+      _dragingBV = false;
     });
   }
 

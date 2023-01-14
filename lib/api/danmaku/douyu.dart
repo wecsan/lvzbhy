@@ -36,11 +36,9 @@ class DouyuDanmaku {
     timer = Timer.periodic(const Duration(seconds: 45), (callback) {
       totleTime += 45;
       heartBeat();
-      //print("时间: $totleTime s");
     });
   }
 
-  /// 发送心跳包
   void heartBeat() {
     String heartbeat = 'type@=mrkl/';
     _channel!.sink.add(encode(heartbeat));
@@ -71,9 +69,8 @@ class DouyuDanmaku {
     return Uint8List.fromList(data);
   }
 
-  /// 对消息进行解码
   decode(Uint8List list) {
-    //消息总长度
+    // 消息总长度
     int totalLength = list.length;
     // 当前消息长度
     int len = 0;
@@ -89,17 +86,17 @@ class DouyuDanmaku {
       String byteDatas =
           utf8.decode(singleMsgBuffer.sublist(12, singleMsgBuffer.length - 2));
 
-      //目前只处理弹幕信息所以简单点
+      // 目前只处理弹幕信息所以简单点
       if (byteDatas.contains("type@=chatmsg")) {
-        //截取用户名
+        // 截取用户名
         var nickname = byteDatas
             .substring(byteDatas.indexOf("nn@="), byteDatas.indexOf("/txt"))
             .replaceAll("nn@=", "");
-        //截取弹幕信息
+        // 截取弹幕信息
         var content = byteDatas
             .substring(byteDatas.indexOf("txt@="), byteDatas.indexOf("/cid"))
             .replaceAll("txt@=", "");
-        controller.add(DanmakuInfo(nickname, content));
+        controller.sink.add(DanmakuInfo(nickname, content));
       }
     }
   }

@@ -48,8 +48,7 @@ class BilibiliDanmaku {
         ":" +
         config!.hostServerList![2].wssPort.toString() +
         "/sub");
-    joinRoom(danmakuId);
-
+    login();
     // 设置监听
     _channel!.stream.listen((msg) {
       Uint8List list = Uint8List.fromList(msg);
@@ -57,15 +56,14 @@ class BilibiliDanmaku {
     });
   }
 
-  void sendHeartBeat() {
+  void heartBeat() {
     List<int> code = [0, 0, 0, 0, 0, 16, 0, 1, 0, 0, 0, 2, 0, 0, 0, 1];
     _channel!.sink.add(Uint8List.fromList(code));
   }
 
-  /// 加入房间
-  void joinRoom(int id) {
+  void login() {
     String msg = "{"
-            "\"roomid\":$id,"
+            "\"roomid\":$danmakuId,"
             "\"uId\":0,"
             "\"protover\":2,"
             "\"platform\":\"web\","
@@ -76,10 +74,9 @@ class BilibiliDanmaku {
         "\"}";
     debugPrint(msg);
     _channel!.sink.add(encode(7, msg: msg));
-    sendHeartBeat();
+    heartBeat();
   }
 
-  /// 对消息编码
   Uint8List encode(int op, {String? msg}) {
     List<int> header = [0, 0, 0, 0, 0, 16, 0, 1, 0, 0, 0, op, 0, 0, 0, 1];
     if (msg != null) {
@@ -91,7 +88,6 @@ class BilibiliDanmaku {
     return uint8list;
   }
 
-  /// 对消息进行解码
   decode(Uint8List list) {
     int headerLen = readInt(list, 4, 2);
     int ver = readInt(list, 6, 2);
@@ -122,7 +118,7 @@ class BilibiliDanmaku {
             case "DANMU_MSG":
               String msg = jd["info"][1].toString();
               String name = jd["info"][2][1].toString();
-              controller.add(DanmakuInfo(name, msg));
+              controller.sink.add(DanmakuInfo(name, msg));
               break;
             default:
           }
