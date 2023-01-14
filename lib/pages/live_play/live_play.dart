@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/model/liveroom.dart';
@@ -7,6 +6,7 @@ import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_listview.dart';
 import 'package:chewie/chewie.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -26,15 +26,23 @@ class _LivePlayPageState extends State<LivePlayPage> {
   ChewieController? chewieController;
   DanmakuStream? danmakuStream;
 
-  String errorInfo = '';
+  bool _hasError = false;
   Map<dynamic, dynamic> streamList = {};
-  double? _originalBrightness;
 
   @override
   void initState() {
     super.initState();
-    FlutterScreenWake.brightness.then((value) => _originalBrightness = value);
     initLive();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    ScreenBrightness().resetScreenBrightness();
+    videoController?.pause();
+    chewieController?.dispose();
+    videoController?.dispose();
+    danmakuStream?.dispose();
   }
 
   void initLive() async {
@@ -47,7 +55,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
         streamList.values.toList().first.values.toList().first,
       );
     } else {
-      errorInfo = 'Get Live Stream Failed';
+      _hasError = true;
     }
     setState(() {});
   }
@@ -68,18 +76,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
           setState(() {});
         },
       );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (_originalBrightness != null) {
-      FlutterScreenWake.setBrightness(_originalBrightness!);
-    }
-    videoController?.pause();
-    chewieController?.dispose();
-    videoController?.dispose();
-    danmakuStream?.dispose();
   }
 
   @override
@@ -124,7 +120,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 16 / 9,
-              child: videoController?.value.isInitialized ?? false
+              child: (videoController?.value.isInitialized ?? false)
                   ? Container(
                       child: Chewie(controller: chewieController!),
                       color: Colors.black,
@@ -132,8 +128,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
                   : Container(
                       color: Colors.black,
                       child: Center(
-                        child: errorInfo.isNotEmpty
-                            ? Text(errorInfo)
+                        child: _hasError
+                            ? const Icon(Icons.error_rounded, size: 32)
                             : const CircularProgressIndicator(),
                       ),
                     ),

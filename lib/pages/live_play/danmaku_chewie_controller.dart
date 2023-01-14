@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
-import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/model/danmaku.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import 'package:video_player/video_player.dart';
+import 'package:volume_controller/volume_controller.dart';
 
 class DanmakuText extends StatelessWidget {
   const DanmakuText({Key? key, required this.message}) : super(key: key);
@@ -71,6 +72,8 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   int? updatePosX;
   bool? isDargVerLeft;
   double? updateDargVarVal;
+  VolumeController volumeController = VolumeController()..showSystemUI = false;
+  ScreenBrightness brightnessController = ScreenBrightness();
 
   VideoPlayerController? _controller;
   ChewieController? _chewieController;
@@ -599,13 +602,15 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     // 大于 右边 音量 ， 小于 左边 亮度
     if (!isDargVerLeft!) {
       // 音量
-      _dragging = true;
-      setState(() {
-        updateDargVarVal = controller.value.volume;
+      await volumeController.getVolume().then((double v) {
+        _dragging = true;
+        setState(() {
+          updateDargVarVal = v;
+        });
       });
     } else {
       // 亮度
-      await FlutterScreenWake.brightness.then((double v) {
+      await brightnessController.current.then((double v) {
         _dragging = true;
         setState(() {
           updateDargVarVal = v;
@@ -639,9 +644,9 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
       updateDargVarVal = dragRange;
       // 音量
       if (!isDargVerLeft!) {
-        controller.setVolume(dragRange);
+        volumeController.setVolume(dragRange);
       } else {
-        FlutterScreenWake.setBrightness(dragRange);
+        brightnessController.setScreenBrightness(dragRange);
       }
     });
   }
