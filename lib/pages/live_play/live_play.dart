@@ -23,6 +23,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   String datasource = '';
   bool datasourceError = false;
 
+  late final favorite = Provider.of<FavoriteProvider>(context);
   final GlobalKey<DanmakuVideoPlayerState> _globalKey = GlobalKey();
   DanmakuVideoPlayerState get videoPlayer => _globalKey.currentState!;
 
@@ -56,7 +57,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
         iconSize: 24,
         icon: Text(
           resolution.substring(resolution.length - 2, resolution.length),
-          style: Theme.of(context).textTheme.labelSmall,
+          style: Theme.of(context).textTheme.labelMedium,
         ),
         onSelected: (String link) => videoPlayer.setDataSource(link),
         itemBuilder: (context) {
@@ -107,11 +108,38 @@ class _LivePlayPageState extends State<LivePlayPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(
                 children: [
-                  const Icon(Icons.video_library_rounded, size: 20),
-                  const Spacer(),
+                  const SizedBox(width: 8),
+                  CircleAvatar(
+                    foregroundImage: (widget.room.avatar == '')
+                        ? null
+                        : NetworkImage(widget.room.avatar),
+                    radius: 13,
+                    backgroundColor: Theme.of(context).disabledColor,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.room.nick,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                        Text(
+                          widget.room.platform,
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              ?.copyWith(fontSize: 10),
+                        ),
+                      ],
+                    ),
+                  ),
                   const IconButton(onPressed: null, icon: Text('')),
                   ...resolutionBtns,
                 ],
@@ -124,46 +152,42 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 danmakuStream: danmakuStream,
               ),
             ),
-            OwnerListTile(room: widget.room),
+            // OwnerListTile(room: widget.room),
           ],
         ),
       ),
-    );
-  }
-}
-
-class OwnerListTile extends StatelessWidget {
-  const OwnerListTile({Key? key, required this.room}) : super(key: key);
-
-  final RoomInfo room;
-
-  @override
-  Widget build(BuildContext context) {
-    final favoriteProvider = Provider.of<FavoriteProvider>(context);
-    final followedStyle = Theme.of(context)
-        .textTheme
-        .button
-        ?.copyWith(color: Theme.of(context).errorColor);
-
-    return ListTile(
-      leading: CircleAvatar(
-        foregroundImage: (room.avatar == '') ? null : NetworkImage(room.avatar),
-        radius: 18,
-        backgroundColor: Theme.of(context).disabledColor,
-      ),
-      title: Text(
-        room.nick,
-        maxLines: 1,
-        style: const TextStyle(fontWeight: FontWeight.w600),
-      ),
-      trailing: favoriteProvider.isFavorite(room.roomId)
-          ? ElevatedButton(
-              onPressed: () => favoriteProvider.removeRoom(room),
-              child: Text('Followed', style: followedStyle),
+      floatingActionButton: favorite.isFavorite(widget.room.roomId)
+          ? FloatingActionButton(
+              tooltip: 'unfollow',
+              onPressed: () => favorite.removeRoom(widget.room),
+              child: CircleAvatar(
+                foregroundImage: (widget.room.avatar == '')
+                    ? null
+                    : NetworkImage(widget.room.avatar),
+                radius: 18,
+                backgroundColor: Theme.of(context).disabledColor,
+              ),
             )
-          : ElevatedButton(
-              onPressed: () => favoriteProvider.addRoom(room),
-              child: const Text('Follow'),
+          : FloatingActionButton.extended(
+              onPressed: () => favorite.addRoom(widget.room),
+              icon: CircleAvatar(
+                foregroundImage: (widget.room.avatar == '')
+                    ? null
+                    : NetworkImage(widget.room.avatar),
+                radius: 18,
+                backgroundColor: Theme.of(context).disabledColor,
+              ),
+              label: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Follow', style: Theme.of(context).textTheme.caption),
+                  Text(
+                    widget.room.nick,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
     );
   }
