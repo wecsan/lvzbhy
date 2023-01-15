@@ -30,7 +30,7 @@ class _DanmakuListViewState extends State<DanmakuListView>
         _danmakuList.add(info);
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 200),
           curve: Curves.linearToEaseOut,
         );
       });
