@@ -24,15 +24,16 @@ class _DanmakuListViewState extends State<DanmakuListView>
 
   @override
   void initState() {
+    _danmakuList.add(DanmakuInfo("系统信息", "已接入弹幕监听"));
     widget.danmakuStream.listen((info) {
       setState(() {
         _danmakuList.add(info);
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.linearToEaseOut,
+        );
       });
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.linearToEaseOut,
-      );
     });
     super.initState();
   }

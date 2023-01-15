@@ -33,19 +33,19 @@ class DanmakuText extends StatelessWidget {
   }
 }
 
-class DanmakuChewieController extends StatefulWidget {
-  const DanmakuChewieController({Key? key, required this.danmakuStream})
+class DanmakuVideoController extends StatefulWidget {
+  const DanmakuVideoController({Key? key, required this.danmakuStream})
       : super(key: key);
 
   final DanmakuStream danmakuStream;
 
   @override
   State<StatefulWidget> createState() {
-    return _DanmakuChewieControllerState();
+    return _DanmakuVideoControllerState();
   }
 }
 
-class _DanmakuChewieControllerState extends State<DanmakuChewieController>
+class _DanmakuVideoControllerState extends State<DanmakuVideoController>
     with SingleTickerProviderStateMixin {
   late VideoPlayerValue _latestValue;
 
@@ -87,7 +87,10 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
 
   @override
   void initState() {
-    widget.danmakuStream.listen(sendDanmaku);
+    widget.danmakuStream.listen((info) {
+      barrageWallController
+          .send([Bullet(child: DanmakuText(message: info.msg))]);
+    });
     super.initState();
   }
 
@@ -125,19 +128,11 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
             context,
             chewieController.videoPlayerController.value.errorDescription!,
           ) ??
-          const Center(
-            child: Icon(
-              Icons.error,
-              color: Colors.white,
-              size: 42,
-            ),
-          );
+          _buildRefreshButton();
     }
 
     return MouseRegion(
-      onHover: (_) {
-        _cancelAndRestartTimer();
-      },
+      onHover: (_) => _cancelAndRestartTimer(),
       child: GestureDetector(
         onTap: () => _cancelAndRestartTimer(),
         child: AbsorbPointer(
@@ -157,11 +152,29 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     );
   }
 
-  // Danmaku widget and send
-  void sendDanmaku(DanmakuInfo info) {
-    barrageWallController.send([Bullet(child: DanmakuText(message: info.msg))]);
+  Widget _buildRefreshButton() {
+    return Container(
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () => controller.initialize().then((value) => controller.play()),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 10, right: 10),
+          decoration: const BoxDecoration(
+            boxShadow: <BoxShadow>[
+              BoxShadow(color: Colors.black54, blurRadius: 20),
+            ],
+          ),
+          child: const Icon(
+            Icons.refresh_rounded,
+            size: 42.0,
+            color: Colors.white70,
+          ),
+        ),
+      ),
+    );
   }
 
+  // Danmaku widget
   Widget _buildDanmakuView() {
     double danmukuHeight = (chewieController.isFullScreen
             ? MediaQuery.of(context).size.height
@@ -235,7 +248,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
     return Container(
       alignment: Alignment.center,
       child: AnimatedOpacity(
-        opacity: !_latestValue.isPlaying ? 0.4 : 0.0,
+        opacity: !_latestValue.isPlaying ? 0.7 : 0.0,
         duration: const Duration(milliseconds: 300),
         child: GestureDetector(
           onTap: _playPause,
@@ -248,7 +261,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
             ),
             child: const Icon(
               Icons.play_arrow_rounded,
-              size: 50.0,
+              size: 42.0,
               color: Colors.white,
             ),
           ),
@@ -405,7 +418,7 @@ class _DanmakuChewieControllerState extends State<DanmakuChewieController>
   Widget _buildActionBar() {
     return Positioned(
       top: 0,
-      height: barHeight + 10,
+      height: barHeight,
       width: MediaQuery.of(context).size.width,
       child: AnimatedOpacity(
         opacity: _hideStuff ? 0.0 : 1,
