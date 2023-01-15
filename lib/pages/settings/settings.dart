@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hot_live/provider/settings_provider.dart';
-import 'package:hot_live/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'about.dart';
@@ -15,6 +14,53 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late SettingsProvider settings = Provider.of<SettingsProvider>(context);
+
+  void showThemeModeSelectorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Theme Mode'),
+          children: SettingsProvider.themeModes.keys.map<Widget>((name) {
+            return RadioListTile<String>(
+              activeColor: settings.themeColor,
+              groupValue: settings.themeModeName,
+              value: name,
+              title: Text(name),
+              onChanged: (value) {
+                settings.changeThemeMode(value!);
+                Navigator.of(context).pop();
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  void showThemeColorSelectorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Change Theme'),
+          children: SettingsProvider.themeColors.keys.map<Widget>((name) {
+            final color = SettingsProvider.themeColors[name];
+            return RadioListTile<String>(
+              activeColor: settings.themeColor,
+              groupValue: settings.themeColorName,
+              value: name,
+              title: Text(name, style: TextStyle(color: color)),
+              onChanged: (value) {
+                settings.changeThemeColor(value!);
+                Navigator.of(context).pop();
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +81,13 @@ class _SettingsPageState extends State<SettingsPage> {
             title: const Text('Change Theme Color'),
             subtitle: const Text('Change the theme color of the app'),
             leading: const Icon(Icons.color_lens, size: 32),
-            onTap: () {
-              Provider.of<AppThemeProvider>(context, listen: false)
-                  .showThemeColorSelectorDialog(context);
-            },
+            onTap: showThemeColorSelectorDialog,
           ),
           ListTile(
             title: const Text('Change Theme Mode'),
             subtitle: const Text('Change the theme mode of the app'),
             leading: const Icon(Icons.dark_mode_rounded, size: 32),
-            onTap: () {
-              Provider.of<AppThemeProvider>(context, listen: false)
-                  .showThemeModeSelectorDialog(context);
-            },
+            onTap: showThemeModeSelectorDialog,
           ),
           ListTile(
             title: const Text('Change Language'),
@@ -61,7 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: const Text(
                 'Enable check update when enter into app, if you want check update everytime'),
             value: settings.enbaleAutoCheckUpdate,
-            activeColor: Provider.of<AppThemeProvider>(context).themeColor,
+            activeColor: settings.themeColor,
             onChanged: (bool value) {
               settings.enbaleAutoCheckUpdate = value;
             },

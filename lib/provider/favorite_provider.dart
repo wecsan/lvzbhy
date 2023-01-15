@@ -21,7 +21,7 @@ class FavoriteProvider with ChangeNotifier {
   bool _isHideOffline = false;
   get isHideOffline => _isHideOffline;
 
-  void _getRoomsFromPrefs() {
+  void _loadFromPref() {
     _roomsList.clear();
     _onlineRoomList.clear();
     List<String> prefs = PrefUtil.getStringList('favorites') ?? [];
@@ -31,7 +31,7 @@ class FavoriteProvider with ChangeNotifier {
     }
   }
 
-  void _saveRoomsToPrefs() {
+  void _saveToPref() {
     var roomJsons = <String>[];
     for (var element in _roomsList) {
       roomJsons.add(jsonEncode(element.toJson()));
@@ -51,7 +51,7 @@ class FavoriteProvider with ChangeNotifier {
   }
 
   void onRefresh() {
-    _getRoomsFromPrefs();
+    _loadFromPref();
     _getRoomsInfoFromApi();
   }
 
@@ -69,14 +69,14 @@ class FavoriteProvider with ChangeNotifier {
     _roomsList.add(room);
     if (room.liveStatus == LiveStatus.live) _onlineRoomList.add(room);
     notifyListeners();
-    _saveRoomsToPrefs();
+    _saveToPref();
   }
 
   void removeRoom(RoomInfo room) {
     _roomsList.removeWhere((e) => e.roomId == room.roomId);
     _onlineRoomList.removeWhere((e) => e.roomId == room.roomId);
     notifyListeners();
-    _saveRoomsToPrefs();
+    _saveToPref();
   }
 
   void moveToTop(RoomInfo room) {
@@ -84,7 +84,7 @@ class FavoriteProvider with ChangeNotifier {
     _roomsList.insert(0, _roomsList[index]);
     _roomsList.removeAt(index + 1);
     notifyListeners();
-    _saveRoomsToPrefs();
+    _saveToPref();
   }
 
   void hideOfflineRooms() {
