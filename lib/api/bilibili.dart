@@ -262,8 +262,10 @@ class BilibiliApi {
         for (var ownerInfo in ownerList) {
           RoomInfo owner = RoomInfo(ownerInfo['roomid'].toString());
           owner.platform = "bilibili";
-          owner.nick = regexMatch(
-              ownerInfo["uname"], RegExp(r"(?<=\>)(.*)(?=\<\/em\>)"))[0];
+          var nick = ownerInfo["uname"];
+          nick = nick.replaceAll("<em class=\"keyword\">", '');
+          nick = nick.replaceAll("</em>", '');
+          owner.nick = nick;
           owner.areaName = ownerInfo["cate_name"];
           owner.avatar = ownerInfo["uface"];
           if (!owner.avatar.contains("http")) {
@@ -275,9 +277,6 @@ class BilibiliApi {
           // controll islive status
           if (isLive && owner.liveStatus == LiveStatus.offline) continue;
           list.add(owner);
-
-          // if room exists
-          if (list.indexWhere((e) => e.roomId == owner.roomId) != -1) continue;
         }
       }
     } catch (e) {

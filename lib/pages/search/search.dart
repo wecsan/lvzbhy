@@ -28,13 +28,17 @@ class _SearchPageState extends State<SearchPage> {
     'huya',
   ];
 
-  void _onSearch(String key) async {
-    ownerList.clear();
+  void _onSearch(String key) {
+    setState(() {
+      ownerList.clear();
+    });
     for (var plat in platforms) {
-      var items = await LiveApi.search(plat, key, isLive: isLive);
-      ownerList.addAll(items);
+      LiveApi.search(plat, key, isLive: isLive).then((value) {
+        setState(() {
+          ownerList.addAll(value);
+        });
+      });
     }
-    setState(() {});
   }
 
   void _toggleIsLive() {
@@ -151,11 +155,11 @@ class OwnerCard extends StatelessWidget {
         trailing: favoritePod.isFavorite(room.roomId)
             ? ElevatedButton(
                 onPressed: () => favoritePod.removeRoom(room),
-                child: Text(S.of(context).follow, style: followedStyle),
+                child: Text(S.of(context).followed, style: followedStyle),
               )
             : ElevatedButton(
                 onPressed: () => favoritePod.addRoom(room),
-                child: Text(S.of(context).followed),
+                child: Text(S.of(context).follow),
               ),
       ),
     );
