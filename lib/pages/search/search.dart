@@ -19,8 +19,11 @@ class _SearchPageState extends State<SearchPage> {
   late TextEditingController controller = TextEditingController();
   late FavoriteProvider favoritePod = Provider.of<FavoriteProvider>(context);
 
-  List<RoomInfo> ownerList = [];
+  final List<RoomInfo> _ownerList = [];
+  final List<RoomInfo> _liveOwnerList = [];
   bool isLive = false;
+
+  List<RoomInfo> get ownerList => isLive ? _liveOwnerList : _ownerList;
 
   final List<String> platforms = [
     'bilibili',
@@ -30,12 +33,15 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onSearch(String key) {
     setState(() {
-      ownerList.clear();
+      _ownerList.clear();
+      _liveOwnerList.clear();
     });
     for (var plat in platforms) {
-      LiveApi.search(plat, key, isLive: isLive).then((value) {
+      LiveApi.search(plat, key, isLive: isLive).then((owners) {
         setState(() {
-          ownerList.addAll(value);
+          _ownerList.addAll(owners);
+          _liveOwnerList.addAll(
+              owners.where((owner) => owner.liveStatus == LiveStatus.live));
         });
       });
     }

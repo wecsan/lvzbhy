@@ -42,10 +42,9 @@ class FavoriteProvider with ChangeNotifier {
   void _getRoomsInfoFromApi() async {
     for (int i = 0; i < _roomsList.length; i++) {
       _roomsList[i] = await LiveApi.getRoomInfo(_roomsList[i]);
-      if (_roomsList[i].liveStatus == LiveStatus.live) {
-        _onlineRoomList.add(_roomsList[i]);
-      }
     }
+    _onlineRoomList
+        .addAll(_roomsList.where((room) => room.liveStatus == LiveStatus.live));
     refreshController.refreshCompleted();
     notifyListeners();
   }
