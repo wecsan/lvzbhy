@@ -163,6 +163,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
       ),
       floatingActionButton: favorite.isFavorite(widget.room.roomId)
           ? FloatingActionButton(
+              elevation: 2,
+              backgroundColor: Theme.of(context).cardColor,
               tooltip: 'unfollow',
               onPressed: () => favorite.removeRoom(widget.room),
               child: CircleAvatar(
@@ -174,6 +176,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
               ),
             )
           : FloatingActionButton.extended(
+              elevation: 2,
+              backgroundColor: Theme.of(context).cardColor,
               onPressed: () => favorite.addRoom(widget.room),
               icon: CircleAvatar(
                 foregroundImage: (widget.room.avatar == '')

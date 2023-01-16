@@ -128,18 +128,16 @@ class _SettingsPageState extends State<SettingsPage> {
           const SectionTitle(title: 'Custom'),
           SwitchListTile(
             title: const Text('Enable auto check update'),
-            subtitle: const Text(
-                'Enable check update when enter into app, if you want check update everytime'),
+            subtitle: const Text('Enable check update when enter into app'),
             value: settings.enbaleAutoCheckUpdate,
+            activeColor: Theme.of(context).colorScheme.primary,
             onChanged: (bool value) {
               settings.enbaleAutoCheckUpdate = value;
             },
           ),
           ListTile(
-            title: const Text('Enable custom bilibili cookie'),
-            subtitle: const Text(
-              'Because bilibili search need cookie vaildation, you can enable custom cookie for bilibili',
-            ),
+            title: const Text('Enable bilibili search cookie'),
+            subtitle: const Text('Enable set bilibili search needed cookie'),
             onTap: showBilibliCookieSetDialog,
           ),
           const SectionTitle(title: 'About'),

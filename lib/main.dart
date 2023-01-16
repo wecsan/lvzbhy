@@ -38,13 +38,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<SettingsProvider>(context);
     return MaterialApp(
       title: 'HotLive',
-      themeMode: Provider.of<SettingsProvider>(context).themeMode,
-      theme: MyTheme(Provider.of<SettingsProvider>(context).themeColor)
-          .lightThemeData,
-      darkTheme: MyTheme(Provider.of<SettingsProvider>(context).themeColor)
-          .darkThemeData,
+      themeMode: settings.themeMode,
+      theme: MyTheme(settings.themeColor).lightThemeData,
+      darkTheme: MyTheme(settings.themeColor).darkThemeData,
       home: const HomePage(),
     );
   }

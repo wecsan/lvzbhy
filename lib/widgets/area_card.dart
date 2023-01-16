@@ -23,8 +23,7 @@ class AreaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return KeepAliveWrapper(
       child: Card(
-        elevation: 5,
-        margin: const EdgeInsets.fromLTRB(7.5, 7.5, 7.5, 7.5),
+        margin: const EdgeInsets.all(7.5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),

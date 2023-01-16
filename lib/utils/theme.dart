@@ -6,19 +6,21 @@ class MyTheme {
   MyTheme(this.primaryColor);
 
   get lightThemeData => ThemeData.from(
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
+          primary: primaryColor,
           brightness: Brightness.light,
         ),
-        useMaterial3: true,
       );
 
   get darkThemeData => ThemeData.from(
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           error: const Color.fromARGB(255, 255, 99, 71),
           seedColor: primaryColor,
           brightness: Brightness.dark,
+          primary: primaryColor,
         ),
-        useMaterial3: true,
       );
 }
