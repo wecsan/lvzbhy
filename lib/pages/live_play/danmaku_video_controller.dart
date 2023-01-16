@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:video_player/video_player.dart';
 import 'package:volume_controller/volume_controller.dart';
+import 'package:wakelock/wakelock.dart';
 
 class DanmakuText extends StatelessWidget {
   const DanmakuText({Key? key, required this.message}) : super(key: key);
@@ -57,17 +58,17 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   double? _latestVolume;
 
-  // ignore: prefer_final_fields
   bool _hideStuff = true;
   bool _hideDanmaku = false;
+  bool _lockStuff = false;
   bool _displayTapped = false;
   bool _displayDanmakuSetting = false;
   bool _displayBufferingIndicator = false;
 
-  Timer? _hideTimer;
   Timer? _initTimer;
-  Timer? _showAfterExpandCollapseTimer;
+  Timer? _hideTimer;
   Timer? _bufferingDisplayTimer;
+  Timer? _showAfterExpandCollapseTimer;
 
   // 滑动调节控制
   bool _dragingBV = false;
@@ -132,22 +133,30 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
           _buildRefreshButton();
     }
 
+    List<Widget> ws = [];
+    if (!_hideDanmaku) {
+      ws.add(_buildDanmakuView());
+    }
+    if (_lockStuff && chewieController.isFullScreen) {
+      ws.add(_buidLockStateButton());
+    } else {
+      ws.add(_displayBufferingIndicator
+          ? const Center(child: CircularProgressIndicator())
+          : _buildHitArea());
+      if (chewieController.isFullScreen) {
+        ws.add(_buidLockStateButton());
+        ws.add(_buildActionBar());
+      }
+      ws.add(_buildBottomBar());
+    }
+
     return MouseRegion(
       onHover: (_) => _cancelAndRestartTimer(),
       child: GestureDetector(
-        onTap: () => _cancelAndRestartTimer(),
+        onTap: _cancelAndRestartTimer,
         child: AbsorbPointer(
           absorbing: _hideStuff,
-          child: Stack(
-            children: [
-              _buildDanmakuView(),
-              _displayBufferingIndicator
-                  ? const Center(child: CircularProgressIndicator())
-                  : _buildHitArea(),
-              if (chewieController.isFullScreen) _buildActionBar(),
-              _buildBottomBar(),
-            ],
-          ),
+          child: Stack(children: ws),
         ),
       ),
     );
@@ -169,6 +178,31 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
             Icons.refresh_rounded,
             size: 42.0,
             color: Colors.white70,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buidLockStateButton() {
+    return AnimatedOpacity(
+      opacity: _hideStuff ? 0.0 : 0.8,
+      duration: const Duration(milliseconds: 300),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Container(
+          margin: const EdgeInsets.only(right: 20.0),
+          child: IconButton(
+            iconSize: 28,
+            onPressed: () {
+              setState(() {
+                _lockStuff = !_lockStuff;
+                Wakelock.toggle(enable: _lockStuff);
+              });
+            },
+            icon:
+                Icon(_lockStuff ? Icons.lock_rounded : Icons.lock_open_rounded),
+            color: Colors.white,
           ),
         ),
       ),
@@ -602,7 +636,11 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   Widget _buildDanmakuHideButton() {
     return GestureDetector(
-      onTap: _onDanmakuHide,
+      onTap: () {
+        setState(() {
+          _hideDanmaku = !_hideDanmaku;
+        });
+      },
       child: Container(
         height: barHeight,
         margin: const EdgeInsets.only(right: 12.0),
@@ -619,7 +657,11 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   Widget _buildDanmakuSettingButton() {
     return GestureDetector(
-      onTap: _onDanmakuSetting,
+      onTap: () {
+        setState(() {
+          _displayDanmakuSetting = !_displayDanmakuSetting;
+        });
+      },
       child: Container(
         height: barHeight,
         margin: const EdgeInsets.only(right: 12.0),
@@ -747,18 +789,6 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
     setState(() {
       _hideStuff = false;
       _displayTapped = true;
-    });
-  }
-
-  void _onDanmakuHide() {
-    setState(() {
-      _hideDanmaku = !_hideDanmaku;
-    });
-  }
-
-  void _onDanmakuSetting() {
-    setState(() {
-      _displayDanmakuSetting = !_displayDanmakuSetting;
     });
   }
 

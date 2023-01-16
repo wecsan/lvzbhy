@@ -7,6 +7,7 @@ import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:wakelock/wakelock.dart';
 
 class LivePlayPage extends StatefulWidget {
   const LivePlayPage({Key? key, required this.room}) : super(key: key);
@@ -30,6 +31,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   @override
   void initState() {
     super.initState();
+    Wakelock.enable();
     LiveApi.getRoomStreamLink(widget.room).then((value) {
       streamList = value;
       setState(() {
@@ -44,6 +46,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   void dispose() {
+    Wakelock.toggle(enable: false);
+    Wakelock.disable();
     ScreenBrightness().resetScreenBrightness();
     danmakuStream.dispose();
     super.dispose();
