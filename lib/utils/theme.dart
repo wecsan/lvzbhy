@@ -6,61 +6,19 @@ class MyTheme {
   MyTheme(this.primaryColor);
 
   get lightThemeData => ThemeData.from(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.light,
-      ),
-      useMaterial3: true,
-      textTheme: TextTheme(
-        headline1: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: primaryColor,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryColor,
+          brightness: Brightness.light,
         ),
-        headline2: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: primaryColor,
-        ),
-        headline3: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: primaryColor,
-        ),
-        headlineLarge: TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-          color: primaryColor,
-        ),
-      ));
+        useMaterial3: true,
+      );
 
   get darkThemeData => ThemeData.from(
-      colorScheme: ColorScheme.fromSeed(
-        error: const Color.fromARGB(255, 255, 99, 71),
-        seedColor: primaryColor,
-        brightness: Brightness.dark,
-      ),
-      useMaterial3: true,
-      textTheme: TextTheme(
-        headline1: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: primaryColor,
+        colorScheme: ColorScheme.fromSeed(
+          error: const Color.fromARGB(255, 255, 99, 71),
+          seedColor: primaryColor,
+          brightness: Brightness.dark,
         ),
-        headline2: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: primaryColor,
-        ),
-        headline3: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: primaryColor,
-        ),
-        headlineLarge: TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.w500,
-          color: primaryColor,
-        ),
-      ));
+        useMaterial3: true,
+      );
 }

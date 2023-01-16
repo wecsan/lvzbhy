@@ -62,6 +62,36 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void showBilibliCookieSetDialog() {
+    final cookie = settings.bilibiliCustomCookie;
+    final controller = TextEditingController(text: cookie);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Bilibili Cookie'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              return Navigator.pop(context);
+            },
+            child: const Text("Cancle"),
+          ),
+          TextButton(
+            onPressed: () {
+              settings.bilibiliCustomCookie = controller.text;
+              return Navigator.pop(context);
+            },
+            child: const Text("Confirm"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +131,6 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: const Text(
                 'Enable check update when enter into app, if you want check update everytime'),
             value: settings.enbaleAutoCheckUpdate,
-            activeColor: settings.themeColor,
             onChanged: (bool value) {
               settings.enbaleAutoCheckUpdate = value;
             },
@@ -111,35 +140,7 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: const Text(
               'Because bilibili search need cookie vaildation, you can enable custom cookie for bilibili',
             ),
-            onTap: () {
-              final cookie = settings.bilibiliCustomCookie;
-              final controller = TextEditingController(text: cookie);
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Bilibili Cookie'),
-                  content: TextField(
-                    controller: controller,
-                    autofocus: true,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        return Navigator.pop(context);
-                      },
-                      child: const Text("Cancle"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        settings.bilibiliCustomCookie = controller.text;
-                        return Navigator.pop(context);
-                      },
-                      child: const Text("Confirm"),
-                    ),
-                  ],
-                ),
-              );
-            },
+            onTap: showBilibliCookieSetDialog,
           ),
           const SectionTitle(title: 'About'),
           const CheckUpdate(),
@@ -151,15 +152,24 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class SectionTitle extends StatelessWidget {
+  final String title;
+
   const SectionTitle({
     required this.title,
     Key? key,
   }) : super(key: key);
-  final String title;
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title, style: Theme.of(context).textTheme.headline2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      title: Text(
+        title,
+        style: Theme.of(context)
+            .textTheme
+            .headline4
+            ?.copyWith(fontWeight: FontWeight.w500),
+      ),
     );
   }
 }
