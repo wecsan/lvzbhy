@@ -17,8 +17,8 @@ class SettingsProvider with ChangeNotifier {
   int batteryLevel = 100;
   void initBattery() {
     _battery.batteryLevel.then((value) => batteryLevel = value);
-    _battery.onBatteryStateChanged.listen((state) {
-      batteryLevel = 100 - state.index;
+    _battery.onBatteryStateChanged.listen((state) async {
+      batteryLevel = await _battery.batteryLevel;
       notifyListeners();
     });
   }
