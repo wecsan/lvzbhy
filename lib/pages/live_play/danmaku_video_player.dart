@@ -47,12 +47,14 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   void setDataSource(String url) {
     setState(() => loading = true);
     videoController?.dispose();
-    videoController = VideoPlayerController.network(url)
+    videoController = VideoPlayerController.network(url,
+        videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true))
       ..initialize().then((_) {
         chewieController?.dispose();
         chewieController = ChewieController(
           videoPlayerController: videoController!,
           customControls: danmakuChewieController,
+          aspectRatio: videoController!.value.aspectRatio,
           autoPlay: true,
           isLive: true,
         );
