@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hot_live/generated/l10n.dart';
 
 import 'package:hot_live/pages/areas/areas.dart';
 import 'package:hot_live/pages/favorite/favorite.dart';
@@ -69,18 +70,18 @@ class _HomePageRouterState extends State<HomePageRouter> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBar(
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.favorite_rounded),
-            label: 'Favorites',
+            icon: const Icon(Icons.favorite_rounded),
+            label: S.of(context).favorites_title,
           ),
           NavigationDestination(
-            icon: Icon(CustomIcons.popular),
-            label: 'Popular',
+            icon: const Icon(CustomIcons.popular),
+            label: S.of(context).popular_title,
           ),
           NavigationDestination(
-            icon: Icon(Icons.area_chart_rounded),
-            label: 'Areas',
+            icon: const Icon(Icons.area_chart_rounded),
+            label: S.of(context).areas_title,
           ),
         ],
         selectedIndex: _selectedIndex,

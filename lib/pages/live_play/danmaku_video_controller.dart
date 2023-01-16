@@ -4,6 +4,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
@@ -384,7 +385,10 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: const Text('显示区域', style: label),
+                  leading: Text(
+                    S.of(context).settings_danmaku_area,
+                    style: label,
+                  ),
                   title: Slider(
                     value: settings.danmakuArea,
                     min: 0.0,
@@ -399,7 +403,10 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: const Text('不透明度', style: label),
+                  leading: Text(
+                    S.of(context).settings_danmaku_opacity,
+                    style: label,
+                  ),
                   title: Slider(
                     value: settings.danmakuOpacity,
                     min: 0.0,
@@ -414,7 +421,10 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: const Text('弹幕速度', style: label),
+                  leading: Text(
+                    S.of(context).settings_danmaku_speed,
+                    style: label,
+                  ),
                   title: Slider(
                     value: settings.danmakuSpeed,
                     min: 1.0,
@@ -429,7 +439,10 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
                 ListTile(
                   dense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: const Text('弹幕字号', style: label),
+                  leading: Text(
+                    S.of(context).settings_danmaku_fontsize,
+                    style: label,
+                  ),
                   title: Slider(
                     value: settings.danmakuFontSize,
                     min: 10.0,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/pages/home.dart';
 import 'package:hot_live/provider/areas_provider.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
@@ -44,6 +46,14 @@ class MyApp extends StatelessWidget {
       themeMode: settings.themeMode,
       theme: MyTheme(settings.themeColor).lightThemeData,
       darkTheme: MyTheme(settings.themeColor).darkThemeData,
+      locale: settings.language,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       home: const HomePage(),
     );
   }

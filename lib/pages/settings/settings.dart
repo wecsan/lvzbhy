@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,10 +21,10 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: const Text('Theme Mode'),
+          title: Text(S.of(context).change_theme_mode),
           children: SettingsProvider.themeModes.keys.map<Widget>((name) {
             return RadioListTile<String>(
-              activeColor: settings.themeColor,
+              activeColor: Theme.of(context).colorScheme.primary,
               groupValue: settings.themeModeName,
               value: name,
               title: Text(name),
@@ -43,16 +44,39 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: const Text('Change Theme'),
+          title: Text(S.of(context).change_theme_color),
           children: SettingsProvider.themeColors.keys.map<Widget>((name) {
             final color = SettingsProvider.themeColors[name];
             return RadioListTile<String>(
-              activeColor: settings.themeColor,
+              activeColor: Theme.of(context).colorScheme.primary,
               groupValue: settings.themeColorName,
               value: name,
               title: Text(name, style: TextStyle(color: color)),
               onChanged: (value) {
                 settings.changeThemeColor(value!);
+                Navigator.of(context).pop();
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  void showLanguageSelecterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(S.of(context).change_language),
+          children: SettingsProvider.languages.keys.map<Widget>((name) {
+            return RadioListTile<String>(
+              activeColor: Theme.of(context).colorScheme.primary,
+              groupValue: settings.languageName,
+              value: name,
+              title: Text(name),
+              onChanged: (value) {
+                settings.changeLanguage(value!);
                 Navigator.of(context).pop();
               },
             );
@@ -68,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Bilibili Cookie'),
+        title: Text(S.of(context).bilibili_cookie),
         content: TextField(
           controller: controller,
           autofocus: true,
@@ -76,16 +100,16 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () {
-              return Navigator.pop(context);
+              Navigator.of(context).pop();
             },
-            child: const Text("Cancle"),
+            child: Text(S.of(context).cancel),
           ),
           TextButton(
             onPressed: () {
               settings.bilibiliCustomCookie = controller.text;
-              return Navigator.pop(context);
+              Navigator.of(context).pop();
             },
-            child: const Text("Confirm"),
+            child: Text(S.of(context).confirm),
           ),
         ],
       ),
@@ -96,39 +120,32 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text('Settings'),
+        title: Text(S.of(context).settings_title),
       ),
       body: ListView(
         children: <Widget>[
-          const SectionTitle(title: 'General'),
+          SectionTitle(title: S.of(context).general),
           ListTile(
-            title: const Text('Change Theme Color'),
-            subtitle: const Text('Change the theme color of the app'),
-            leading: const Icon(Icons.color_lens, size: 32),
-            onTap: showThemeColorSelectorDialog,
-          ),
-          ListTile(
-            title: const Text('Change Theme Mode'),
-            subtitle: const Text('Change the theme mode of the app'),
+            title: Text(S.of(context).change_theme_mode),
+            subtitle: Text(S.of(context).change_theme_mode_subtitle),
             leading: const Icon(Icons.dark_mode_rounded, size: 32),
             onTap: showThemeModeSelectorDialog,
           ),
           ListTile(
-            title: const Text('Change Language'),
-            subtitle: const Text('Change the language of the app [x]'),
-            leading: const Icon(Icons.translate_rounded, size: 32),
-            onTap: () {},
+            title: Text(S.of(context).change_theme_color),
+            subtitle: Text(S.of(context).change_theme_color_subtitle),
+            leading: const Icon(Icons.color_lens, size: 32),
+            onTap: showThemeColorSelectorDialog,
           ),
-          const SectionTitle(title: 'Custom'),
+          ListTile(
+            title: Text(S.of(context).change_language),
+            subtitle: Text(S.of(context).change_language_subtitle),
+            leading: const Icon(Icons.translate_rounded, size: 32),
+            onTap: showLanguageSelecterDialog,
+          ),
           SwitchListTile(
-            title: const Text('Enable auto check update'),
-            subtitle: const Text('Enable check update when enter into app'),
+            title: Text(S.of(context).enable_auto_check_update),
+            subtitle: Text(S.of(context).enable_auto_check_update_subtitle),
             value: settings.enbaleAutoCheckUpdate,
             activeColor: Theme.of(context).colorScheme.primary,
             onChanged: (bool value) {
@@ -136,11 +153,12 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           ListTile(
-            title: const Text('Enable bilibili search cookie'),
-            subtitle: const Text('Enable set bilibili search needed cookie'),
+            title: Text(S.of(context).enable_bilibili_search_cookie),
+            subtitle:
+                Text(S.of(context).enable_bilibili_search_cookie_subtitle),
             onTap: showBilibliCookieSetDialog,
           ),
-          const SectionTitle(title: 'About'),
+          SectionTitle(title: S.of(context).about),
           const CheckUpdate(),
           const About(),
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/api/liveapi.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
@@ -165,7 +166,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
           ? FloatingActionButton(
               elevation: 2,
               backgroundColor: Theme.of(context).cardColor,
-              tooltip: 'unfollow',
+              tooltip: S.of(context).unfollow,
               onPressed: () => favorite.removeRoom(widget.room),
               child: CircleAvatar(
                 foregroundImage: (widget.room.avatar == '')
@@ -189,7 +190,10 @@ class _LivePlayPageState extends State<LivePlayPage> {
               label: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Follow', style: Theme.of(context).textTheme.caption),
+                  Text(
+                    S.of(context).follow,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                   Text(
                     widget.room.nick,
                     maxLines: 1,

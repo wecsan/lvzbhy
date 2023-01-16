@@ -26,6 +26,7 @@ class SettingsProvider with ChangeNotifier {
   void _loadFromPref() async {
     _themeModeName = PrefUtil.getString('themeMode') ?? "System";
     _themeColorName = PrefUtil.getString('themeColor') ?? "Crimson";
+    _languageName = PrefUtil.getString('language') ?? "简体中文";
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     _enbaleAutoCheckUpdate = PrefUtil.getBool('enbaleAutoCheckUpdate') ?? true;
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
@@ -38,6 +39,7 @@ class SettingsProvider with ChangeNotifier {
   void _saveToPref() {
     PrefUtil.setString('themeMode', _themeModeName);
     PrefUtil.setString('themeColor', _themeColorName);
+    PrefUtil.setString('language', _languageName);
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
     PrefUtil.setBool('enbaleAutoCheckUpdate', _enbaleAutoCheckUpdate);
     PrefUtil.setDouble('danmakuArea', _danmakuArea);
@@ -84,6 +86,19 @@ class SettingsProvider with ChangeNotifier {
     _themeColorName = color;
     notifyListeners();
     PrefUtil.setString('themeColor', _themeColorName);
+  }
+
+  static Map<String, Locale> languages = {
+    "English": const Locale.fromSubtags(languageCode: 'en'),
+    "简体中文": const Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
+  };
+  String _languageName = "English";
+  get language => SettingsProvider.languages[_languageName]!;
+  get languageName => _languageName;
+  void changeLanguage(String value) {
+    _languageName = value;
+    notifyListeners();
+    PrefUtil.setString('language', _languageName);
   }
 
   // Custom settings

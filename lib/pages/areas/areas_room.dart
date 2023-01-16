@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/api/liveapi.dart';
@@ -85,10 +86,10 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
                 itemBuilder: (context, index) =>
                     RoomCard(room: roomsList[index], dense: true),
               )
-            : const EmptyView(
+            : EmptyView(
                 icon: Icons.live_tv_rounded,
-                title: 'No Live Found',
-                subtitle: 'Drag page to refresh data',
+                title: S.of(context).empty_areas_room_title,
+                subtitle: S.of(context).empty_areas_room_subtitle,
               ),
       ),
     );

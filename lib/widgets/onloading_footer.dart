@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class OnLoadingFooter extends StatelessWidget {
@@ -12,13 +13,13 @@ class OnLoadingFooter extends StatelessWidget {
       builder: (context, mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
-          body = const Text("pull up load");
+          body = Text(S.of(context).loading_idle);
         } else if (mode == LoadStatus.failed) {
-          body = const Text("Load Failed! Drag Retry!");
+          body = Text(S.of(context).loading_failed);
         } else if (mode == LoadStatus.noMore) {
-          body = const Text("No more Data");
+          body = Text(S.of(context).loading_nomore);
         } else if (mode == LoadStatus.canLoading) {
-          body = const Text("release to load");
+          body = Text(S.of(context).loading_canload);
         } else {
           body = const CupertinoActivityIndicator();
         }

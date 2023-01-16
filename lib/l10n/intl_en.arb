@@ -1,0 +1,67 @@
+{
+    "app_name": "HotLive",
+
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "update": "Update",
+    "remove": "Remove",
+    "move_to_top": "Move To Top",
+    
+    "loading_idle": "pull up to load",
+    "loading_failed": "Load Failed! Drag Retry!",
+    "loading_nomore": "No more Data",
+    "loading_canload": "release to load",
+
+    "favorites_title": "Favorites",
+    "empty_favorite_title": "No Favorites",
+    "empty_favorite_subtitle": "Please follow live rooms first",
+    "show_offline_rooms": "Show Offline Rooms",
+    "hide_offline_rooms": "Hide Offline Rooms",
+    "room_info_content": "RoomId: {roomid}\nPlatform: {platform}\nName: {nickname}\nTitle: {title}\nLiveStatus: {livestatus}",
+
+    "popular_title": "Popular",
+    "empty_live_title": "No Live Found",
+    "empty_live_subtitle": "Click the button below\nto switch platform",
+
+    "areas_title": "Areas",
+    "empty_areas_title": "No Area Found",
+    "empty_areas_subtitle": "Click the button below\nto switch platform",
+    "empty_areas_room_title": "No Live Found",
+    "empty_areas_room_subtitle": "Pull down to refresh data",
+    "switch_platform": "Switch platform",
+
+    "search_input_hint": "Input live room keyword",
+    "only_living": "Only Living",
+    "empty_search_title": "No Live Found",
+    "empty_search_subtitle": "You can input other keyword",
+
+    "settings_title": "Settings",
+    "general": "General",
+    "change_theme_color": "Theme Color",
+    "change_theme_color_subtitle": "Change the primay color of the app",
+    "change_theme_mode": "Theme Mode",
+    "change_theme_mode_subtitle": "Change form light / dark / system modes",
+    "change_language": "Language",
+    "change_language_subtitle": "Change the display language of the app",
+    "enable_auto_check_update": "Enable auto check update",
+    "enable_auto_check_update_subtitle": "Enable check update when enter into app",
+    "bilibili_cookie": "Bilibili Cookie",
+    "enable_bilibili_search_cookie": "Enable bilibili search cookie",
+    "enable_bilibili_search_cookie_subtitle": "Set custom bilibili search needed cookie",
+    "about": "About",
+    "about_hotlive": "About HotLive",
+    "check_update": "Check Update",
+    "new_version_info": "New version found: v{version}",
+    "no_new_version_info": "You are using the latest version.",
+
+    "settings_danmaku_area": "Danmaku area",
+    "settings_danmaku_opacity": "Danmaku opacity",
+    "settings_danmaku_speed": "Danmaku speed",
+    "settings_danmaku_fontsize": "Danmaku fontsize",
+    
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "followed": "Followed",
+    "offline": "Offline",
+    "info_is_offline": "{name} is offline."
+}

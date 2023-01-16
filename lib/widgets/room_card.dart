@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/live_play.dart';
 import 'package:hot_live/widgets/keep_alive_wrapper.dart';
@@ -23,13 +24,12 @@ class RoomCard extends StatelessWidget {
         MaterialPageRoute(builder: (context) => LivePlayPage(room: room)),
       );
     } else {
-      String info = '${room.nick} is offline.';
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             content: Text(
-              info,
+              S.of(context).info_is_offline(room.nick),
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           );
@@ -75,11 +75,11 @@ class RoomCard extends StatelessWidget {
                       : Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.tv_off_rounded, size: 48),
+                            children: [
+                              const Icon(Icons.tv_off_rounded, size: 48),
                               Text(
-                                "Offline",
-                                style: TextStyle(
+                                S.of(context).offline,
+                                style: const TextStyle(
                                   fontSize: 26,
                                   fontWeight: FontWeight.w500,
                                 ),

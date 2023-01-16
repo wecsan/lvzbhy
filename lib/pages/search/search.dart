@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/live_play.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
@@ -51,14 +52,14 @@ class _SearchPageState extends State<SearchPage> {
           controller: controller,
           autofocus: true,
           onSubmitted: _onSearch,
-          decoration: const InputDecoration(
-            hintText: 'Input User Name or RoomId',
-            hintStyle: TextStyle(fontSize: 13),
+          decoration: InputDecoration(
+            hintText: S.of(context).search_input_hint,
+            hintStyle: const TextStyle(fontSize: 13),
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Only Living',
+            tooltip: S.of(context).only_living,
             onPressed: _toggleIsLive,
             icon: Icon(
               Icons.live_tv_rounded,
@@ -79,10 +80,10 @@ class _SearchPageState extends State<SearchPage> {
                   favoritePod: favoritePod,
                 );
               })
-          : const EmptyView(
+          : EmptyView(
               icon: Icons.live_tv_rounded,
-              title: 'No Live Found',
-              subtitle: 'You can input other keyword',
+              title: S.of(context).empty_search_title,
+              subtitle: S.of(context).empty_search_subtitle,
             ),
     );
   }
@@ -111,7 +112,7 @@ class OwnerCard extends StatelessWidget {
         builder: (context) {
           return AlertDialog(
             content: Text(
-              '${room.nick} is offline.',
+              S.of(context).info_is_offline(room.nick),
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           );
@@ -150,11 +151,11 @@ class OwnerCard extends StatelessWidget {
         trailing: favoritePod.isFavorite(room.roomId)
             ? ElevatedButton(
                 onPressed: () => favoritePod.removeRoom(room),
-                child: Text('Followed', style: followedStyle),
+                child: Text(S.of(context).follow, style: followedStyle),
               )
             : ElevatedButton(
                 onPressed: () => favoritePod.addRoom(room),
-                child: const Text('Follow'),
+                child: Text(S.of(context).followed),
               ),
       ),
     );

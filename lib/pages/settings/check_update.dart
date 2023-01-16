@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/utils/version_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,7 +9,7 @@ class CheckUpdate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('Check Update'),
+      title: Text(S.of(context).check_update),
       subtitle: const Text('v${VersionUtil.version}'),
       leading: const Icon(
         Icons.file_upload_outlined,
@@ -34,11 +35,11 @@ class NoNewVersionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Check for updates'),
-      content: const Text('You are using the latest version.'),
+      title: Text(S.of(context).check_update),
+      content: Text(S.of(context).no_new_version_info),
       actions: <Widget>[
         TextButton(
-          child: const Text('OK'),
+          child: Text(S.of(context).confirm),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -56,12 +57,12 @@ class NewVersionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Check for updates'),
+      title: Text(S.of(context).check_update),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('New version found: v${VersionUtil.latestVersion}'),
+          Text(S.of(context).new_version_info(VersionUtil.latestVersion)),
           const SizedBox(height: 20),
           Text(
             VersionUtil.latestUpdateLog,
@@ -71,7 +72,7 @@ class NewVersionDialog extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('Cancel'),
+          child: Text(S.of(context).cancel),
           onPressed: () {
             if (entry != null) {
               entry!.remove();
@@ -81,7 +82,7 @@ class NewVersionDialog extends StatelessWidget {
           },
         ),
         ElevatedButton(
-          child: const Text('Update'),
+          child: Text(S.of(context).update),
           onPressed: () {
             if (entry != null) {
               entry!.remove();

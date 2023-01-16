@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/widgets/area_card.dart';
 import 'package:hot_live/provider/areas_provider.dart';
@@ -19,18 +20,40 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   late TabController tabController =
       TabController(length: provider.labelList.length, vsync: this);
 
-  @override
-  void initState() {
-    super.initState();
+  void showSwitchPlatformDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: provider.platforms
+                .map<Widget>(
+                  (e) => ListTile(
+                    title: Text(e.toUpperCase()),
+                    trailing: provider.platform == e
+                        ? const Icon(Icons.check_circle_rounded)
+                        : const SizedBox(height: 0),
+                    onTap: () {
+                      provider.setPlatform(e);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'AREAS',
-          style: TextStyle(fontWeight: FontWeight.w600),
+        title: Text(
+          S.of(context).areas_title.toUpperCase(),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         actions: [
           Center(
@@ -68,37 +91,8 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
             .toList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: provider.platforms
-                      .map<Widget>(
-                        (e) => ListTile(
-                          title: Text(e.toUpperCase()),
-                          trailing: provider.platform == e
-                              ? const Icon(Icons.check_circle_rounded)
-                              : const SizedBox(height: 0),
-                          onTap: () {
-                            provider.setPlatform(e);
-                            tabController = TabController(
-                              initialIndex: 0,
-                              length: provider.labelList.length,
-                              vsync: this,
-                            );
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      )
-                      .toList(),
-                ),
-              );
-            },
-          );
-        },
+        tooltip: S.of(context).switch_platform,
+        onPressed: showSwitchPlatformDialog,
         child: const Icon(Icons.video_collection_rounded),
       ),
     );
@@ -134,10 +128,10 @@ class _AreaGridViewState extends State<AreaGridView> {
                   AreaCard(area: widget.areaList[index]),
             ),
           )
-        : const EmptyView(
+        : EmptyView(
             icon: Icons.area_chart_outlined,
-            title: 'No Area Found',
-            subtitle: 'Click the button below\nto switch platform',
+            title: S.of(context).empty_areas_title,
+            subtitle: S.of(context).empty_areas_subtitle,
           );
   }
 }

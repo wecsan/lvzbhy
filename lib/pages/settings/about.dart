@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/utils/version_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,11 +9,8 @@ class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('About HotLive'),
-      leading: const Icon(
-        Icons.info_outline_rounded,
-        size: 32,
-      ),
+      title: Text(S.of(context).about_hotlive),
+      leading: const Icon(Icons.info_outline_rounded, size: 32),
       onTap: () {
         showAboutDialog(
           context: context,

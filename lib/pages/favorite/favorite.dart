@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/pages/search/search.dart';
 import 'package:hot_live/pages/settings/settings.dart';
 
@@ -27,16 +28,13 @@ class _FavoritePageState extends State<FavoritePage> {
       builder: (context) => AlertDialog(
         title: Text(room.title),
         content: Text(
-          'RoomId: ' +
-              room.roomId +
-              '\nPlatform: ' +
-              room.platform +
-              '\nNickName: ' +
-              room.nick +
-              '\nTitle: ' +
-              room.title +
-              '\nLiveStatus: ' +
-              room.liveStatus.name,
+          S.of(context).room_info_content(
+                room.roomId,
+                room.platform,
+                room.nick,
+                room.title,
+                room.liveStatus.name,
+              ),
         ),
         actions: [
           TextButton(
@@ -44,14 +42,14 @@ class _FavoritePageState extends State<FavoritePage> {
               provider.removeRoom(room);
               return Navigator.pop(context);
             },
-            child: const Text("Remove"),
+            child: Text(S.of(context).remove),
           ),
           TextButton(
             onPressed: () {
               provider.moveToTop(room);
               return Navigator.pop(context);
             },
-            child: const Text("Move To Top"),
+            child: Text(S.of(context).move_to_top),
           ),
         ],
       ),
@@ -66,9 +64,9 @@ class _FavoritePageState extends State<FavoritePage> {
         : (screenWidth > 960 ? 3 : (screenWidth > 640 ? 2 : 1));
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "FAVORITES",
-          style: TextStyle(fontWeight: FontWeight.w600),
+        title: Text(
+          S.of(context).favorites_title.toUpperCase(),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
@@ -110,20 +108,20 @@ class _FavoritePageState extends State<FavoritePage> {
                   );
                 },
               )
-            : const EmptyView(
+            : EmptyView(
                 icon: Icons.favorite_rounded,
-                title: 'No Favorites',
-                subtitle: 'Please follow live rooms first',
+                title: S.of(context).empty_favorite_title,
+                subtitle: S.of(context).empty_favorite_subtitle,
               ),
       ),
       floatingActionButton: provider.isHideOffline
           ? FloatingActionButton(
-              tooltip: 'Show Offline Rooms',
+              tooltip: S.of(context).show_offline_rooms,
               onPressed: provider.showOfflineRooms,
               child: const Icon(Icons.add_circle_outline_rounded),
             )
           : FloatingActionButton(
-              tooltip: 'Hide Offline Rooms',
+              tooltip: S.of(context).hide_offline_rooms,
               onPressed: provider.hideOfflineRooms,
               child: const Icon(Icons.remove_circle_outline_rounded),
             ),

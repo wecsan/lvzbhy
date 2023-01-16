@@ -1,0 +1,67 @@
+{
+    "app_name": "HotLive",
+
+    "cancel": "取消",
+    "confirm": "确认",
+    "update": "更新",
+    "remove": "删除",
+    "move_to_top": "移到顶部",
+    
+    "loading_idle": "上滑以加载",
+    "loading_failed": "加载失败！上滑重试",
+    "loading_nomore": "没有更多数据",
+    "loading_canload": "释放以加载",
+
+    "favorites_title": "关注",
+    "empty_favorite_title": "无关注直播",
+    "empty_favorite_subtitle": "请先关注其他直播间",
+    "show_offline_rooms": "显示未直播的直播间",
+    "hide_offline_rooms": "隐藏未直播的直播间",
+    "room_info_content": "房间号: {roomid}\n平台: {platform}\n昵称: {nickname}\n标题: {title}\n状态: {livestatus}",
+
+    "popular_title": "热门",
+    "empty_live_title": "未发现直播",
+    "empty_live_subtitle": "请点击下方按钮切换平台",
+    "switch_platform": "切换直播平台",
+
+    "areas_title": "分区",
+    "empty_areas_title": "未发现分区",
+    "empty_areas_subtitle": "请点击下方按钮切换平台",
+    "empty_areas_room_title": "未发现直播",
+    "empty_areas_room_subtitle": "下滑/上滑刷新数据",
+
+    "search_input_hint": "输入直播关键字",
+    "only_living": "只搜索直播中",
+    "empty_search_title": "未发现直播",
+    "empty_search_subtitle": "请输入其他关键字搜索",
+
+    "settings_title": "设置",
+    "general": "通用",
+    "change_theme_color": "主题颜色",
+    "change_theme_color_subtitle": "切换软件的主题颜色",
+    "change_theme_mode": "主题模式",
+    "change_theme_mode_subtitle": "切换模式：亮色/暗色/系统",
+    "change_language": "切换语言",
+    "change_language_subtitle": "切换软件的显示语言",
+    "enable_auto_check_update": "启用自动检查更新",
+    "enable_auto_check_update_subtitle": "在每次进入软件时，自动检查更新",
+    "bilibili_cookie": "Bilibili Cookie",
+    "enable_bilibili_search_cookie": "启用Bilibili搜索Cookie",
+    "enable_bilibili_search_cookie_subtitle": "设置Bilibili搜索所需Cookie",
+    "about": "关于",
+    "about_hotlive": "关于HotLive",
+    "check_update": "检查更新",
+    "new_version_info": "发现新版本: v{version}",
+    "no_new_version_info": "已在使用最新版本",
+
+    "settings_danmaku_area": "弹幕区域",
+    "settings_danmaku_opacity": "不透明度",
+    "settings_danmaku_speed": "弹幕速度",
+    "settings_danmaku_fontsize": "弹幕字号",
+    
+    "follow": "关注",
+    "unfollow": "取消关注",
+    "followed": "已关注",
+    "offline": "未直播",
+    "info_is_offline": "{name}未开始直播."
+}

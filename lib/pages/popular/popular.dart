@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/provider/popular_provider.dart';
 import 'package:hot_live/widgets/empty_view.dart';
 import 'package:hot_live/widgets/onloading_footer.dart';
@@ -17,6 +18,33 @@ class PopularPage extends StatefulWidget {
 class _PopularPageState extends State<PopularPage> {
   late PopularProvider provider = Provider.of<PopularProvider>(context);
 
+  void showSwitchPlatformDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: provider.platforms
+                .map<Widget>(
+                  (e) => ListTile(
+                    title: Text(e.toUpperCase()),
+                    trailing: provider.platform == e
+                        ? const Icon(Icons.check_circle_rounded)
+                        : const SizedBox(height: 0),
+                    onTap: () {
+                      provider.setPlatform(e);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -26,9 +54,9 @@ class _PopularPageState extends State<PopularPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "POPULAR",
-          style: TextStyle(fontWeight: FontWeight.w600),
+        title: Text(
+          S.of(context).popular_title.toUpperCase(),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         actions: [
           Center(
@@ -59,39 +87,15 @@ class _PopularPageState extends State<PopularPage> {
                 itemBuilder: (context, index) =>
                     RoomCard(room: provider.roomList[index], dense: true),
               )
-            : const EmptyView(
+            : EmptyView(
                 icon: Icons.live_tv_rounded,
-                title: 'No Live Found',
-                subtitle: 'Click the button below\nto switch platform',
+                title: S.of(context).empty_live_title,
+                subtitle: S.of(context).empty_live_subtitle,
               ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: provider.platforms
-                      .map<Widget>(
-                        (e) => ListTile(
-                          title: Text(e.toUpperCase()),
-                          trailing: provider.platform == e
-                              ? const Icon(Icons.check_circle_rounded)
-                              : const SizedBox(height: 0),
-                          onTap: () {
-                            provider.setPlatform(e);
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      )
-                      .toList(),
-                ),
-              );
-            },
-          );
-        },
+        tooltip: S.of(context).switch_platform,
+        onPressed: showSwitchPlatformDialog,
         child: const Icon(Icons.video_collection_rounded),
       ),
     );
