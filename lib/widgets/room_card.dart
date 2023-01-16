@@ -41,22 +41,22 @@ class RoomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KeepAliveWrapper(
-        child: Card(
-      elevation: 5,
-      margin: const EdgeInsets.fromLTRB(7.5, 7.5, 7.5, 7.5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(15.0),
-        onTap: () => onTap(context),
-        onLongPress: onLongPress,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Card(
+      child: Card(
+        elevation: 5,
+        margin: const EdgeInsets.fromLTRB(7.5, 7.5, 7.5, 7.5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(15.0),
+          onTap: () => onTap(context),
+          onLongPress: onLongPress,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Card(
                   margin: const EdgeInsets.all(0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -78,46 +78,54 @@ class RoomCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Icon(Icons.tv_off_rounded, size: 48),
-                              Text("Offline",
-                                  style: TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.w500,
-                                  ))
+                              Text(
+                                "Offline",
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )
                             ],
                           ),
-                        )),
-            ),
-            ListTile(
-              dense: dense,
-              contentPadding:
-                  dense ? const EdgeInsets.only(left: 8, right: 10) : null,
-              horizontalTitleGap: dense ? 8 : null,
-              leading: CircleAvatar(
-                foregroundImage: room.avatar.isNotEmpty
-                    ? CachedNetworkImageProvider(room.avatar)
-                    : null,
-                radius: 20,
-                backgroundColor: Theme.of(context).disabledColor,
+                        ),
+                ),
               ),
-              title: Text(
-                room.title,
-                maxLines: 1,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              subtitle: Text(
-                room.nick,
-                maxLines: 1,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-              trailing: Text(
-                room.platform,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-            )
-          ],
+              ListTile(
+                dense: dense,
+                contentPadding:
+                    dense ? const EdgeInsets.only(left: 8, right: 10) : null,
+                horizontalTitleGap: dense ? 8 : null,
+                leading: CircleAvatar(
+                  foregroundImage: room.avatar.isNotEmpty
+                      ? CachedNetworkImageProvider(room.avatar)
+                      : null,
+                  radius: dense ? 18 : null,
+                  backgroundColor: Theme.of(context).disabledColor,
+                ),
+                title: Text(
+                  room.nick,
+                  maxLines: 1,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text(
+                  room.title,
+                  maxLines: 1,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+                trailing: dense
+                    ? null
+                    : Text(
+                        room.platform.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+              )
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
