@@ -33,10 +33,14 @@ class DanmakuText extends StatelessWidget {
 }
 
 class DanmakuVideoController extends StatefulWidget {
-  const DanmakuVideoController({Key? key, required this.danmakuStream})
-      : super(key: key);
-
   final DanmakuStream danmakuStream;
+  final String title;
+
+  const DanmakuVideoController({
+    Key? key,
+    required this.danmakuStream,
+    this.title = '',
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -111,12 +115,10 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
     final oldController = _chewieController;
     _chewieController = ChewieController.of(context);
     _controller = chewieController.videoPlayerController;
-
     if (oldController != chewieController) {
       _dispose();
       _initialize();
     }
-
     super.didChangeDependencies();
   }
 
@@ -142,7 +144,7 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
               _displayBufferingIndicator
                   ? const Center(child: CircularProgressIndicator())
                   : _buildHitArea(),
-              _buildActionBar(),
+              if (chewieController.isFullScreen) _buildActionBar(),
               _buildBottomBar(),
             ],
           ),
@@ -422,11 +424,25 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       child: AnimatedOpacity(
         opacity: _hideStuff ? 0.0 : 1,
         duration: const Duration(milliseconds: 300),
-        child: SizedBox(
+        child: Container(
           height: barHeight,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [Color.fromRGBO(0, 0, 0, 0.02), Colors.black]),
+          ),
           child: Row(
             children: <Widget>[
-              if (chewieController.isFullScreen) _buildBackButton(),
+              _buildBackButton(),
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+              _buildBatteryInfo(),
+              _buildTimeInfo(),
             ],
           ),
         ),
@@ -446,6 +462,64 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
             Icons.arrow_back_rounded,
             color: Colors.white,
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeInfo() {
+    // get system time and format
+    final dateTime = DateTime.now();
+    var hour = dateTime.hour.toString();
+    if (hour.length < 2) hour = '0$hour';
+    var minute = dateTime.minute.toString();
+    if (minute.length < 2) minute = '0$minute';
+
+    return Container(
+      height: barHeight,
+      margin: const EdgeInsets.only(right: 12.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: Center(
+        child: Text(
+          '$hour:$minute',
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBatteryInfo() {
+    final batteryLevel = settings.batteryLevel;
+    return Container(
+      height: barHeight,
+      margin: const EdgeInsets.only(right: 4.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: Center(
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(1),
+              child: SizedBox(
+                width: 20,
+                height: 10,
+                child: LinearProgressIndicator(
+                  value: batteryLevel / 100.0,
+                  backgroundColor: Colors.white38,
+                  valueColor: AlwaysStoppedAnimation(
+                    Theme.of(context).indicatorColor,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              '$batteryLevel%',
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(color: Colors.white),
+            ),
+          ],
         ),
       ),
     );

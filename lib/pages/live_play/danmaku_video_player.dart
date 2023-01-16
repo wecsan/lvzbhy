@@ -6,12 +6,14 @@ import 'package:video_player/video_player.dart';
 
 class DanmakuVideoPlayer extends StatefulWidget {
   final String url;
+  final String title;
   final DanmakuStream danmakuStream;
 
   const DanmakuVideoPlayer({
     Key? key,
     required this.url,
     required this.danmakuStream,
+    this.title = '',
   }) : super(key: key);
 
   @override
@@ -28,8 +30,10 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    danmakuChewieController =
-        DanmakuVideoController(danmakuStream: widget.danmakuStream);
+    danmakuChewieController = DanmakuVideoController(
+      danmakuStream: widget.danmakuStream,
+      title: widget.title,
+    );
     setDataSource(widget.url);
   }
 

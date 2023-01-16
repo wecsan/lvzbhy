@@ -95,6 +95,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                         key: _globalKey,
                         url: datasource,
                         danmakuStream: danmakuStream,
+                        title: widget.room.title,
                       )
                     : Center(
                         child: datasourceError

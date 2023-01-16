@@ -1,12 +1,26 @@
 import 'dart:convert';
 
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/utils/pref_util.dart';
 
 class SettingsProvider with ChangeNotifier {
   SettingsProvider() {
+    // 设置电量监听
+    initBattery();
     _loadFromPref();
+  }
+
+  // 电量状态监听
+  final Battery _battery = Battery();
+  int batteryLevel = 100;
+  void initBattery() {
+    _battery.batteryLevel.then((value) => batteryLevel = value);
+    _battery.onBatteryStateChanged.listen((state) {
+      batteryLevel = 100 - state.index;
+      notifyListeners();
+    });
   }
 
   void _loadFromPref() async {
