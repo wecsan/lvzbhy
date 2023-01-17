@@ -96,6 +96,7 @@ class RoomCard extends StatelessWidget {
               ),
               ListTile(
                 dense: dense,
+                minLeadingWidth: dense ? 34 : null,
                 contentPadding:
                     dense ? const EdgeInsets.only(left: 8, right: 10) : null,
                 horizontalTitleGap: dense ? 8 : null,
@@ -103,18 +104,26 @@ class RoomCard extends StatelessWidget {
                   foregroundImage: room.avatar.isNotEmpty
                       ? CachedNetworkImageProvider(room.avatar)
                       : null,
-                  radius: dense ? 18 : null,
+                  radius: dense ? 17 : null,
                   backgroundColor: Theme.of(context).disabledColor,
                 ),
                 title: Text(
-                  room.nick,
-                  maxLines: 1,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text(
                   room.title,
                   maxLines: 1,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: dense ? 12.5 : 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                subtitle: Text(
+                  room.nick,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: dense ? 12 : 14,
+                  ),
                 ),
                 trailing: dense
                     ? null
@@ -122,7 +131,7 @@ class RoomCard extends StatelessWidget {
                         room.platform.toUpperCase(),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 10,
+                          fontSize: 12,
                         ),
                       ),
               )
