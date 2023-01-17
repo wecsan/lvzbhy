@@ -181,10 +181,10 @@ class SectionTitle extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       title: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .headline4
-            ?.copyWith(fontWeight: FontWeight.w500),
+        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.w500,
+            ),
       ),
     );
   }

@@ -37,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
       _liveOwnerList.clear();
     });
     for (var plat in platforms) {
-      LiveApi.search(plat, key, isLive: isLive).then((owners) {
+      LiveApi.search(plat, key).then((owners) {
         setState(() {
           _ownerList.addAll(owners);
           _liveOwnerList.addAll(
@@ -154,7 +154,7 @@ class OwnerCard extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
-          room.platform + " - " + room.areaName,
+          room.platform + " - " + room.area,
           maxLines: 1,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),

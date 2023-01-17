@@ -81,18 +81,14 @@ class LiveApi {
     }
   }
 
-  static Future<List<RoomInfo>> search(
-    String platform,
-    String keyWords, {
-    bool isLive = false,
-  }) {
+  static Future<List<RoomInfo>> search(String platform, String keyWords) {
     switch (platform) {
       case "bilibili":
-        return BilibiliApi.search(keyWords, isLive);
+        return BilibiliApi.search(keyWords);
       case 'huya':
-        return HuyaApi.search(keyWords, isLive);
+        return HuyaApi.search(keyWords);
       case 'douyu':
-        return DouyuApi.search(keyWords, isLive);
+        return DouyuApi.search(keyWords);
       default:
         return Future(() => []);
     }

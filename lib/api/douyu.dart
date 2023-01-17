@@ -66,14 +66,17 @@ class DouyuApi {
       dynamic body = await _getJson(
           'https://open.douyucdn.cn/api/RoomApi/room/${room.roomId}');
       if (body['error'] == 0) {
-        Map roomInfo = body['data'];
-        dynamic liveStatus = roomInfo['room_status'];
-        room.nick = roomInfo['owner_name'];
-        room.title = roomInfo['room_name'];
-        room.avatar = roomInfo['avatar'];
-        room.cover = roomInfo['room_thumb'];
+        Map data = body['data'];
+        room.nick = data['owner_name'] ?? '';
+        room.title = data['room_name'] ?? '';
+        room.avatar = data['avatar'] ?? '';
+        room.cover = data['room_thumb'] ?? '';
+        room.area = data['cate_name'] ?? '';
+        room.followers = data['hn'] ?? '';
         room.liveStatus =
-            liveStatus == '1' ? LiveStatus.live : LiveStatus.offline;
+            (data.containsKey('room_status') && data['room_status'] == '1')
+                ? LiveStatus.live
+                : LiveStatus.offline;
       }
     } catch (e) {
       return room;
@@ -99,11 +102,15 @@ class DouyuApi {
           for (var roomInfo in roomInfoList) {
             RoomInfo room = RoomInfo(roomInfo["rid"].toString());
             room.platform = 'douyu';
-            room.nick = roomInfo["nickname"];
-            room.title = roomInfo["roomName"];
-            room.cover = roomInfo["roomSrc"];
-            room.avatar = roomInfo["avatar"];
-            room.liveStatus = LiveStatus.live;
+            room.nick = roomInfo["nickname"] ?? '';
+            room.title = roomInfo["roomName"] ?? '';
+            room.cover = roomInfo["roomSrc"] ?? '';
+            room.avatar = roomInfo["avatar"] ?? '';
+            room.followers = roomInfo["hn"] ?? '';
+            room.liveStatus =
+                (roomInfo.containsKey("isLive") && roomInfo["isLive"] == 1)
+                    ? LiveStatus.live
+                    : LiveStatus.offline;
             list.add(room);
           }
         }
@@ -116,7 +123,6 @@ class DouyuApi {
 
   static Future<List<List<AreaInfo>>> getAreaList() async {
     List<List<AreaInfo>> areaList = [];
-
     String url = "https://m.douyu.com/api/cate/list";
 
     try {
@@ -144,10 +150,10 @@ class DouyuApi {
           area.typeName = cate1Map[typeId]!;
 
           area.platform = "douyu";
-          area.areaId = areaInfo["cate2Id"].toString();
-          area.areaName = areaInfo["cate2Name"];
-          area.areaPic = areaInfo["pic"];
-          area.shortName = areaInfo["shortName"];
+          area.areaId = areaInfo["cate2Id"]?.toString() ?? '';
+          area.areaName = areaInfo["cate2Name"] ?? '';
+          area.areaPic = areaInfo["pic"] ?? '';
+          area.shortName = areaInfo["shortName"] ?? '';
 
           cate2Map[typeId]?.add(area);
         }
@@ -181,11 +187,16 @@ class DouyuApi {
           for (var roomInfo in roomInfoList) {
             RoomInfo room = RoomInfo(roomInfo["rid"].toString());
             room.platform = 'douyu';
-            room.nick = roomInfo["nickname"];
-            room.title = roomInfo["roomName"];
-            room.cover = roomInfo["roomSrc"];
-            room.avatar = roomInfo["avatar"];
-            room.liveStatus = LiveStatus.live;
+            room.nick = roomInfo["nickname"] ?? '';
+            room.title = roomInfo["roomName"] ?? '';
+            room.cover = roomInfo["roomSrc"] ?? '';
+            room.avatar = roomInfo["avatar"] ?? '';
+            room.area = area.areaName;
+            room.followers = roomInfo["hn"] ?? '';
+            room.liveStatus =
+                (roomInfo.containsKey("isLive") && roomInfo["isLive"] == 1)
+                    ? LiveStatus.live
+                    : LiveStatus.offline;
             list.add(room);
           }
         }
@@ -196,24 +207,43 @@ class DouyuApi {
     return list;
   }
 
-  static Future<List<RoomInfo>> search(String keyWords, bool isLive) async {
+  static Future<List<RoomInfo>> search(String keyWords) async {
     List<RoomInfo> list = [];
-    String url = "https://www.douyu.com/japi/search/api/searchAnchor?kw=" +
-        const Utf8Encoder().convert(keyWords).toString() +
-        "&page=1&pageSize=5&filterType=${isLive ? 1 : 0}";
+    String url = "https://m.douyu.com/api/search/anchor";
 
     try {
-      dynamic response = await _getJson(url);
+      Map<String, String> headers = {
+        'User-Agent':
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        'Content-Type': 'application/json',
+      };
+      Map data = {
+        "sk": keyWords,
+        "offset": 0,
+        "limit": 20,
+      };
+      dynamic resp = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+      dynamic response = jsonDecode(resp.body);
       if (response["error"] == 0) {
-        List<dynamic> ownerList = response["data"]["relateAnchor"];
+        List<dynamic> ownerList = response["data"]["list"];
         for (var ownerInfo in ownerList) {
-          RoomInfo owner = RoomInfo(ownerInfo['rid'].toString());
+          RoomInfo owner = RoomInfo(ownerInfo['roomId'].toString());
           owner.platform = "douyu";
-          owner.nick = ownerInfo["nickName"];
-          owner.areaName = ownerInfo["cateName"];
-          owner.avatar = ownerInfo["avatar"];
+          owner.userId = ownerInfo['ownerUID']?.toString() ?? '';
+          owner.nick = ownerInfo["nickname"] ?? '';
+          owner.title = ownerInfo["roomName"] ?? '';
+          owner.cover = ownerInfo["roomSrc"] ?? '';
+          owner.avatar = ownerInfo["avatar"] ?? '';
+          owner.area = ownerInfo["cateName"] ?? '';
+          owner.followers = ownerInfo["hn"] ?? '';
           owner.liveStatus =
-              ownerInfo["isLive"] == 1 ? LiveStatus.live : LiveStatus.offline;
+              (ownerInfo.containsKey("isLive") && ownerInfo["isLive"] == 1)
+                  ? LiveStatus.live
+                  : LiveStatus.offline;
           list.add(owner);
         }
       }
