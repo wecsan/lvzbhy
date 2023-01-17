@@ -63,6 +63,14 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
       });
   }
 
+  void play() {
+    videoController?.play();
+  }
+
+  void pause() {
+    videoController?.pause();
+  }
+
   @override
   Widget build(BuildContext context) {
     return loading

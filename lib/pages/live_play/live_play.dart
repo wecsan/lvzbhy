@@ -3,6 +3,7 @@ import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/liveroom.dart';
+import 'package:hot_live/pages/live_dlna/live_dlna.dart';
 import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
@@ -65,6 +66,19 @@ class _LivePlayPageState extends State<LivePlayPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(widget.room.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              videoPlayer.pause();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LiveDlnaPage(streamList: streamList),
+                  ));
+            },
+            icon: const Icon(Icons.tv_rounded),
+          )
+        ],
       ),
       body: SafeArea(
         child: screenWidth > 640
