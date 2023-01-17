@@ -67,20 +67,25 @@ class RoomCard extends StatelessWidget {
                       ? CachedNetworkImage(
                           imageUrl: room.cover,
                           fit: BoxFit.fill,
-                          errorWidget: (context, error, stackTrace) =>
-                              const Center(
-                            child: Icon(Icons.live_tv_rounded, size: 48),
+                          errorWidget: (context, error, stackTrace) => Center(
+                            child: Icon(
+                              Icons.live_tv_rounded,
+                              size: dense ? 30 : 48,
+                            ),
                           ),
                         )
                       : Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.tv_off_rounded, size: 48),
+                              Icon(
+                                Icons.tv_off_rounded,
+                                size: dense ? 38 : 48,
+                              ),
                               Text(
                                 S.of(context).offline,
-                                style: const TextStyle(
-                                  fontSize: 26,
+                                style: TextStyle(
+                                  fontSize: dense ? 18 : 26,
                                   fontWeight: FontWeight.w500,
                                 ),
                               )

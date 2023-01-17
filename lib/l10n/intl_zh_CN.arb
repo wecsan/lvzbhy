@@ -37,19 +37,27 @@
 
     "settings_title": "设置",
     "general": "通用",
+    "about": "关于",
+
     "change_theme_color": "主题颜色",
     "change_theme_color_subtitle": "切换软件的主题颜色",
+
     "change_theme_mode": "主题模式",
-    "change_theme_mode_subtitle": "切换模式：亮色/暗色/系统",
+    "change_theme_mode_subtitle": "切换系统/亮色/暗色模式",
+
     "change_language": "切换语言",
     "change_language_subtitle": "切换软件的显示语言",
+
+    "enable_dense_favorites_mode": "启用关注页紧凑模式",
+    "enable_dense_favorites_mode_subtitle": "紧凑模式，显示更多关注直播间",
+
     "enable_auto_check_update": "启用自动检查更新",
     "enable_auto_check_update_subtitle": "在每次进入软件时，自动检查更新",
+
     "bilibili_cookie": "Bilibili Cookie",
     "enable_bilibili_search_cookie": "启用Bilibili搜索Cookie",
     "enable_bilibili_search_cookie_subtitle": "设置Bilibili搜索所需Cookie",
-    "about": "关于",
-    "about_hotlive": "关于HotLive",
+
     "check_update": "检查更新",
     "new_version_info": "发现新版本: v{version}",
     "no_new_version_info": "已在使用最新版本",

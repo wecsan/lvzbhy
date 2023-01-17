@@ -3,8 +3,8 @@ import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/utils/version_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CheckUpdate extends StatelessWidget {
-  const CheckUpdate({Key? key}) : super(key: key);
+class CheckUpdateListTile extends StatelessWidget {
+  const CheckUpdateListTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

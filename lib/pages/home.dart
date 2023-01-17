@@ -41,7 +41,7 @@ class _HomePageRouterState extends State<HomePageRouter> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) async {
         await VersionUtil.checkUpdate();
-        if (settings.enbaleAutoCheckUpdate && VersionUtil.hasNewVersion()) {
+        if (settings.enableAutoCheckUpdate && VersionUtil.hasNewVersion()) {
           late OverlayEntry entry;
           entry = OverlayEntry(
             builder: (context) => Container(

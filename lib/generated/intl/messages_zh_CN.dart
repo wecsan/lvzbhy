@@ -30,7 +30,6 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("关于"),
-        "about_hotlive": MessageLookupByLibrary.simpleMessage("关于HotLive"),
         "app_name": MessageLookupByLibrary.simpleMessage("HotLive"),
         "areas_title": MessageLookupByLibrary.simpleMessage("分区"),
         "bilibili_cookie":
@@ -44,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("切换软件的主题颜色"),
         "change_theme_mode": MessageLookupByLibrary.simpleMessage("主题模式"),
         "change_theme_mode_subtitle":
-            MessageLookupByLibrary.simpleMessage("切换模式：亮色/暗色/系统"),
+            MessageLookupByLibrary.simpleMessage("切换系统/亮色/暗色模式"),
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
         "empty_areas_room_subtitle":
@@ -70,6 +69,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("启用Bilibili搜索Cookie"),
         "enable_bilibili_search_cookie_subtitle":
             MessageLookupByLibrary.simpleMessage("设置Bilibili搜索所需Cookie"),
+        "enable_dense_favorites_mode":
+            MessageLookupByLibrary.simpleMessage("启用关注页紧凑模式"),
+        "enable_dense_favorites_mode_subtitle":
+            MessageLookupByLibrary.simpleMessage("紧凑模式，显示更多关注直播间"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("关注"),
         "follow": MessageLookupByLibrary.simpleMessage("关注"),
         "followed": MessageLookupByLibrary.simpleMessage("已关注"),

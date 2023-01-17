@@ -361,6 +361,16 @@ class S {
     );
   }
 
+  /// `About`
+  String get about {
+    return Intl.message(
+      'About',
+      name: 'about',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Theme Color`
   String get change_theme_color {
     return Intl.message(
@@ -421,6 +431,26 @@ class S {
     );
   }
 
+  /// `Enable dense favorite page`
+  String get enable_dense_favorites_mode {
+    return Intl.message(
+      'Enable dense favorite page',
+      name: 'enable_dense_favorites_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable to display more live rooms at once`
+  String get enable_dense_favorites_mode_subtitle {
+    return Intl.message(
+      'Enable to display more live rooms at once',
+      name: 'enable_dense_favorites_mode_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Enable auto check update`
   String get enable_auto_check_update {
     return Intl.message(
@@ -466,26 +496,6 @@ class S {
     return Intl.message(
       'Set custom bilibili search needed cookie',
       name: 'enable_bilibili_search_cookie_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `About`
-  String get about {
-    return Intl.message(
-      'About',
-      name: 'about',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `About HotLive`
-  String get about_hotlive {
-    return Intl.message(
-      'About HotLive',
-      name: 'about_hotlive',
       desc: '',
       args: [],
     );

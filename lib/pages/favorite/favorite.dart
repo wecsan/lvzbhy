@@ -6,6 +6,7 @@ import 'package:hot_live/pages/settings/settings.dart';
 
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
+import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:hot_live/widgets/empty_view.dart';
 import 'package:hot_live/widgets/room_card.dart';
@@ -20,7 +21,8 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  late FavoriteProvider provider = Provider.of<FavoriteProvider>(context);
+  late FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
+  late SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
   void onLongPress(BuildContext context, RoomInfo room) {
     showDialog(
@@ -39,14 +41,14 @@ class _FavoritePageState extends State<FavoritePage> {
         actions: [
           TextButton(
             onPressed: () {
-              provider.removeRoom(room);
+              favorite.removeRoom(room);
               return Navigator.pop(context);
             },
             child: Text(S.of(context).remove),
           ),
           TextButton(
             onPressed: () {
-              provider.moveToTop(room);
+              favorite.moveToTop(room);
               return Navigator.pop(context);
             },
             child: Text(S.of(context).move_to_top),
@@ -62,6 +64,12 @@ class _FavoritePageState extends State<FavoritePage> {
     int crossAxisCount = screenWidth > 1280
         ? 4
         : (screenWidth > 960 ? 3 : (screenWidth > 640 ? 2 : 1));
+    if (settings.enableDenseFavorites) {
+      crossAxisCount = screenWidth > 1280
+          ? 8
+          : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -92,18 +100,19 @@ class _FavoritePageState extends State<FavoritePage> {
       body: SmartRefresher(
         enablePullDown: true,
         header: const WaterDropHeader(),
-        controller: provider.refreshController,
-        onRefresh: provider.onRefresh,
-        child: provider.roomsList.isNotEmpty
+        controller: favorite.refreshController,
+        onRefresh: favorite.onRefresh,
+        child: favorite.roomsList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
                 controller: ScrollController(),
                 crossAxisCount: crossAxisCount,
-                itemCount: provider.roomsList.length,
+                itemCount: favorite.roomsList.length,
                 itemBuilder: (context, index) {
-                  RoomInfo room = provider.roomsList[index];
+                  RoomInfo room = favorite.roomsList[index];
                   return RoomCard(
                     room: room,
+                    dense: settings.enableDenseFavorites,
                     onLongPress: () => onLongPress(context, room),
                   );
                 },
@@ -114,15 +123,15 @@ class _FavoritePageState extends State<FavoritePage> {
                 subtitle: S.of(context).empty_favorite_subtitle,
               ),
       ),
-      floatingActionButton: provider.isHideOffline
+      floatingActionButton: favorite.isHideOffline
           ? FloatingActionButton(
               tooltip: S.of(context).show_offline_rooms,
-              onPressed: provider.showOfflineRooms,
+              onPressed: favorite.showOfflineRooms,
               child: const Icon(Icons.add_circle_outline_rounded),
             )
           : FloatingActionButton(
               tooltip: S.of(context).hide_offline_rooms,
-              onPressed: provider.hideOfflineRooms,
+              onPressed: favorite.hideOfflineRooms,
               child: const Icon(Icons.remove_circle_outline_rounded),
             ),
     );

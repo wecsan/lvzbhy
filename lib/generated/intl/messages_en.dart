@@ -30,7 +30,6 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("About"),
-        "about_hotlive": MessageLookupByLibrary.simpleMessage("About HotLive"),
         "app_name": MessageLookupByLibrary.simpleMessage("HotLive"),
         "areas_title": MessageLookupByLibrary.simpleMessage("Areas"),
         "bilibili_cookie":
@@ -78,6 +77,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_bilibili_search_cookie_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Set custom bilibili search needed cookie"),
+        "enable_dense_favorites_mode":
+            MessageLookupByLibrary.simpleMessage("Enable dense favorite page"),
+        "enable_dense_favorites_mode_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Enable to display more live rooms at once"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("Favorites"),
         "follow": MessageLookupByLibrary.simpleMessage("Follow"),
         "followed": MessageLookupByLibrary.simpleMessage("Followed"),

@@ -27,8 +27,9 @@ class SettingsProvider with ChangeNotifier {
     _themeModeName = PrefUtil.getString('themeMode') ?? "System";
     _themeColorName = PrefUtil.getString('themeColor') ?? "Crimson";
     _languageName = PrefUtil.getString('language') ?? "简体中文";
+    _enableAutoCheckUpdate = PrefUtil.getBool('enableAutoCheckUpdate') ?? true;
+    _enableDenseFavorites = PrefUtil.getBool('enableDenseFavorites') ?? false;
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
-    _enbaleAutoCheckUpdate = PrefUtil.getBool('enbaleAutoCheckUpdate') ?? true;
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.8;
@@ -40,8 +41,9 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setString('themeMode', _themeModeName);
     PrefUtil.setString('themeColor', _themeColorName);
     PrefUtil.setString('language', _languageName);
+    PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
+    PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
-    PrefUtil.setBool('enbaleAutoCheckUpdate', _enbaleAutoCheckUpdate);
     PrefUtil.setDouble('danmakuArea', _danmakuArea);
     PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
@@ -102,20 +104,28 @@ class SettingsProvider with ChangeNotifier {
   }
 
   // Custom settings
+  bool _enableDenseFavorites = false;
+  bool get enableDenseFavorites => _enableDenseFavorites;
+  set enableDenseFavorites(bool value) {
+    _enableDenseFavorites = value;
+    notifyListeners();
+    PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
+  }
+
+  bool _enableAutoCheckUpdate = true;
+  bool get enableAutoCheckUpdate => _enableAutoCheckUpdate;
+  set enableAutoCheckUpdate(bool value) {
+    _enableAutoCheckUpdate = value;
+    notifyListeners();
+    PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
+  }
+
   String _bilibiliCustomCookie = '';
   String get bilibiliCustomCookie => _bilibiliCustomCookie;
-  set bilibiliCustomCookie(value) {
+  set bilibiliCustomCookie(String value) {
     _bilibiliCustomCookie = value;
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
     notifyListeners();
-  }
-
-  bool _enbaleAutoCheckUpdate = true;
-  bool get enbaleAutoCheckUpdate => _enbaleAutoCheckUpdate;
-  set enbaleAutoCheckUpdate(value) {
-    _enbaleAutoCheckUpdate = value;
-    notifyListeners();
-    PrefUtil.setBool('enbaleAutoCheckUpdate', _enbaleAutoCheckUpdate);
   }
 
   // Danmaku settings
@@ -174,8 +184,9 @@ class SettingsProvider with ChangeNotifier {
         prefs.map<RoomInfo>((e) => RoomInfo.fromJson(jsonDecode(e))).toList();
     _themeModeName = json['themeMode'] ?? "System";
     _themeColorName = json['themeColor'] ?? "Crimson";
+    _enableDenseFavorites = json['enableDenseFavorites'] ?? false;
+    _enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
     _bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
-    _enbaleAutoCheckUpdate = json['enbaleAutoCheckUpdate'] ?? true;
     _danmakuArea = json['danmakuArea'] ?? 0.5;
     _danmakuSpeed = json['danmakuSpeed'] ?? 8;
     _danmakuFontBorder = json['danmakuFontBorder'] ?? 0.8;
@@ -190,8 +201,9 @@ class SettingsProvider with ChangeNotifier {
         _favorites.map<String>((e) => jsonEncode(e.toJson())).toList();
     json['themeMode'] = _themeModeName;
     json['themeColor'] = _themeColorName;
+    json['enableDenseFavorites'] = _enableDenseFavorites;
+    json['enableAutoCheckUpdate'] = _enableAutoCheckUpdate;
     json['bilibiliCustomCookie'] = _bilibiliCustomCookie;
-    json['enbaleAutoCheckUpdate'] = _enbaleAutoCheckUpdate;
     json['danmakuArea'] = _danmakuArea;
     json['danmakuSpeed'] = _danmakuSpeed;
     json['danmakuFontBorder'] = _danmakuFontBorder;
