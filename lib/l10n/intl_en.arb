@@ -66,6 +66,7 @@
     "settings_danmaku_opacity": "Danmaku opacity",
     "settings_danmaku_speed": "Danmaku speed",
     "settings_danmaku_fontsize": "Danmaku fontsize",
+    "settings_danmaku_fontBorder": "Border width",
     
     "follow": "Follow",
     "unfollow": "Unfollow",

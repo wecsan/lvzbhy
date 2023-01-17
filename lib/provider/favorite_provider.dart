@@ -47,6 +47,7 @@ class FavoriteProvider with ChangeNotifier {
         .addAll(_roomsList.where((room) => room.liveStatus == LiveStatus.live));
     refreshController.refreshCompleted();
     notifyListeners();
+    _saveToPref();
   }
 
   void onRefresh() {

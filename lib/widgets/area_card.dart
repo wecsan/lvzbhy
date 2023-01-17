@@ -63,7 +63,7 @@ class AreaCard extends StatelessWidget {
                   area.areaName,
                   maxLines: 1,
                   overflow: TextOverflow.clip,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

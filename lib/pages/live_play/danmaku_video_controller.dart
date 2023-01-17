@@ -17,19 +17,36 @@ class DanmakuText extends StatelessWidget {
   const DanmakuText({Key? key, required this.message}) : super(key: key);
 
   final String message;
+  static const Color borderColor = Colors.black;
 
   @override
   Widget build(BuildContext context) {
     SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
-    return Text(
-      message,
-      maxLines: 1,
-      style: TextStyle(
-        fontSize: settings.danmakuFontSize,
-        fontWeight: FontWeight.w400,
-        color: Colors.white,
-      ),
+    return Stack(
+      children: [
+        Text(
+          message,
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: settings.danmakuFontSize,
+            fontWeight: FontWeight.w400,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = settings.danmakuFontBorder
+              ..color = borderColor,
+          ),
+        ),
+        Text(
+          message,
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: settings.danmakuFontSize,
+            fontWeight: FontWeight.w400,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -451,6 +468,24 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
                   ),
                   trailing: Text(
                     settings.danmakuFontSize.toInt().toString(),
+                    style: digit,
+                  ),
+                ),
+                ListTile(
+                  dense: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  leading: Text(
+                    S.of(context).settings_danmaku_fontBorder,
+                    style: label,
+                  ),
+                  title: Slider(
+                    value: settings.danmakuFontBorder,
+                    min: 0.0,
+                    max: 2.5,
+                    onChanged: (val) => settings.danmakuFontBorder = val,
+                  ),
+                  trailing: Text(
+                    settings.danmakuFontBorder.toStringAsFixed(2),
                     style: digit,
                   ),
                 ),

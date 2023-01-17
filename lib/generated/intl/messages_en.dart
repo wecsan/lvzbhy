@@ -108,6 +108,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Input live room keyword"),
         "settings_danmaku_area":
             MessageLookupByLibrary.simpleMessage("Danmaku area"),
+        "settings_danmaku_fontBorder":
+            MessageLookupByLibrary.simpleMessage("Border width"),
         "settings_danmaku_fontsize":
             MessageLookupByLibrary.simpleMessage("Danmaku fontsize"),
         "settings_danmaku_opacity":

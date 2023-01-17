@@ -32,7 +32,7 @@ class SettingsProvider with ChangeNotifier {
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
-    _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.8;
+    _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
   }
@@ -131,7 +131,7 @@ class SettingsProvider with ChangeNotifier {
   // Danmaku settings
   double _danmakuArea = 0.5;
   double _danmakuSpeed = 8;
-  double _danmakuFontBorder = 0.8;
+  double _danmakuFontBorder = 0.5;
   double _danmakuFontSize = 16;
   double _danmakuOpacity = 1;
 
@@ -153,7 +153,7 @@ class SettingsProvider with ChangeNotifier {
 
   double get danmakuFontBorder => _danmakuFontBorder;
   set danmakuFontBorder(value) {
-    if (value < 0 || value > 5) return;
+    if (value < 0 || value > 2.5) return;
     _danmakuFontBorder = value;
     notifyListeners();
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);

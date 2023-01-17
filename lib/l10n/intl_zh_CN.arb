@@ -66,6 +66,7 @@
     "settings_danmaku_opacity": "不透明度",
     "settings_danmaku_speed": "弹幕速度",
     "settings_danmaku_fontsize": "弹幕字号",
+    "settings_danmaku_fontBorder": "描边宽度",
     
     "follow": "关注",
     "unfollow": "取消关注",

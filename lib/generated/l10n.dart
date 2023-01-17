@@ -571,6 +571,16 @@ class S {
     );
   }
 
+  /// `Border width`
+  String get settings_danmaku_fontBorder {
+    return Intl.message(
+      'Border width',
+      name: 'settings_danmaku_fontBorder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Follow`
   String get follow {
     return Intl.message(
