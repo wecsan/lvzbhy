@@ -45,14 +45,12 @@ class DouyuDanmaku {
   }
 
   void login() {
-    String roomID = danmakuId.toString();
-    String login =
-        "type@=loginreq/room_id@=$roomID/dfl@=sn@A=105@Sss@A=1/username@=61609154/uid@=61609154/ver@=20190610/aver@=218101901/ct@=0/";
+    String login = "type@=loginreq/roomid@=$danmakuId/";
+    String joingroup = "type@=joingroup/rid@=$danmakuId/gid@=-9999/";
+
     _channel!.sink.add(encode(login));
-    String joingroup = "type@=joingroup/rid@=$roomID/gid@=-9999/";
     _channel!.sink.add(encode(joingroup));
-    String heartbeat = 'type@=mrkl/';
-    _channel!.sink.add(encode(heartbeat));
+    heartBeat();
   }
 
   Uint8List encode(String msg) {
