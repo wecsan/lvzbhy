@@ -17,8 +17,7 @@ class AreasPage extends StatefulWidget {
 
 class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   late AreasProvider provider = Provider.of<AreasProvider>(context);
-  late TabController tabController =
-      TabController(length: provider.labelList.length, vsync: this);
+  late TabController tabController;
 
   void showSwitchPlatformDialog() {
     showDialog(
@@ -49,6 +48,8 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    tabController =
+        TabController(length: provider.areaList.length, vsync: this);
     return Scaffold(
       appBar: AppBar(
         title: Text(
