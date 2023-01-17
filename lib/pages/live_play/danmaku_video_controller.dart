@@ -502,13 +502,12 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       onTap: _onExpandCollapse,
       child: Container(
         height: barHeight,
+        alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: const Center(
-          child: Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-          ),
+        child: const Icon(
+          Icons.arrow_back_rounded,
+          color: Colors.white,
         ),
       ),
     );
@@ -524,13 +523,12 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
     return Container(
       height: barHeight,
+      alignment: Alignment.center,
       margin: const EdgeInsets.only(right: 12.0),
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: Center(
-        child: Text(
-          '$hour:$minute',
-          style: const TextStyle(color: Colors.white),
-        ),
+      child: Text(
+        '$hour:$minute',
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }
@@ -539,41 +537,41 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
     final batteryLevel = settings.batteryLevel;
     return Container(
       height: barHeight,
+      alignment: Alignment.center,
       margin: const EdgeInsets.only(right: 4.0),
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: Center(
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(1),
-              child: SizedBox(
-                width: 20,
-                height: 10,
-                child: LinearProgressIndicator(
-                  value: batteryLevel / 100.0,
-                  backgroundColor: Colors.white38,
-                  valueColor: AlwaysStoppedAnimation(
-                    Theme.of(context).indicatorColor,
-                  ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(1),
+            child: SizedBox(
+              width: 20,
+              height: 10,
+              child: LinearProgressIndicator(
+                value: batteryLevel / 100.0,
+                backgroundColor: Colors.white38,
+                valueColor: AlwaysStoppedAnimation(
+                  Theme.of(context).indicatorColor,
                 ),
               ),
             ),
-            const SizedBox(width: 4),
-            Text(
-              '$batteryLevel%',
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(color: Colors.white),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '$batteryLevel%',
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: Colors.white),
+          ),
+        ],
       ),
     );
   }
 
   // Bottom bar widgets
   Widget _buildBottomBar() {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Positioned(
       bottom: 0,
       height: barHeight,
@@ -595,7 +593,8 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
               _buildMuteButton(),
               _buildDanmakuHideButton(),
               if (chewieController.isFullScreen) _buildDanmakuSettingButton(),
-              const Spacer(),
+              if (chewieController.isFullScreen || screenWidth < 640)
+                const Spacer(),
               if (chewieController.allowFullScreen) _buildExpandButton(),
             ],
           ),
@@ -609,15 +608,14 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       onTap: _playPause,
       child: Container(
         height: barHeight,
+        alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Center(
-          child: Icon(
-            controller.value.isPlaying
-                ? Icons.pause_rounded
-                : Icons.play_arrow_rounded,
-            color: Colors.white,
-          ),
+        child: Icon(
+          controller.value.isPlaying
+              ? Icons.pause_rounded
+              : Icons.play_arrow_rounded,
+          color: Colors.white,
         ),
       ),
     );
@@ -637,6 +635,7 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       },
       child: Container(
         height: barHeight,
+        alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Icon(
@@ -656,13 +655,12 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       },
       child: Container(
         height: barHeight,
+        alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Center(
-          child: Icon(
-            _hideDanmaku ? CustomIcons.danmaku_close : CustomIcons.danmaku_open,
-            color: Colors.white,
-          ),
+        child: Icon(
+          _hideDanmaku ? CustomIcons.danmaku_close : CustomIcons.danmaku_open,
+          color: Colors.white,
         ),
       ),
     );
@@ -677,13 +675,12 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       },
       child: Container(
         height: barHeight,
+        alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: const Center(
-          child: Icon(
-            CustomIcons.danmaku_setting,
-            color: Colors.white,
-          ),
+        child: const Icon(
+          CustomIcons.danmaku_setting,
+          color: Colors.white,
         ),
       ),
     );
@@ -694,15 +691,15 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       onTap: _onExpandCollapse,
       child: Container(
         height: barHeight,
+        alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Center(
-          child: Icon(
-            chewieController.isFullScreen
-                ? Icons.fullscreen_exit_rounded
-                : Icons.fullscreen_rounded,
-            color: Colors.white,
-          ),
+        child: Icon(
+          chewieController.isFullScreen
+              ? Icons.fullscreen_exit_rounded
+              : Icons.fullscreen_rounded,
+          color: Colors.white,
+          size: 26,
         ),
       ),
     );

@@ -26,8 +26,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
   bool datasourceError = false;
 
   late final favorite = Provider.of<FavoriteProvider>(context);
-  final GlobalKey<DanmakuVideoPlayerState> _globalKey = GlobalKey();
-  DanmakuVideoPlayerState get videoPlayer => _globalKey.currentState!;
+  final GlobalKey<DanmakuVideoPlayerState> _videoPlayerKey = GlobalKey();
+  final GlobalKey<DanmakuListViewState> _danmakuViewKey = GlobalKey();
+  DanmakuVideoPlayerState get videoPlayer => _videoPlayerKey.currentState!;
 
   @override
   void initState() {
@@ -56,6 +57,121 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(widget.room.title),
+      ),
+      body: SafeArea(
+        child: screenWidth > 640
+            ? Row(children: <Widget>[
+                Flexible(
+                  flex: 5,
+                  child: _buildVideoPlayer(),
+                ),
+                Flexible(
+                  flex: 3,
+                  child: Column(children: [
+                    _buildInfoResolutionRow(),
+                    const Divider(height: 1),
+                    Expanded(child: _buildDanmakuListView()),
+                  ]),
+                ),
+              ])
+            : Column(
+                children: <Widget>[
+                  _buildVideoPlayer(),
+                  _buildInfoResolutionRow(),
+                  const Divider(height: 1),
+                  Expanded(child: _buildDanmakuListView()),
+                ],
+              ),
+      ),
+      floatingActionButton: _buildFavoriteButton(),
+    );
+  }
+
+  Widget _buildVideoPlayer() {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        color: Colors.black,
+        child: datasource.isNotEmpty
+            ? DanmakuVideoPlayer(
+                key: _videoPlayerKey,
+                url: datasource,
+                danmakuStream: danmakuStream,
+                title: widget.room.title,
+              )
+            : Center(
+                child: datasourceError
+                    ? const Icon(
+                        Icons.error_outline_rounded,
+                        size: 42,
+                        color: Colors.white70,
+                      )
+                    : const CircularProgressIndicator(),
+              ),
+      ),
+    );
+  }
+
+  Widget _buildDanmakuListView() {
+    return DanmakuListView(
+      key: _danmakuViewKey,
+      room: widget.room,
+      danmakuStream: danmakuStream,
+    );
+  }
+
+  Widget _buildFavoriteButton() {
+    return favorite.isFavorite(widget.room.roomId)
+        ? FloatingActionButton(
+            elevation: 2,
+            backgroundColor: Theme.of(context).cardColor,
+            tooltip: S.of(context).unfollow,
+            onPressed: () => favorite.removeRoom(widget.room),
+            child: CircleAvatar(
+              foregroundImage: (widget.room.avatar == '')
+                  ? null
+                  : NetworkImage(widget.room.avatar),
+              radius: 18,
+              backgroundColor: Theme.of(context).disabledColor,
+            ),
+          )
+        : FloatingActionButton.extended(
+            elevation: 2,
+            backgroundColor: Theme.of(context).cardColor,
+            onPressed: () => favorite.addRoom(widget.room),
+            icon: CircleAvatar(
+              foregroundImage: (widget.room.avatar == '')
+                  ? null
+                  : NetworkImage(widget.room.avatar),
+              radius: 18,
+              backgroundColor: Theme.of(context).disabledColor,
+            ),
+            label: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  S.of(context).follow,
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                Text(
+                  widget.room.nick,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          );
+  }
+
+  Widget _buildInfoResolutionRow() {
     final resolutionBtns = [];
     streamList.forEach((resolution, cdns) {
       final btn = PopupMenuButton(
@@ -80,128 +196,43 @@ class _LivePlayPageState extends State<LivePlayPage> {
       resolutionBtns.add(btn);
     });
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(widget.room.title),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        children: [
+          const SizedBox(width: 8),
+          CircleAvatar(
+            foregroundImage: (widget.room.avatar == '')
+                ? null
+                : NetworkImage(widget.room.avatar),
+            radius: 13,
+            backgroundColor: Theme.of(context).disabledColor,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.room.nick,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+                Text(
+                  widget.room.platform,
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption
+                      ?.copyWith(fontSize: 10),
+                ),
+              ],
+            ),
+          ),
+          const IconButton(onPressed: null, icon: Text('')),
+          ...resolutionBtns,
+        ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Container(
-                color: Colors.black,
-                child: datasource.isNotEmpty
-                    ? DanmakuVideoPlayer(
-                        key: _globalKey,
-                        url: datasource,
-                        danmakuStream: danmakuStream,
-                        title: widget.room.title,
-                      )
-                    : Center(
-                        child: datasourceError
-                            ? const Icon(
-                                Icons.error_outline_rounded,
-                                size: 42,
-                                color: Colors.white70,
-                              )
-                            : const CircularProgressIndicator(),
-                      ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Row(
-                children: [
-                  const SizedBox(width: 8),
-                  CircleAvatar(
-                    foregroundImage: (widget.room.avatar == '')
-                        ? null
-                        : NetworkImage(widget.room.avatar),
-                    radius: 13,
-                    backgroundColor: Theme.of(context).disabledColor,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.room.nick,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                        Text(
-                          widget.room.platform,
-                          style: Theme.of(context)
-                              .textTheme
-                              .caption
-                              ?.copyWith(fontSize: 10),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const IconButton(onPressed: null, icon: Text('')),
-                  ...resolutionBtns,
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            Expanded(
-              child: DanmakuListView(
-                room: widget.room,
-                danmakuStream: danmakuStream,
-              ),
-            ),
-            // OwnerListTile(room: widget.room),
-          ],
-        ),
-      ),
-      floatingActionButton: favorite.isFavorite(widget.room.roomId)
-          ? FloatingActionButton(
-              elevation: 2,
-              backgroundColor: Theme.of(context).cardColor,
-              tooltip: S.of(context).unfollow,
-              onPressed: () => favorite.removeRoom(widget.room),
-              child: CircleAvatar(
-                foregroundImage: (widget.room.avatar == '')
-                    ? null
-                    : NetworkImage(widget.room.avatar),
-                radius: 18,
-                backgroundColor: Theme.of(context).disabledColor,
-              ),
-            )
-          : FloatingActionButton.extended(
-              elevation: 2,
-              backgroundColor: Theme.of(context).cardColor,
-              onPressed: () => favorite.addRoom(widget.room),
-              icon: CircleAvatar(
-                foregroundImage: (widget.room.avatar == '')
-                    ? null
-                    : NetworkImage(widget.room.avatar),
-                radius: 18,
-                backgroundColor: Theme.of(context).disabledColor,
-              ),
-              label: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    S.of(context).follow,
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                  Text(
-                    widget.room.nick,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
     );
   }
 }

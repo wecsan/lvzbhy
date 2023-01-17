@@ -14,10 +14,10 @@ class DanmakuListView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DanmakuListView> createState() => _DanmakuListViewState();
+  State<DanmakuListView> createState() => DanmakuListViewState();
 }
 
-class _DanmakuListViewState extends State<DanmakuListView>
+class DanmakuListViewState extends State<DanmakuListView>
     with AutomaticKeepAliveClientMixin<DanmakuListView> {
   final List<DanmakuInfo> _danmakuList = [];
   final ScrollController _scrollController = ScrollController();
