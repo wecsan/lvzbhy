@@ -71,10 +71,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Text(widget.room.title),
         actions: [
           IconButton(

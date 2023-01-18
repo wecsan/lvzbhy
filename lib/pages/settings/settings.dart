@@ -21,9 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).settings_title),
-      ),
+      appBar: AppBar(title: Text(S.of(context).settings_title)),
       body: ListView(
         children: <Widget>[
           SectionTitle(title: S.of(context).general),
