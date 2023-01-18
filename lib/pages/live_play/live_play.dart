@@ -8,6 +8,7 @@ import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
+import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:wakelock/wakelock.dart';
@@ -79,7 +80,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
           IconButton(
             tooltip: S.of(context).dlan_button_info,
             onPressed: showDlnaSelectorDialog,
-            icon: const Icon(Icons.cast_rounded, size: 22),
+            icon: const Icon(CustomIcons.cast, size: 22),
           ),
         ],
       ),

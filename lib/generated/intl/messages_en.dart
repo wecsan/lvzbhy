@@ -50,6 +50,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dlan_button_info":
             MessageLookupByLibrary.simpleMessage("DLNA Broadcast"),
+        "dlan_device_not_found":
+            MessageLookupByLibrary.simpleMessage("DLNA device not found"),
         "dlan_title": MessageLookupByLibrary.simpleMessage("DLNA"),
         "empty_areas_room_subtitle":
             MessageLookupByLibrary.simpleMessage("Pull down to refresh data"),

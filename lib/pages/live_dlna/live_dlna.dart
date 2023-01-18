@@ -24,7 +24,7 @@ class _LiveDlnaPageState extends State<LiveDlnaPage> {
 
   @override
   void initState() {
-    stopSearchTimer = Timer(const Duration(seconds: 30), () {
+    stopSearchTimer = Timer(const Duration(seconds: 20), () {
       setState(() => isSearching = false);
       searcher.stop();
     });
@@ -71,7 +71,12 @@ class _LiveDlnaPageState extends State<LiveDlnaPage> {
     if (isSearching && _deviceList.isEmpty) {
       cur = const Center(child: CircularProgressIndicator());
     } else if (_deviceList.isEmpty) {
-      cur = const Center(child: Text('未发现DLNA设备'));
+      cur = Center(
+        child: Text(
+          S.of(context).dlan_device_not_found,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      );
     } else {
       cur = ListView(
         children: _deviceList.keys

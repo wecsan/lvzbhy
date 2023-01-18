@@ -47,8 +47,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
         "custom": MessageLookupByLibrary.simpleMessage("定制"),
-        "dlan_button_info": MessageLookupByLibrary.simpleMessage("DLNA 投屏"),
-        "dlan_title": MessageLookupByLibrary.simpleMessage("DLNA"),
+        "dlan_button_info": MessageLookupByLibrary.simpleMessage("DLNA投屏"),
+        "dlan_device_not_found":
+            MessageLookupByLibrary.simpleMessage("未发现DLNA设备"),
+        "dlan_title": MessageLookupByLibrary.simpleMessage("DLNA投屏"),
         "empty_areas_room_subtitle":
             MessageLookupByLibrary.simpleMessage("下滑/上滑刷新数据"),
         "empty_areas_room_title": MessageLookupByLibrary.simpleMessage("未发现直播"),

@@ -710,6 +710,16 @@ class S {
       args: [],
     );
   }
+
+  /// `DLNA device not found`
+  String get dlan_device_not_found {
+    return Intl.message(
+      'DLNA device not found',
+      name: 'dlan_device_not_found',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
