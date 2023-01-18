@@ -76,17 +76,17 @@ class _LivePlayPageState extends State<LivePlayPage> {
         ),
         title: Text(widget.room.title),
         actions: [
-          IconButton(
-            onPressed: () {
-              videoPlayer.pause();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LiveDlnaPage(streamList: streamList),
-                  ));
-            },
-            icon: const Icon(Icons.tv_rounded),
-          )
+          // IconButton(
+          //   onPressed: () {
+          //     videoPlayer.pause();
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => LiveDlnaPage(streamList: streamList),
+          //         ));
+          //   },
+          //   icon: const Icon(Icons.tv_rounded),
+          // )
         ],
       ),
       body: SafeArea(
