@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:chewie/chewie.dart';
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
@@ -9,9 +9,7 @@ import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:video_player/video_player.dart';
 import 'package:volume_controller/volume_controller.dart';
-import 'package:wakelock/wakelock.dart';
 
 class DanmakuText extends StatelessWidget {
   const DanmakuText({Key? key, required this.message}) : super(key: key);
@@ -23,70 +21,72 @@ class DanmakuText extends StatelessWidget {
   Widget build(BuildContext context) {
     SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
-    return Stack(
-      children: [
-        Text(
-          message,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: settings.danmakuFontSize,
-            fontWeight: FontWeight.w400,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = settings.danmakuFontBorder
-              ..color = borderColor,
-          ),
-        ),
-        Text(
-          message,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: settings.danmakuFontSize,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
-          ),
-        ),
-      ],
+    Widget cur = Text(
+      message,
+      maxLines: 1,
+      style: TextStyle(
+        fontSize: settings.danmakuFontSize,
+        fontWeight: FontWeight.w400,
+        color: Colors.white,
+      ),
     );
+
+    // setting text border
+    if (settings.danmakuFontBorder > 0) {
+      cur = Stack(
+        children: [
+          Text(
+            message,
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: settings.danmakuFontSize,
+              fontWeight: FontWeight.w400,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = settings.danmakuFontBorder
+                ..color = borderColor,
+            ),
+          ),
+          cur,
+        ],
+      );
+    }
+
+    return cur;
   }
 }
 
 class DanmakuVideoController extends StatefulWidget {
+  final BetterPlayerController controller;
   final DanmakuStream danmakuStream;
   final String title;
 
   const DanmakuVideoController({
     Key? key,
+    required this.controller,
     required this.danmakuStream,
     this.title = '',
   }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _DanmakuVideoControllerState();
+    return DanmakuVideoControllerState();
   }
 }
 
-class _DanmakuVideoControllerState extends State<DanmakuVideoController>
+class DanmakuVideoControllerState extends State<DanmakuVideoController>
     with SingleTickerProviderStateMixin {
-  late VideoPlayerValue _latestValue;
-
   final barHeight = 56.0;
   final marginSize = 5.0;
-
-  double? _latestVolume;
 
   bool _hideStuff = true;
   bool _hideDanmaku = false;
   bool _lockStuff = false;
   bool _displayTapped = false;
   bool _displayDanmakuSetting = false;
-  bool _displayBufferingIndicator = false;
 
   Timer? _initTimer;
   Timer? _hideTimer;
-  Timer? _bufferingDisplayTimer;
-  Timer? _showAfterExpandCollapseTimer;
 
   // 滑动调节控制
   bool _dragingBV = false;
@@ -98,70 +98,64 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
   VolumeController volumeController = VolumeController()..showSystemUI = false;
   ScreenBrightness brightnessController = ScreenBrightness();
 
-  VideoPlayerController? _controller;
-  ChewieController? _chewieController;
+  BetterPlayerController? _controller;
+
   final BarrageWallController barrageWallController = BarrageWallController();
   late final SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
-  // We know that _chewieController is set in didChangeDependencies
-  VideoPlayerController get controller => _controller!;
-  ChewieController get chewieController => _chewieController!;
+  // We know that _controller is set in didChangeDependencies
+  BetterPlayerController get controller => _controller!;
+  VideoPlayerValue get latestValue => controller.videoPlayerController!.value;
 
   @override
   void initState() {
+    super.initState();
+    _controller = widget.controller;
+    _initTimer = Timer(const Duration(milliseconds: 200), () {
+      setState(() => _hideStuff = true);
+    });
+
     widget.danmakuStream.listen((info) {
       barrageWallController
           .send([Bullet(child: DanmakuText(message: info.msg))]);
     });
-    super.initState();
   }
 
   @override
   void dispose() {
-    _dispose();
+    _hideTimer?.cancel();
+    _initTimer?.cancel();
     super.dispose();
   }
 
-  void _dispose() {
-    controller.removeListener(_updateState);
-    _hideTimer?.cancel();
-    _initTimer?.cancel();
-    _showAfterExpandCollapseTimer?.cancel();
-  }
-
-  @override
-  void didChangeDependencies() {
-    final oldController = _chewieController;
-    _chewieController = ChewieController.of(context);
-    _controller = chewieController.videoPlayerController;
-    if (oldController != chewieController) {
-      _dispose();
-      _initialize();
+  void setBoxFit(int index) {
+    settings.playerFitMode = index;
+    if (index == 0) {
+      controller.setOverriddenFit(BoxFit.contain);
+    } else if (index == 1) {
+      controller.setOverriddenFit(BoxFit.fill);
+    } else {
+      controller.setOverriddenFit(BoxFit.fitWidth);
     }
-    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_latestValue.hasError) {
-      return chewieController.errorBuilder?.call(
-            context,
-            chewieController.videoPlayerController.value.errorDescription!,
-          ) ??
-          _buildRefreshButton();
+    if (latestValue.hasError) {
+      return Container();
     }
 
     List<Widget> ws = [];
     if (!_hideDanmaku) {
       ws.add(_buildDanmakuView());
     }
-    if (_lockStuff && chewieController.isFullScreen) {
+    if (_lockStuff && controller.isFullScreen) {
       ws.add(_buidLockStateButton());
+    } else if (_displayDanmakuSetting) {
+      ws.add(_buildHitArea());
     } else {
-      ws.add(_displayBufferingIndicator
-          ? const Center(child: CircularProgressIndicator())
-          : _buildHitArea());
-      if (chewieController.isFullScreen) {
+      ws.add(_buildHitArea());
+      if (controller.isFullScreen) {
         ws.add(_buidLockStateButton());
         ws.add(_buildActionBar());
       }
@@ -180,31 +174,9 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
     );
   }
 
-  Widget _buildRefreshButton() {
-    return Container(
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: () => controller.initialize().then((value) => controller.play()),
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 10, right: 10),
-          decoration: const BoxDecoration(
-            boxShadow: <BoxShadow>[
-              BoxShadow(color: Colors.black54, blurRadius: 20),
-            ],
-          ),
-          child: const Icon(
-            Icons.refresh_rounded,
-            size: 42.0,
-            color: Colors.white70,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buidLockStateButton() {
     return AnimatedOpacity(
-      opacity: _hideStuff ? 0.0 : 0.8,
+      opacity: _hideStuff ? 0.0 : 0.9,
       duration: const Duration(milliseconds: 300),
       child: Align(
         alignment: Alignment.centerRight,
@@ -213,10 +185,7 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
           child: IconButton(
             iconSize: 28,
             onPressed: () {
-              setState(() {
-                _lockStuff = !_lockStuff;
-                Wakelock.toggle(enable: _lockStuff);
-              });
+              setState(() => _lockStuff = !_lockStuff);
             },
             icon:
                 Icon(_lockStuff ? Icons.lock_rounded : Icons.lock_open_rounded),
@@ -229,7 +198,7 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   // Danmaku widget
   Widget _buildDanmakuView() {
-    double danmukuHeight = (chewieController.isFullScreen
+    double danmukuHeight = (controller.isFullScreen
             ? MediaQuery.of(context).size.height
             : (MediaQuery.of(context).size.width / 16 * 9)) *
         settings.danmakuArea;
@@ -247,7 +216,7 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
           speed: settings.danmakuSpeed.toInt(),
           controller: barrageWallController,
           massiveMode: false,
-          safeBottomHeight: settings.danmakuFontSize.toInt(),
+          maxBulletHeight: settings.danmakuFontSize + 4,
           child: Container(),
         ),
       ),
@@ -256,34 +225,32 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   // Center hit and controller widgets
   Widget _buildHitArea() {
-    Widget centerArea = Container();
     if (_displayDanmakuSetting) {
-      centerArea = _buildDanmakuSettingView();
-    } else if (_dragingBV) {
-      centerArea = _buildDargVolumeAndBrightness();
-    } else if (!_latestValue.isPlaying) {
-      centerArea = _buildCenterPlayButton();
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            _hideStuff = true;
+            _displayDanmakuSetting = false;
+          });
+        },
+        child: Container(
+          color: Colors.transparent,
+          child: _buildSettingView(),
+        ),
+      );
     }
 
     return GestureDetector(
       onTap: () {
-        if (_displayDanmakuSetting) {
-          setState(() {
-            _displayDanmakuSetting = false;
-          });
-        } else if (_latestValue.isPlaying) {
+        if (latestValue.isPlaying) {
           if (_displayTapped) {
-            setState(() {
-              _hideStuff = true;
-            });
+            setState(() => _hideStuff = true);
           } else {
             _cancelAndRestartTimer();
           }
         } else {
           _playPause();
-          setState(() {
-            _hideStuff = true;
-          });
+          setState(() => _hideStuff = true);
         }
       },
       onDoubleTap: _playPause,
@@ -292,33 +259,7 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
       onVerticalDragEnd: _onVerticalDragEnd,
       child: Container(
         color: Colors.transparent,
-        child: centerArea,
-      ),
-    );
-  }
-
-  Widget _buildCenterPlayButton() {
-    return Container(
-      alignment: Alignment.center,
-      child: AnimatedOpacity(
-        opacity: !_latestValue.isPlaying ? 0.7 : 0.0,
-        duration: const Duration(milliseconds: 300),
-        child: GestureDetector(
-          onTap: _playPause,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 10, right: 10),
-            decoration: const BoxDecoration(
-              boxShadow: <BoxShadow>[
-                BoxShadow(color: Colors.black54, blurRadius: 20),
-              ],
-            ),
-            child: const Icon(
-              Icons.play_arrow_rounded,
-              size: 42.0,
-              color: Colors.white,
-            ),
-          ),
-        ),
+        child: _dragingBV ? _buildDargVolumeAndBrightness() : Container(),
       ),
     );
   }
@@ -380,116 +321,168 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
     );
   }
 
-  Widget _buildDanmakuSettingView() {
+  Widget _buildSettingView() {
     SettingsProvider settings = Provider.of<SettingsProvider>(context);
+    final isSelected = [false, false, false];
+    isSelected[settings.playerFitMode] = true;
 
     const TextStyle label = TextStyle(color: Colors.white);
     const TextStyle digit = TextStyle(color: Colors.white);
+    final Color color = Theme.of(context).colorScheme.primary.withOpacity(0.8);
 
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.centerRight,
       child: AnimatedOpacity(
         opacity: _displayDanmakuSetting ? 0.8 : 0.0,
         duration: const Duration(milliseconds: 300),
-        child: Card(
-          color: Colors.black,
-          child: Container(
-            width: 350,
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text(
-                    S.of(context).settings_danmaku_area,
-                    style: label,
-                  ),
-                  title: Slider(
-                    value: settings.danmakuArea,
-                    min: 0.0,
-                    max: 1.0,
-                    onChanged: (val) => settings.danmakuArea = val,
-                  ),
-                  trailing: Text(
-                    (settings.danmakuArea * 100).toInt().toString() + '%',
-                    style: digit,
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: GestureDetector(
+            onTap: () {},
+            child: Card(
+              color: Colors.black,
+              child: SizedBox(
+                width: 380,
+                child: ListView(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        '比例设置',
+                        style: Theme.of(context)
+                            .textTheme
+                            .caption
+                            ?.copyWith(color: Colors.white),
+                      ),
+                    ),
+                    ToggleButtons(
+                      borderRadius: BorderRadius.circular(10),
+                      selectedBorderColor: color,
+                      borderColor: color,
+                      fillColor: color,
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Text('默认比例', style: label),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Text('填充屏幕', style: label),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Text('居中裁剪', style: label),
+                        ),
+                      ],
+                      isSelected: isSelected,
+                      onPressed: setBoxFit,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        '弹幕设置',
+                        style: Theme.of(context)
+                            .textTheme
+                            .caption
+                            ?.copyWith(color: Colors.white),
+                      ),
+                    ),
+                    ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: Text(
+                        S.of(context).settings_danmaku_area,
+                        style: label,
+                      ),
+                      title: Slider(
+                        value: settings.danmakuArea,
+                        min: 0.0,
+                        max: 1.0,
+                        onChanged: (val) => settings.danmakuArea = val,
+                      ),
+                      trailing: Text(
+                        (settings.danmakuArea * 100).toInt().toString() + '%',
+                        style: digit,
+                      ),
+                    ),
+                    ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: Text(
+                        S.of(context).settings_danmaku_opacity,
+                        style: label,
+                      ),
+                      title: Slider(
+                        value: settings.danmakuOpacity,
+                        min: 0.0,
+                        max: 1.0,
+                        onChanged: (val) => settings.danmakuOpacity = val,
+                      ),
+                      trailing: Text(
+                        (settings.danmakuOpacity * 100).toInt().toString() +
+                            '%',
+                        style: digit,
+                      ),
+                    ),
+                    ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: Text(
+                        S.of(context).settings_danmaku_speed,
+                        style: label,
+                      ),
+                      title: Slider(
+                        value: settings.danmakuSpeed,
+                        min: 1.0,
+                        max: 20.0,
+                        onChanged: (val) => settings.danmakuSpeed = val,
+                      ),
+                      trailing: Text(
+                        settings.danmakuSpeed.toInt().toString(),
+                        style: digit,
+                      ),
+                    ),
+                    ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: Text(
+                        S.of(context).settings_danmaku_fontsize,
+                        style: label,
+                      ),
+                      title: Slider(
+                        value: settings.danmakuFontSize,
+                        min: 10.0,
+                        max: 30.0,
+                        onChanged: (val) => settings.danmakuFontSize = val,
+                      ),
+                      trailing: Text(
+                        settings.danmakuFontSize.toInt().toString(),
+                        style: digit,
+                      ),
+                    ),
+                    ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: Text(
+                        S.of(context).settings_danmaku_fontBorder,
+                        style: label,
+                      ),
+                      title: Slider(
+                        value: settings.danmakuFontBorder,
+                        min: 0.0,
+                        max: 2.5,
+                        onChanged: (val) => settings.danmakuFontBorder = val,
+                      ),
+                      trailing: Text(
+                        settings.danmakuFontBorder.toStringAsFixed(2),
+                        style: digit,
+                      ),
+                    ),
+                  ],
                 ),
-                ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text(
-                    S.of(context).settings_danmaku_opacity,
-                    style: label,
-                  ),
-                  title: Slider(
-                    value: settings.danmakuOpacity,
-                    min: 0.0,
-                    max: 1.0,
-                    onChanged: (val) => settings.danmakuOpacity = val,
-                  ),
-                  trailing: Text(
-                    (settings.danmakuOpacity * 100).toInt().toString() + '%',
-                    style: digit,
-                  ),
-                ),
-                ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text(
-                    S.of(context).settings_danmaku_speed,
-                    style: label,
-                  ),
-                  title: Slider(
-                    value: settings.danmakuSpeed,
-                    min: 1.0,
-                    max: 20.0,
-                    onChanged: (val) => settings.danmakuSpeed = val,
-                  ),
-                  trailing: Text(
-                    settings.danmakuSpeed.toInt().toString(),
-                    style: digit,
-                  ),
-                ),
-                ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text(
-                    S.of(context).settings_danmaku_fontsize,
-                    style: label,
-                  ),
-                  title: Slider(
-                    value: settings.danmakuFontSize,
-                    min: 10.0,
-                    max: 30.0,
-                    onChanged: (val) => settings.danmakuFontSize = val,
-                  ),
-                  trailing: Text(
-                    settings.danmakuFontSize.toInt().toString(),
-                    style: digit,
-                  ),
-                ),
-                ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: Text(
-                    S.of(context).settings_danmaku_fontBorder,
-                    style: label,
-                  ),
-                  title: Slider(
-                    value: settings.danmakuFontBorder,
-                    min: 0.0,
-                    max: 2.5,
-                    onChanged: (val) => settings.danmakuFontBorder = val,
-                  ),
-                  trailing: Text(
-                    settings.danmakuFontBorder.toStringAsFixed(2),
-                    style: digit,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -534,7 +527,10 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   Widget _buildBackButton() {
     return GestureDetector(
-      onTap: _onExpandCollapse,
+      onTap: () {
+        _hideStuff = true;
+        controller.toggleFullScreen();
+      },
       child: Container(
         height: barHeight,
         alignment: Alignment.center,
@@ -625,12 +621,10 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
           child: Row(
             children: <Widget>[
               _buildPlayPauseButton(),
-              _buildMuteButton(),
               _buildDanmakuHideButton(),
-              if (chewieController.isFullScreen) _buildDanmakuSettingButton(),
-              if (chewieController.isFullScreen || screenWidth < 640)
-                const Spacer(),
-              if (chewieController.allowFullScreen) _buildExpandButton(),
+              if (controller.isFullScreen) _buildDanmakuSettingButton(),
+              if (controller.isFullScreen || screenWidth < 640) const Spacer(),
+              _buildExpandButton(),
             ],
           ),
         ),
@@ -647,34 +641,9 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Icon(
-          controller.value.isPlaying
+          latestValue.isPlaying
               ? Icons.pause_rounded
               : Icons.play_arrow_rounded,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMuteButton() {
-    return GestureDetector(
-      onTap: () {
-        _cancelAndRestartTimer();
-
-        if (_latestValue.volume == 0) {
-          controller.setVolume(_latestVolume ?? 0.5);
-        } else {
-          _latestVolume = controller.value.volume;
-          controller.setVolume(0.0);
-        }
-      },
-      child: Container(
-        height: barHeight,
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(right: 12.0),
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Icon(
-          _latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off,
           color: Colors.white,
         ),
       ),
@@ -723,14 +692,17 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   Widget _buildExpandButton() {
     return GestureDetector(
-      onTap: _onExpandCollapse,
+      onTap: () {
+        _hideStuff = true;
+        controller.toggleFullScreen();
+      },
       child: Container(
         height: barHeight,
         alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Icon(
-          chewieController.isFullScreen
+          controller.isFullScreen
               ? Icons.fullscreen_exit_rounded
               : Icons.fullscreen_rounded,
           color: Colors.white,
@@ -741,24 +713,6 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
   }
 
   // Callback functions
-  Future<void> _initialize() async {
-    controller.addListener(_updateState);
-
-    _updateState();
-
-    if ((controller.value.isPlaying) || chewieController.autoPlay) {
-      _startHideTimer();
-    }
-
-    if (chewieController.showControlsOnInitialize) {
-      _initTimer = Timer(const Duration(milliseconds: 200), () {
-        setState(() {
-          _hideStuff = false;
-        });
-      });
-    }
-  }
-
   void _onVerticalDragStart(detills) async {
     double clientW = MediaQuery.of(context).size.width;
     double curTouchPosX = detills.globalPosition.dx;
@@ -837,80 +791,21 @@ class _DanmakuVideoControllerState extends State<DanmakuVideoController>
     });
   }
 
-  void _onExpandCollapse() {
-    setState(() {
-      _hideStuff = true;
-      chewieController.toggleFullScreen();
-      _showAfterExpandCollapseTimer =
-          Timer(const Duration(milliseconds: 300), () {
-        setState(() {
-          _cancelAndRestartTimer();
-        });
-      });
+  void _startHideTimer() {
+    _hideTimer = Timer(const Duration(seconds: 3), () {
+      setState(() => _hideStuff = true);
     });
   }
 
   void _playPause() {
-    bool isFinished = _latestValue.position >= _latestValue.duration;
-
-    setState(() {
-      if (controller.value.isPlaying) {
-        _hideStuff = false;
-        _hideTimer?.cancel();
-        controller.pause();
-      } else {
-        _cancelAndRestartTimer();
-
-        if (!controller.value.isInitialized) {
-          controller.initialize().then((_) {
-            controller.play();
-          });
-        } else {
-          if (isFinished) {
-            controller.seekTo(Duration.zero);
-          }
-          controller.play();
-        }
-      }
-    });
-  }
-
-  void _startHideTimer() {
-    _hideTimer = Timer(const Duration(seconds: 3), () {
-      setState(() {
-        _hideStuff = true;
-      });
-    });
-  }
-
-  void _bufferingTimerTimeout() {
-    _displayBufferingIndicator = true;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void _updateState() {
-    if (!mounted) return;
-
-    // display the progress bar indicator only after the buffering delay if it has been set
-    if (chewieController.progressIndicatorDelay != null) {
-      if (controller.value.isBuffering) {
-        _bufferingDisplayTimer ??= Timer(
-          chewieController.progressIndicatorDelay!,
-          _bufferingTimerTimeout,
-        );
-      } else {
-        _bufferingDisplayTimer?.cancel();
-        _bufferingDisplayTimer = null;
-        _displayBufferingIndicator = false;
-      }
+    if (latestValue.isPlaying) {
+      _cancelAndRestartTimer();
+      controller.pause();
     } else {
-      _displayBufferingIndicator = controller.value.isBuffering;
+      _hideStuff = false;
+      _hideTimer?.cancel();
+      controller.play();
     }
-
-    setState(() {
-      _latestValue = controller.value;
-    });
+    setState(() {});
   }
 }

@@ -11,7 +11,6 @@ import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:wakelock/wakelock.dart';
 
 class LivePlayPage extends StatefulWidget {
   const LivePlayPage({Key? key, required this.room}) : super(key: key);
@@ -39,7 +38,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
   @override
   void initState() {
     super.initState();
-    Wakelock.enable();
     danmakuStream = DanmakuStream(room: widget.room);
     LiveApi.getRoomStreamLink(widget.room).then((value) {
       streamList = value;
@@ -55,8 +53,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   void dispose() {
-    Wakelock.toggle(enable: false);
-    Wakelock.disable();
     ScreenBrightness().resetScreenBrightness();
     danmakuStream.dispose();
     super.dispose();
@@ -66,7 +62,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
   Widget build(BuildContext context) {
     favorite = Provider.of<FavoriteProvider>(context);
     settings = Provider.of<SettingsProvider>(context);
-    Wakelock.toggle(enable: settings.enableScreenKeepOn);
 
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -119,8 +114,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 key: _videoPlayerKey,
                 url: datasource,
                 danmakuStream: danmakuStream,
-                title: widget.room.title,
+                room: widget.room,
                 allowBackgroundPlay: settings.enableBackgroundPlay,
+                allowedScreenSleep: !settings.enableScreenKeepOn,
               )
             : Center(
                 child: datasourceError
@@ -129,7 +125,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                         size: 42,
                         color: Colors.white70,
                       )
-                    : const CircularProgressIndicator(),
+                    : Container(),
               ),
       ),
     );
@@ -195,7 +191,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
           resolution.substring(resolution.length - 2, resolution.length),
           style: Theme.of(context).textTheme.labelMedium,
         ),
-        onSelected: (String link) => videoPlayer.setDataSource(link),
+        onSelected: (String link) => videoPlayer.controller.setResolution(link),
         itemBuilder: (context) {
           final menuList = <PopupMenuItem<String>>[];
           cdns.forEach((cdn, url) {
@@ -252,7 +248,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
   }
 
   void showDlnaSelectorDialog() {
-    videoPlayer.pause();
     showDialog(
       context: context,
       builder: (context) => LiveDlnaPage(datasource: datasource),

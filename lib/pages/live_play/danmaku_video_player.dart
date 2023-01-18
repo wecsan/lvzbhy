@@ -1,21 +1,25 @@
-import 'package:chewie/chewie.dart';
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
+import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/danmaku_video_controller.dart';
-import 'package:video_player/video_player.dart';
 
 class DanmakuVideoPlayer extends StatefulWidget {
-  final String url;
-  final String title;
-  final bool allowBackgroundPlay;
   final DanmakuStream danmakuStream;
+  final RoomInfo room;
+  final String url;
+  final bool allowBackgroundPlay;
+  final bool allowedScreenSleep;
+  final bool allowedForceRetry;
 
   const DanmakuVideoPlayer({
     Key? key,
-    required this.url,
     required this.danmakuStream,
-    this.title = '',
+    required this.room,
+    required this.url,
     this.allowBackgroundPlay = false,
+    this.allowedScreenSleep = false,
+    this.allowedForceRetry = false,
   }) : super(key: key);
 
   @override
@@ -23,62 +27,85 @@ class DanmakuVideoPlayer extends StatefulWidget {
 }
 
 class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
-  VideoPlayerController? videoController;
-  ChewieController? chewieController;
-  DanmakuVideoController? danmakuChewieController;
-
-  bool loading = true;
+  late BetterPlayerController controller;
 
   @override
   void initState() {
     super.initState();
-    danmakuChewieController = DanmakuVideoController(
-      danmakuStream: widget.danmakuStream,
-      title: widget.title,
+    controller = BetterPlayerController(
+      BetterPlayerConfiguration(
+        autoPlay: true,
+        fit: BoxFit.contain,
+        allowedScreenSleep: widget.allowedScreenSleep,
+        autoDetectFullscreenDeviceOrientation: true,
+        autoDetectFullscreenAspectRatio: true,
+        routePageBuilder: fullScreenPageBuilder,
+      ),
+      betterPlayerDataSource: BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+        widget.url,
+        liveStream: true,
+        notificationConfiguration: widget.allowBackgroundPlay
+            ? BetterPlayerNotificationConfiguration(
+                showNotification: true,
+                title: widget.room.title,
+                author: widget.room.nick,
+                imageUrl: widget.room.cover,
+                activityName: "MainActivity",
+              )
+            : null,
+      ),
     );
-    setDataSource(widget.url);
+    controller.setControlsEnabled(false);
+    controller.addEventsListener(forceRetry);
+  }
+
+  void forceRetry(BetterPlayerEvent event) {
+    if (event.betterPlayerEventType == BetterPlayerEventType.finished) {
+      controller.retryDataSource();
+    }
   }
 
   @override
   void dispose() {
-    chewieController?.dispose();
-    videoController?.dispose();
+    controller.removeEventsListener(forceRetry);
+    controller.dispose();
     super.dispose();
   }
 
-  void setDataSource(String url) {
-    setState(() => loading = true);
-    videoController?.dispose();
-    videoController = VideoPlayerController.network(url,
-        videoPlayerOptions: VideoPlayerOptions(
-          allowBackgroundPlayback: widget.allowBackgroundPlay,
-        ))
-      ..initialize().then((_) {
-        chewieController?.dispose();
-        chewieController = ChewieController(
-          videoPlayerController: videoController!,
-          customControls: danmakuChewieController!,
-          aspectRatio: videoController!.value.aspectRatio,
-          autoPlay: true,
-          isLive: true,
-        );
-        videoController?.setVolume(1.0);
-        setState(() => loading = false);
-      });
-  }
-
-  void play() {
-    chewieController?.play();
-  }
-
-  void pause() {
-    chewieController?.pause();
+  Widget fullScreenPageBuilder(
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> second,
+      BetterPlayerControllerProvider controllerProvider) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        alignment: Alignment.center,
+        color: Colors.black,
+        child: Stack(children: [
+          controllerProvider,
+          DanmakuVideoController(
+            controller: controller,
+            danmakuStream: widget.danmakuStream,
+            title: widget.room.title,
+          ),
+        ]),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? const Center(child: CircularProgressIndicator())
-        : Chewie(controller: chewieController!);
+    return Stack(
+      children: [
+        BetterPlayer(controller: controller),
+        DanmakuVideoController(
+          controller: controller,
+          danmakuStream: widget.danmakuStream,
+          title: widget.room.title,
+        ),
+      ],
+    );
   }
 }

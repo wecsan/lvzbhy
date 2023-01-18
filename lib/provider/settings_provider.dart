@@ -37,6 +37,7 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
+    _playerFitMode = PrefUtil.getInt('playerFitMode') ?? 0;
   }
 
   void _saveToPref() {
@@ -53,6 +54,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
+    PrefUtil.setInt('playerFitMode', _playerFitMode);
   }
 
   // Theme settings
@@ -154,6 +156,7 @@ class SettingsProvider with ChangeNotifier {
   double _danmakuFontBorder = 0.5;
   double _danmakuFontSize = 16;
   double _danmakuOpacity = 1;
+  int _playerFitMode = 0;
 
   double get danmakuArea => _danmakuArea;
   set danmakuArea(value) {
@@ -195,6 +198,14 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
   }
 
+  int get playerFitMode => _playerFitMode;
+  set playerFitMode(int value) {
+    if (value < 0 || value > 2) return;
+    _playerFitMode = value;
+    notifyListeners();
+    PrefUtil.setInt('playerFitMode', _playerFitMode);
+  }
+
   // for backup storage
   List<RoomInfo> _favorites = [];
 
@@ -214,6 +225,7 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = json['danmakuFontBorder'] ?? 0.8;
     _danmakuFontSize = json['danmakuFontSize'] ?? 16;
     _danmakuOpacity = json['danmakuOpcity'] ?? 1.0;
+    _playerFitMode = json['playerFitMode'] ?? 0;
     _saveToPref();
   }
 
@@ -233,6 +245,7 @@ class SettingsProvider with ChangeNotifier {
     json['danmakuFontBorder'] = _danmakuFontBorder;
     json['danmakuFontSize'] = _danmakuFontSize;
     json['danmakuOpcity'] = _danmakuOpacity;
+    json['playerFitMode'] = _playerFitMode;
     return json;
   }
 }
