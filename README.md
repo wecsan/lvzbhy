@@ -47,11 +47,31 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 - [ ] 没有其他平台的计划
 
+## Donate
+
+如果你觉得该项目对您有所帮助，可以打赏一杯咖啡给我，支持我继续开发维护HotLive。
+感谢您的支持~
+
+<div style="text-align: center">
+  <table>
+    <tr>
+    <td style="text-align: center">
+      <img src="./screenshots/alipay.jpg" width="200"/>
+    </td>
+    <td style="text-align: center">
+      <img src="./screenshots/wechat.png" width="228"/>
+    </td>
+    </tr>
+  </table>
+</div>
+
 ## Problems
 
 ### 解决中的问题
 
 - [x] 大量弹幕时会有水平弹幕遮挡
+- [ ] 斗鱼某些直播间无法播放
+- [ ] 虎牙某些弹幕无法获取
 - [ ] 后台小窗播放
 - [ ] 支持投屏
 - [ ] 支持视频填充/拉伸
