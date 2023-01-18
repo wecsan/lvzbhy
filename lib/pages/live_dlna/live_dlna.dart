@@ -2,110 +2,104 @@ import 'dart:async';
 
 import 'package:dlna_dart/dlna.dart';
 import 'package:flutter/material.dart';
+import 'package:hot_live/generated/l10n.dart';
 
 class LiveDlnaPage extends StatefulWidget {
-  final Map<String, Map<String, String>> streamList;
+  final String datasource;
 
-  const LiveDlnaPage({Key? key, required this.streamList}) : super(key: key);
+  const LiveDlnaPage({Key? key, required this.datasource}) : super(key: key);
 
   @override
   _LiveDlnaPageState createState() => _LiveDlnaPageState();
 }
 
 class _LiveDlnaPageState extends State<LiveDlnaPage> {
-  final List<DLNADevice> _deviceList = [];
-  final searcher = DLNAManager();
-  String datasource = '';
-  int selectDevice = -1;
+  final Map<String, DLNADevice> _deviceList = {};
+  final DLNAManager searcher = DLNAManager();
+  late final Timer stopSearchTimer;
+  String selectDeviceKey = '';
+  bool isSearching = true;
+
+  DLNADevice? get device => _deviceList[selectDeviceKey];
 
   @override
   void initState() {
-    datasource = widget.streamList.values.first.values.first;
-    _searchDlnaDevice();
-    super.initState();
-  }
-
-  void _searchDlnaDevice() async {
-    final m = await searcher.start();
-    m.devices.stream.listen((deviceList) {
-      _deviceList.addAll(deviceList.values);
-      setState(() {});
-    });
-    // close the server,the closed server can be start by call searcher.start()
-    Timer(const Duration(seconds: 30), () {
+    stopSearchTimer = Timer(const Duration(seconds: 30), () {
+      setState(() => isSearching = false);
       searcher.stop();
     });
+    startSearch();
     super.initState();
   }
 
-  void _selectDevice(int index) {
-    if (selectDevice != -1) _deviceList[selectDevice].pause();
-
-    _deviceList[index].setUrl(datasource);
-    _deviceList[index].play();
-    setState(() {
-      selectDevice = index;
-    });
+  @override
+  void dispose() {
+    super.dispose();
+    searcher.stop();
+    stopSearchTimer.cancel();
   }
 
-  void _selectDatasource(String url) {
-    setState(() {
-      datasource = url;
+  void startSearch() async {
+    // clear old devices
+    isSearching = true;
+    selectDeviceKey = '';
+    _deviceList.clear();
+    setState(() {});
+    // start search server
+    final m = await searcher.start();
+    m.devices.stream.listen((deviceList) {
+      deviceList.forEach((key, value) {
+        _deviceList[key] = value;
+      });
+      setState(() {});
     });
-    _selectDevice(selectDevice);
+    // close the server, the closed server can be start by call searcher.start()
+  }
+
+  void selectDevice(String key) {
+    if (selectDeviceKey.isNotEmpty) device?.pause();
+
+    selectDeviceKey = key;
+    device?.setUrl(widget.datasource);
+    device?.play();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Live DLNA')),
-      body: Column(
+    Widget cur;
+    if (isSearching && _deviceList.isEmpty) {
+      cur = const Center(child: CircularProgressIndicator());
+    } else if (_deviceList.isEmpty) {
+      cur = const Center(child: Text('未发现DLNA设备'));
+    } else {
+      cur = ListView(
+        children: _deviceList.keys
+            .map<Widget>((key) => ListTile(
+                  contentPadding: const EdgeInsets.all(2),
+                  title: Text(_deviceList[key]!.info.friendlyName),
+                  subtitle: Text(key),
+                  onTap: () => selectDevice(key),
+                ))
+            .toList(),
+      );
+    }
+
+    return AlertDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildResolutionRow(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _deviceList.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(_deviceList[index].info.friendlyName),
-                subtitle: Text(_deviceList[index].info.deviceType),
-                onTap: () => _selectDevice(index),
-              ),
-            ),
+          Text(S.of(context).dlan_title),
+          IconButton(
+            onPressed: startSearch,
+            icon: const Icon(Icons.refresh_rounded),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildResolutionRow() {
-    final List<Widget> resolutionBtns = [];
-    widget.streamList.forEach((resolution, cdns) {
-      final btn = PopupMenuButton(
-        iconSize: 24,
-        icon: Text(
-          resolution.substring(resolution.length - 2, resolution.length),
-          style: Theme.of(context).textTheme.labelMedium,
-        ),
-        onSelected: (String link) => _selectDatasource(link),
-        itemBuilder: (context) {
-          final menuList = <PopupMenuItem<String>>[];
-          cdns.forEach((cdn, url) {
-            final menuItem = PopupMenuItem<String>(
-              child: Text(cdn, style: const TextStyle(fontSize: 14.0)),
-              value: url,
-            );
-            menuList.add(menuItem);
-          });
-          return menuList;
-        },
-      );
-      resolutionBtns.add(btn);
-    });
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Row(
-        children: resolutionBtns,
+      content: SizedBox(
+        height: 200,
+        width: 200,
+        child: cur,
       ),
     );
   }

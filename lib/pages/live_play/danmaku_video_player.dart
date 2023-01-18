@@ -68,11 +68,11 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   }
 
   void play() {
-    videoController?.play();
+    chewieController?.play();
   }
 
   void pause() {
-    videoController?.pause();
+    chewieController?.pause();
   }
 
   @override

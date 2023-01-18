@@ -80,5 +80,8 @@
     "unfollow": "Unfollow",
     "followed": "Followed",
     "offline": "Offline",
-    "info_is_offline": "{name} is offline."
+    "info_is_offline": "{name} is offline.",
+
+    "dlan_button_info": "DLNA Broadcast",
+    "dlan_title": "DLNA"
 }

@@ -80,5 +80,8 @@
     "unfollow": "取消关注",
     "followed": "已关注",
     "offline": "未直播",
-    "info_is_offline": "{name}未开始直播."
+    "info_is_offline": "{name}未开始直播.",
+
+    "dlan_button_info": "DLNA 投屏",
+    "dlan_title": "DLNA"
 }

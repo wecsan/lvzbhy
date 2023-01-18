@@ -48,6 +48,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "check_update": MessageLookupByLibrary.simpleMessage("Check Update"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
+        "dlan_button_info":
+            MessageLookupByLibrary.simpleMessage("DLNA Broadcast"),
+        "dlan_title": MessageLookupByLibrary.simpleMessage("DLNA"),
         "empty_areas_room_subtitle":
             MessageLookupByLibrary.simpleMessage("Pull down to refresh data"),
         "empty_areas_room_title":

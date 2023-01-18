@@ -76,17 +76,11 @@ class _LivePlayPageState extends State<LivePlayPage> {
         ),
         title: Text(widget.room.title),
         actions: [
-          // IconButton(
-          //   onPressed: () {
-          //     videoPlayer.pause();
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => LiveDlnaPage(streamList: streamList),
-          //         ));
-          //   },
-          //   icon: const Icon(Icons.tv_rounded),
-          // )
+          IconButton(
+            tooltip: S.of(context).dlan_button_info,
+            onPressed: showDlnaSelectorDialog,
+            icon: const Icon(Icons.cast_rounded, size: 22),
+          ),
         ],
       ),
       body: SafeArea(
@@ -257,6 +251,14 @@ class _LivePlayPageState extends State<LivePlayPage> {
           ...resolutionBtns,
         ],
       ),
+    );
+  }
+
+  void showDlnaSelectorDialog() {
+    videoPlayer.pause();
+    showDialog(
+      context: context,
+      builder: (context) => LiveDlnaPage(datasource: datasource),
     );
   }
 }

@@ -690,6 +690,26 @@ class S {
       args: [name],
     );
   }
+
+  /// `DLNA Broadcast`
+  String get dlan_button_info {
+    return Intl.message(
+      'DLNA Broadcast',
+      name: 'dlan_button_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DLNA`
+  String get dlan_title {
+    return Intl.message(
+      'DLNA',
+      name: 'dlan_title',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
