@@ -57,18 +57,18 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
       ),
     );
     controller.setControlsEnabled(false);
-    controller.addEventsListener(forceRetry);
+    // controller.addEventsListener(forceRetry);
   }
 
-  void forceRetry(BetterPlayerEvent event) {
-    if (event.betterPlayerEventType == BetterPlayerEventType.finished) {
-      controller.retryDataSource();
-    }
-  }
+  // void forceRetry(BetterPlayerEvent event) {
+  //   if (event.betterPlayerEventType == BetterPlayerEventType.finished) {
+  //     controller.retryDataSource();
+  //   }
+  // }
 
   @override
   void dispose() {
-    controller.removeEventsListener(forceRetry);
+    // controller.removeEventsListener(forceRetry);
     controller.dispose();
     super.dispose();
   }
