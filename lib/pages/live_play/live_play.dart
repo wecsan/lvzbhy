@@ -7,6 +7,7 @@ import 'package:hot_live/pages/live_dlna/live_dlna.dart';
 import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
+import 'package:hot_live/provider/settings_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:wakelock/wakelock.dart';
@@ -21,12 +22,15 @@ class LivePlayPage extends StatefulWidget {
 }
 
 class _LivePlayPageState extends State<LivePlayPage> {
-  late DanmakuStream danmakuStream = DanmakuStream(room: widget.room);
+  late FavoriteProvider favorite;
+  late SettingsProvider settings;
+  late DanmakuStream danmakuStream;
+
   Map<String, Map<String, String>> streamList = {};
   String datasource = '';
   bool datasourceError = false;
 
-  late final favorite = Provider.of<FavoriteProvider>(context);
+  // 控制唯一子组件
   final GlobalKey<DanmakuVideoPlayerState> _videoPlayerKey = GlobalKey();
   final GlobalKey<DanmakuListViewState> _danmakuViewKey = GlobalKey();
   DanmakuVideoPlayerState get videoPlayer => _videoPlayerKey.currentState!;
@@ -35,6 +39,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   void initState() {
     super.initState();
     Wakelock.enable();
+    danmakuStream = DanmakuStream(room: widget.room);
     LiveApi.getRoomStreamLink(widget.room).then((value) {
       streamList = value;
       setState(() {
@@ -58,6 +63,10 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   Widget build(BuildContext context) {
+    favorite = Provider.of<FavoriteProvider>(context);
+    settings = Provider.of<SettingsProvider>(context);
+    Wakelock.toggle(enable: settings.enableScreenKeepOn);
+
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
@@ -120,6 +129,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 url: datasource,
                 danmakuStream: danmakuStream,
                 title: widget.room.title,
+                allowBackgroundPlay: settings.enableBackgroundPlay,
               )
             : Center(
                 child: datasourceError

@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 class DanmakuVideoPlayer extends StatefulWidget {
   final String url;
   final String title;
+  final bool allowBackgroundPlay;
   final DanmakuStream danmakuStream;
 
   const DanmakuVideoPlayer({
@@ -14,6 +15,7 @@ class DanmakuVideoPlayer extends StatefulWidget {
     required this.url,
     required this.danmakuStream,
     this.title = '',
+    this.allowBackgroundPlay = false,
   }) : super(key: key);
 
   @override
@@ -23,7 +25,7 @@ class DanmakuVideoPlayer extends StatefulWidget {
 class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   VideoPlayerController? videoController;
   ChewieController? chewieController;
-  late DanmakuVideoController danmakuChewieController;
+  DanmakuVideoController? danmakuChewieController;
 
   bool loading = true;
 
@@ -48,12 +50,14 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     setState(() => loading = true);
     videoController?.dispose();
     videoController = VideoPlayerController.network(url,
-        videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true))
+        videoPlayerOptions: VideoPlayerOptions(
+          allowBackgroundPlayback: widget.allowBackgroundPlay,
+        ))
       ..initialize().then((_) {
         chewieController?.dispose();
         chewieController = ChewieController(
           videoPlayerController: videoController!,
-          customControls: danmakuChewieController,
+          customControls: danmakuChewieController!,
           aspectRatio: videoController!.value.aspectRatio,
           autoPlay: true,
           isLive: true,

@@ -46,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("切换系统/亮色/暗色模式"),
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
+        "custom": MessageLookupByLibrary.simpleMessage("定制"),
         "empty_areas_room_subtitle":
             MessageLookupByLibrary.simpleMessage("下滑/上滑刷新数据"),
         "empty_areas_room_title": MessageLookupByLibrary.simpleMessage("未发现直播"),
@@ -62,17 +63,24 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请输入其他关键字搜索"),
         "empty_search_title": MessageLookupByLibrary.simpleMessage("未发现直播"),
         "enable_auto_check_update":
-            MessageLookupByLibrary.simpleMessage("启用自动检查更新"),
+            MessageLookupByLibrary.simpleMessage("自动检查更新"),
         "enable_auto_check_update_subtitle":
             MessageLookupByLibrary.simpleMessage("在每次进入软件时，自动检查更新"),
+        "enable_background_play": MessageLookupByLibrary.simpleMessage("后台播放"),
+        "enable_background_play_subtitle":
+            MessageLookupByLibrary.simpleMessage("当暂时切出APP时，允许后台播放"),
         "enable_bilibili_search_cookie":
             MessageLookupByLibrary.simpleMessage("启用Bilibili搜索Cookie"),
         "enable_bilibili_search_cookie_subtitle":
             MessageLookupByLibrary.simpleMessage("设置Bilibili搜索所需Cookie"),
         "enable_dense_favorites_mode":
-            MessageLookupByLibrary.simpleMessage("启用关注页紧凑模式"),
+            MessageLookupByLibrary.simpleMessage("紧凑模式"),
         "enable_dense_favorites_mode_subtitle":
-            MessageLookupByLibrary.simpleMessage("紧凑模式，显示更多关注直播间"),
+            MessageLookupByLibrary.simpleMessage("关注页面可显示更多直播间"),
+        "enable_screen_keep_on": MessageLookupByLibrary.simpleMessage("屏幕常亮"),
+        "enable_screen_keep_on_subtitle":
+            MessageLookupByLibrary.simpleMessage("当处于直播播放页，屏幕保持常亮"),
+        "experiment": MessageLookupByLibrary.simpleMessage("实验"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("关注"),
         "follow": MessageLookupByLibrary.simpleMessage("关注"),
         "followed": MessageLookupByLibrary.simpleMessage("已关注"),

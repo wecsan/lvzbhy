@@ -38,6 +38,8 @@
     "settings_title": "Settings",
     "general": "General",
     "about": "About",
+    "custom": "Custom",
+    "experiment": "Experiment",
 
     "change_theme_color": "Theme Color",
     "change_theme_color_subtitle": "Change the primay color of the app",
@@ -48,11 +50,17 @@
     "change_language": "Language",
     "change_language_subtitle": "Change the display language of the app",
 
-    "enable_dense_favorites_mode": "Enable dense favorite page",
-    "enable_dense_favorites_mode_subtitle": "Enable to display more live rooms at once",
+    "enable_dense_favorites_mode": "Dense Mode",
+    "enable_dense_favorites_mode_subtitle": "Display more favorite rooms at once",
 
-    "enable_auto_check_update": "Enable auto check update",
-    "enable_auto_check_update_subtitle": "Enable check update when enter into app",
+    "enable_background_play": "Play Background",
+    "enable_background_play_subtitle": "When leave app, allow video play background",
+
+    "enable_screen_keep_on": "Keep Screen On",
+    "enable_screen_keep_on_subtitle": "When in live play, keep screen on",
+
+    "enable_auto_check_update": "Auto Check Update",
+    "enable_auto_check_update_subtitle": "When enter into app, auto check update",
 
     "bilibili_cookie": "Bilibili Cookie",
     "enable_bilibili_search_cookie": "Enable bilibili search cookie",

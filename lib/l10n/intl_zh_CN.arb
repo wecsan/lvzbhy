@@ -38,6 +38,8 @@
     "settings_title": "设置",
     "general": "通用",
     "about": "关于",
+    "custom": "定制",
+    "experiment": "实验",
 
     "change_theme_color": "主题颜色",
     "change_theme_color_subtitle": "切换软件的主题颜色",
@@ -48,10 +50,16 @@
     "change_language": "切换语言",
     "change_language_subtitle": "切换软件的显示语言",
 
-    "enable_dense_favorites_mode": "启用关注页紧凑模式",
-    "enable_dense_favorites_mode_subtitle": "紧凑模式，显示更多关注直播间",
+    "enable_dense_favorites_mode": "紧凑模式",
+    "enable_dense_favorites_mode_subtitle": "关注页面可显示更多直播间",
 
-    "enable_auto_check_update": "启用自动检查更新",
+    "enable_background_play": "后台播放",
+    "enable_background_play_subtitle": "当暂时切出APP时，允许后台播放",
+
+    "enable_screen_keep_on": "屏幕常亮",
+    "enable_screen_keep_on_subtitle": "当处于直播播放页，屏幕保持常亮",
+
+    "enable_auto_check_update": "自动检查更新",
     "enable_auto_check_update_subtitle": "在每次进入软件时，自动检查更新",
 
     "bilibili_cookie": "Bilibili Cookie",

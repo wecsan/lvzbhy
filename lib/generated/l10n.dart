@@ -371,6 +371,26 @@ class S {
     );
   }
 
+  /// `Custom`
+  String get custom {
+    return Intl.message(
+      'Custom',
+      name: 'custom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Experiment`
+  String get experiment {
+    return Intl.message(
+      'Experiment',
+      name: 'experiment',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Theme Color`
   String get change_theme_color {
     return Intl.message(
@@ -431,40 +451,80 @@ class S {
     );
   }
 
-  /// `Enable dense favorite page`
+  /// `Dense Mode`
   String get enable_dense_favorites_mode {
     return Intl.message(
-      'Enable dense favorite page',
+      'Dense Mode',
       name: 'enable_dense_favorites_mode',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable to display more live rooms at once`
+  /// `Display more favorite rooms at once`
   String get enable_dense_favorites_mode_subtitle {
     return Intl.message(
-      'Enable to display more live rooms at once',
+      'Display more favorite rooms at once',
       name: 'enable_dense_favorites_mode_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable auto check update`
+  /// `Play Background`
+  String get enable_background_play {
+    return Intl.message(
+      'Play Background',
+      name: 'enable_background_play',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When leave app, allow video play background`
+  String get enable_background_play_subtitle {
+    return Intl.message(
+      'When leave app, allow video play background',
+      name: 'enable_background_play_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Screen On`
+  String get enable_screen_keep_on {
+    return Intl.message(
+      'Keep Screen On',
+      name: 'enable_screen_keep_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When in live play, keep screen on`
+  String get enable_screen_keep_on_subtitle {
+    return Intl.message(
+      'When in live play, keep screen on',
+      name: 'enable_screen_keep_on_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto Check Update`
   String get enable_auto_check_update {
     return Intl.message(
-      'Enable auto check update',
+      'Auto Check Update',
       name: 'enable_auto_check_update',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable check update when enter into app`
+  /// `When enter into app, auto check update`
   String get enable_auto_check_update_subtitle {
     return Intl.message(
-      'Enable check update when enter into app',
+      'When enter into app, auto check update',
       name: 'enable_auto_check_update_subtitle',
       desc: '',
       args: [],

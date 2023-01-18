@@ -47,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Change form light / dark / system modes"),
         "check_update": MessageLookupByLibrary.simpleMessage("Check Update"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "empty_areas_room_subtitle":
             MessageLookupByLibrary.simpleMessage("Pull down to refresh data"),
         "empty_areas_room_title":
@@ -68,20 +69,29 @@ class MessageLookup extends MessageLookupByLibrary {
         "empty_search_title":
             MessageLookupByLibrary.simpleMessage("No Live Found"),
         "enable_auto_check_update":
-            MessageLookupByLibrary.simpleMessage("Enable auto check update"),
+            MessageLookupByLibrary.simpleMessage("Auto Check Update"),
         "enable_auto_check_update_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "Enable check update when enter into app"),
+                "When enter into app, auto check update"),
+        "enable_background_play":
+            MessageLookupByLibrary.simpleMessage("Play Background"),
+        "enable_background_play_subtitle": MessageLookupByLibrary.simpleMessage(
+            "When leave app, allow video play background"),
         "enable_bilibili_search_cookie": MessageLookupByLibrary.simpleMessage(
             "Enable bilibili search cookie"),
         "enable_bilibili_search_cookie_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Set custom bilibili search needed cookie"),
         "enable_dense_favorites_mode":
-            MessageLookupByLibrary.simpleMessage("Enable dense favorite page"),
+            MessageLookupByLibrary.simpleMessage("Dense Mode"),
         "enable_dense_favorites_mode_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "Enable to display more live rooms at once"),
+                "Display more favorite rooms at once"),
+        "enable_screen_keep_on":
+            MessageLookupByLibrary.simpleMessage("Keep Screen On"),
+        "enable_screen_keep_on_subtitle": MessageLookupByLibrary.simpleMessage(
+            "When in live play, keep screen on"),
+        "experiment": MessageLookupByLibrary.simpleMessage("Experiment"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("Favorites"),
         "follow": MessageLookupByLibrary.simpleMessage("Follow"),
         "followed": MessageLookupByLibrary.simpleMessage("Followed"),

@@ -28,29 +28,44 @@ class _SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           SectionTitle(title: S.of(context).general),
           ListTile(
+            leading: const Icon(Icons.dark_mode_rounded, size: 32),
             title: Text(S.of(context).change_theme_mode),
             subtitle: Text(S.of(context).change_theme_mode_subtitle),
-            leading: const Icon(Icons.dark_mode_rounded, size: 32),
             onTap: showThemeModeSelectorDialog,
           ),
           ListTile(
+            leading: const Icon(Icons.color_lens, size: 32),
             title: Text(S.of(context).change_theme_color),
             subtitle: Text(S.of(context).change_theme_color_subtitle),
-            leading: const Icon(Icons.color_lens, size: 32),
             onTap: showThemeColorSelectorDialog,
           ),
           ListTile(
+            leading: const Icon(Icons.translate_rounded, size: 32),
             title: Text(S.of(context).change_language),
             subtitle: Text(S.of(context).change_language_subtitle),
-            leading: const Icon(Icons.translate_rounded, size: 32),
             onTap: showLanguageSelecterDialog,
           ),
+          SectionTitle(title: S.of(context).custom),
           CupertinoSwitchListTile(
             title: Text(S.of(context).enable_dense_favorites_mode),
             subtitle: Text(S.of(context).enable_dense_favorites_mode_subtitle),
             value: settings.enableDenseFavorites,
             activeColor: Theme.of(context).colorScheme.primary,
             onChanged: (bool value) => settings.enableDenseFavorites = value,
+          ),
+          CupertinoSwitchListTile(
+            title: Text(S.of(context).enable_background_play),
+            subtitle: Text(S.of(context).enable_background_play_subtitle),
+            value: settings.enableBackgroundPlay,
+            activeColor: Theme.of(context).colorScheme.primary,
+            onChanged: (bool value) => settings.enableBackgroundPlay = value,
+          ),
+          CupertinoSwitchListTile(
+            title: Text(S.of(context).enable_screen_keep_on),
+            subtitle: Text(S.of(context).enable_screen_keep_on_subtitle),
+            value: settings.enableScreenKeepOn,
+            activeColor: Theme.of(context).colorScheme.primary,
+            onChanged: (bool value) => settings.enableScreenKeepOn = value,
           ),
           CupertinoSwitchListTile(
             title: Text(S.of(context).enable_auto_check_update),
@@ -210,11 +225,13 @@ class CupertinoSwitchListTile extends StatelessWidget {
     Key? key,
     required this.value,
     required this.onChanged,
+    this.leading,
     this.title,
     this.subtitle,
     this.activeColor,
   }) : super(key: key);
 
+  final Widget? leading;
   final Widget? title;
   final Widget? subtitle;
   final Color? activeColor;
@@ -224,6 +241,7 @@ class CupertinoSwitchListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      leading: leading,
       title: title,
       subtitle: subtitle,
       trailing: CupertinoSwitch(

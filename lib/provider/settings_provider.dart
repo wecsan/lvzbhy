@@ -29,6 +29,8 @@ class SettingsProvider with ChangeNotifier {
     _languageName = PrefUtil.getString('language') ?? "简体中文";
     _enableAutoCheckUpdate = PrefUtil.getBool('enableAutoCheckUpdate') ?? true;
     _enableDenseFavorites = PrefUtil.getBool('enableDenseFavorites') ?? false;
+    _enableBackgroundPlay = PrefUtil.getBool('enableBackgroundPlay') ?? false;
+    _enableScreenKeepOn = PrefUtil.getBool('enableScreenKeepOn') ?? false;
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
@@ -42,6 +44,8 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setString('themeColor', _themeColorName);
     PrefUtil.setString('language', _languageName);
     PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
+    PrefUtil.setBool('enableBackgroundPlay', _enableBackgroundPlay);
+    PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
     PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
     PrefUtil.setDouble('danmakuArea', _danmakuArea);
@@ -110,6 +114,22 @@ class SettingsProvider with ChangeNotifier {
     _enableDenseFavorites = value;
     notifyListeners();
     PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
+  }
+
+  bool _enableBackgroundPlay = false;
+  bool get enableBackgroundPlay => _enableBackgroundPlay;
+  set enableBackgroundPlay(bool value) {
+    _enableBackgroundPlay = value;
+    notifyListeners();
+    PrefUtil.setBool('enableBackgroundPlay', _enableBackgroundPlay);
+  }
+
+  bool _enableScreenKeepOn = false;
+  bool get enableScreenKeepOn => _enableScreenKeepOn;
+  set enableScreenKeepOn(bool value) {
+    _enableScreenKeepOn = value;
+    notifyListeners();
+    PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
   }
 
   bool _enableAutoCheckUpdate = true;
@@ -185,6 +205,8 @@ class SettingsProvider with ChangeNotifier {
     _themeModeName = json['themeMode'] ?? "System";
     _themeColorName = json['themeColor'] ?? "Crimson";
     _enableDenseFavorites = json['enableDenseFavorites'] ?? false;
+    _enableBackgroundPlay = json['enableBackgroundPlay'] ?? false;
+    _enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
     _enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
     _bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
     _danmakuArea = json['danmakuArea'] ?? 0.5;
@@ -202,6 +224,8 @@ class SettingsProvider with ChangeNotifier {
     json['themeMode'] = _themeModeName;
     json['themeColor'] = _themeColorName;
     json['enableDenseFavorites'] = _enableDenseFavorites;
+    json['enableBackgroundPlay'] = _enableBackgroundPlay;
+    json['enableScreenKeepOn'] = _enableScreenKeepOn;
     json['enableAutoCheckUpdate'] = _enableAutoCheckUpdate;
     json['bilibiliCustomCookie'] = _bilibiliCustomCookie;
     json['danmakuArea'] = _danmakuArea;
