@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
@@ -113,6 +114,7 @@ class BilibiliApi {
         links[qnName] = urlMap;
       }
     } catch (e) {
+      log(e.toString(), name: 'BilibiliApi.getRoomStreamLink');
       return links;
     }
     return links;
@@ -135,15 +137,17 @@ class BilibiliApi {
         room.cover = data['room_info']?['cover'] ?? '';
         room.avatar = data['anchor_info']?['base_info']?['face'] ?? '';
         room.area = data['room_info']?['area_name'] ?? '';
-        room.watching = data['watched_show']?['num'] ?? '';
+        room.watching = data['watched_show']?['num']?.toString() ?? '';
         room.followers =
-            data['anchor_info']?['relation_info']?['attention'] ?? '';
+            data['anchor_info']?['relation_info']?['attention']?.toString() ??
+                '';
         room.liveStatus = (data['room_info']?.containsKey('live_status') &&
                 data['room_info']?['live_status'] == 1)
             ? LiveStatus.live
             : LiveStatus.offline;
       }
     } catch (e) {
+      log(e.toString(), name: 'BilibiliApi.getRoomInfo');
       return room;
     }
     return room;
@@ -176,6 +180,7 @@ class BilibiliApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'BilibiliApi.getRecommend');
       return list;
     }
     return list;
@@ -209,6 +214,7 @@ class BilibiliApi {
         });
       }
     } catch (e) {
+      log(e.toString(), name: 'BilibiliApi.getAreaList');
       return areaList;
     }
     return areaList;
@@ -245,6 +251,7 @@ class BilibiliApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'BilibiliApi.getAreaRooms');
       return list;
     }
     return list;
@@ -282,6 +289,7 @@ class BilibiliApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'BilibiliApi.search');
       return list;
     }
     return list;

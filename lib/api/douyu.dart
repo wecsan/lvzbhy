@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:http/http.dart' as http;
@@ -56,6 +57,7 @@ class DouyuApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'DouyuApi.getRoomStreamLink');
       return links;
     }
     return links;
@@ -72,13 +74,14 @@ class DouyuApi {
         room.avatar = data['avatar'] ?? '';
         room.cover = data['room_thumb'] ?? '';
         room.area = data['cate_name'] ?? '';
-        room.followers = data['hn'] ?? '';
+        room.followers = data['hn']?.toString() ?? '';
         room.liveStatus =
             (data.containsKey('room_status') && data['room_status'] == '1')
                 ? LiveStatus.live
                 : LiveStatus.offline;
       }
     } catch (e) {
+      log(e.toString(), name: 'DouyuApi.getRoomInfo');
       return room;
     }
     return room;
@@ -116,6 +119,7 @@ class DouyuApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'DouyuApi.getRecommend');
       return list;
     }
     return list;
@@ -163,6 +167,7 @@ class DouyuApi {
         if (value.isNotEmpty) areaList.add(value);
       });
     } catch (e) {
+      log(e.toString(), name: 'DouyuApi.getAreaList');
       return areaList;
     }
     return areaList;
@@ -202,6 +207,7 @@ class DouyuApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'DouyuApi.getAreaRooms');
       return list;
     }
     return list;
@@ -248,6 +254,7 @@ class DouyuApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'DouyuApi.search');
       return list;
     }
     return list;

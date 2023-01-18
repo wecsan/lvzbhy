@@ -27,7 +27,6 @@ class FavoriteProvider with ChangeNotifier {
     List<String> prefs = PrefUtil.getStringList('favorites') ?? [];
     for (var item in prefs) {
       final room = RoomInfo.fromJson(jsonDecode(item));
-      room.liveStatus = LiveStatus.offline;
       _roomsList.add(room);
     }
   }

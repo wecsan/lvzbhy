@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:http/http.dart' as http;
@@ -51,6 +52,7 @@ class HuyaApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'HuyaApi.getRoomStreamLink');
       return links;
     }
     return links;
@@ -72,8 +74,8 @@ class HuyaApi {
         room.cover = data['liveData']?['screenshot'] ?? '';
         room.avatar = data['profileInfo']?['avatar180'] ?? '';
         room.area = data['liveData']?['gameFullName'] ?? '';
-        room.watching = data['liveData']?['attendeeCount'] ?? '';
-        room.followers = data['liveData']?['totalCount'] ?? '';
+        room.watching = data['liveData']?['attendeeCount']?.toString() ?? '';
+        room.followers = data['liveData']?['totalCount']?.toString() ?? '';
 
         final liveStatus = data['liveStatus'] ?? 'OFF';
         if (liveStatus == 'OFF' || liveStatus == 'FREEZE') {
@@ -85,6 +87,7 @@ class HuyaApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'HuyaApi.getRoomInfo');
       return room;
     }
     return room;
@@ -117,6 +120,7 @@ class HuyaApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'HuyaApi.getRecommend');
       return list;
     }
     return list;
@@ -153,6 +157,7 @@ class HuyaApi {
         areaList.add(subAreaList);
       }
     } catch (e) {
+      log(e.toString(), name: 'HuyaApi.getAreaList');
       return areaList;
     }
     return areaList;
@@ -189,6 +194,7 @@ class HuyaApi {
         }
       }
     } catch (e) {
+      log(e.toString(), name: 'HuyaApi.getAreaRooms');
       return list;
     }
     return list;
@@ -217,6 +223,7 @@ class HuyaApi {
         list.add(owner);
       }
     } catch (e) {
+      log(e.toString(), name: 'HuyaApi.search');
       return list;
     }
     return list;
