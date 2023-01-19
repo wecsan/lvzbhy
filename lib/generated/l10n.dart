@@ -611,6 +611,16 @@ class S {
     );
   }
 
+  /// `New Features`
+  String get what_is_new {
+    return Intl.message(
+      'New Features',
+      name: 'what_is_new',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Danmaku area`
   String get settings_danmaku_area {
     return Intl.message(

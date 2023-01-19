@@ -119,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_offline_rooms": MessageLookupByLibrary.simpleMessage("显示未直播的直播间"),
         "switch_platform": MessageLookupByLibrary.simpleMessage("切换直播平台"),
         "unfollow": MessageLookupByLibrary.simpleMessage("取消关注"),
-        "update": MessageLookupByLibrary.simpleMessage("更新")
+        "update": MessageLookupByLibrary.simpleMessage("更新"),
+        "what_is_new": MessageLookupByLibrary.simpleMessage("最新特性")
       };
 }

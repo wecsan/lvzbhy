@@ -86,6 +86,11 @@ class _SettingsPageState extends State<SettingsPage> {
           SectionTitle(title: S.of(context).about),
           const CheckUpdateListTile(),
           ListTile(
+            title: Text(S.of(context).what_is_new),
+            leading: const Icon(Icons.newspaper_rounded, size: 28),
+            onTap: showNewFeaturesDialog,
+          ),
+          ListTile(
             title: Text(S.of(context).about),
             leading: const Icon(Icons.info_outline_rounded, size: 32),
             onTap: showAboutInfoDialog,
@@ -241,6 +246,27 @@ class _SettingsPageState extends State<SettingsPage> {
                 Text((settings.floatOverlayRatio * 100).toInt().toString() +
                     '%'),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showNewFeaturesDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(S.of(context).float_overlay_ratio),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Version ${VersionUtil.latestVersion}'),
+            const SizedBox(height: 20),
+            Text(
+              VersionUtil.latestUpdateLog,
+              style: Theme.of(context).textTheme.caption,
             ),
           ],
         ),

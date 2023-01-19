@@ -11,10 +11,7 @@ class CheckUpdateListTile extends StatelessWidget {
     return ListTile(
       title: Text(S.of(context).check_update),
       subtitle: const Text('v${VersionUtil.version}'),
-      leading: const Icon(
-        Icons.file_upload_outlined,
-        size: 32,
-      ),
+      leading: const Icon(Icons.file_upload_outlined, size: 32),
       onTap: () {
         showDialog(
           context: context,

@@ -73,6 +73,8 @@
     "new_version_info": "发现新版本: v{version}",
     "no_new_version_info": "已在使用最新版本",
 
+    "what_is_new": "最新特性",
+
     "settings_danmaku_area": "弹幕区域",
     "settings_danmaku_opacity": "不透明度",
     "settings_danmaku_speed": "弹幕速度",

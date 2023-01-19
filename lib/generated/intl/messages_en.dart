@@ -141,6 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "switch_platform":
             MessageLookupByLibrary.simpleMessage("Switch platform"),
         "unfollow": MessageLookupByLibrary.simpleMessage("Unfollow"),
-        "update": MessageLookupByLibrary.simpleMessage("Update")
+        "update": MessageLookupByLibrary.simpleMessage("Update"),
+        "what_is_new": MessageLookupByLibrary.simpleMessage("New Features")
       };
 }

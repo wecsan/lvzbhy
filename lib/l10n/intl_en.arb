@@ -73,6 +73,8 @@
     "new_version_info": "New version found: v{version}",
     "no_new_version_info": "You are using the latest version.",
 
+    "what_is_new": "New Features",
+
     "settings_danmaku_area": "Danmaku area",
     "settings_danmaku_opacity": "Danmaku opacity",
     "settings_danmaku_speed": "Danmaku speed",
