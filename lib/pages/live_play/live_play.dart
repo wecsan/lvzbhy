@@ -53,6 +53,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   @override
   void dispose() {
+    settings.resetPlayerFitMode();
     ScreenBrightness().resetScreenBrightness();
     danmakuStream.dispose();
     super.dispose();
@@ -115,7 +116,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 url: datasource,
                 danmakuStream: danmakuStream,
                 room: widget.room,
-                playerBoxFit: settings.playerBoxFit,
                 allowBackgroundPlay: settings.enableBackgroundPlay,
                 allowedScreenSleep: !settings.enableScreenKeepOn,
               )

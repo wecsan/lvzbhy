@@ -129,13 +129,12 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   void setBoxFit(int index) {
     settings.playerFitMode = index;
-    if (index == 0) {
-      controller.setOverriddenFit(BoxFit.contain);
-    } else if (index == 1) {
-      controller.setOverriddenFit(BoxFit.fill);
-    } else {
-      controller.setOverriddenFit(BoxFit.fitWidth);
-    }
+    final boxFit = index == 0
+        ? BoxFit.contain
+        : index == 1
+            ? BoxFit.fill
+            : BoxFit.fitWidth;
+    controller.setOverriddenFit(boxFit);
   }
 
   @override

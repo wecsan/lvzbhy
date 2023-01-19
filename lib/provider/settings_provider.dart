@@ -23,6 +23,24 @@ class SettingsProvider with ChangeNotifier {
     });
   }
 
+  // 播放器比例监听
+  int _playerFitMode = 0;
+  int get playerFitMode => _playerFitMode;
+  BoxFit get playerBoxFit => _playerFitMode == 0
+      ? BoxFit.contain
+      : _playerFitMode == 1
+          ? BoxFit.fill
+          : BoxFit.fitWidth;
+  set playerFitMode(int value) {
+    if (value < 0 || value > 2) return;
+    _playerFitMode = value;
+    notifyListeners();
+  }
+
+  void resetPlayerFitMode() {
+    _playerFitMode = 0;
+  }
+
   void _loadFromPref() async {
     _themeModeName = PrefUtil.getString('themeMode') ?? "System";
     _themeColorName = PrefUtil.getString('themeColor') ?? "Crimson";
@@ -39,7 +57,6 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
-    _playerFitMode = PrefUtil.getInt('playerFitMode') ?? 0;
   }
 
   void _saveToPref() {
@@ -58,7 +75,6 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
-    PrefUtil.setInt('playerFitMode', _playerFitMode);
   }
 
   // Theme settings
@@ -216,20 +232,6 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
   }
 
-  int _playerFitMode = 0;
-  int get playerFitMode => _playerFitMode;
-  BoxFit get playerBoxFit => _playerFitMode == 0
-      ? BoxFit.contain
-      : _playerFitMode == 1
-          ? BoxFit.fill
-          : BoxFit.fitWidth;
-  set playerFitMode(int value) {
-    if (value < 0 || value > 2) return;
-    _playerFitMode = value;
-    notifyListeners();
-    PrefUtil.setInt('playerFitMode', _playerFitMode);
-  }
-
   // for backup storage
   List<RoomInfo> _favorites = [];
 
@@ -251,7 +253,6 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = json['danmakuFontBorder'] ?? 0.8;
     _danmakuFontSize = json['danmakuFontSize'] ?? 16;
     _danmakuOpacity = json['danmakuOpcity'] ?? 1.0;
-    _playerFitMode = json['playerFitMode'] ?? 0;
     _saveToPref();
   }
 
@@ -273,7 +274,6 @@ class SettingsProvider with ChangeNotifier {
     json['danmakuFontBorder'] = _danmakuFontBorder;
     json['danmakuFontSize'] = _danmakuFontSize;
     json['danmakuOpcity'] = _danmakuOpacity;
-    json['playerFitMode'] = _playerFitMode;
     return json;
   }
 }
