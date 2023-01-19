@@ -92,6 +92,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_dense_favorites_mode_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Display more favorite rooms at once"),
+        "enable_fullscreen_default":
+            MessageLookupByLibrary.simpleMessage("Auto Full Screen"),
+        "enable_fullscreen_default_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "When in live play, auto into full screen"),
         "enable_screen_keep_on":
             MessageLookupByLibrary.simpleMessage("Keep Screen On"),
         "enable_screen_keep_on_subtitle": MessageLookupByLibrary.simpleMessage(

@@ -148,6 +148,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 url: datasource,
                 danmakuStream: danmakuStream,
                 room: widget.room,
+                fullScreenByDefault: settings.enableFullScreenDefault,
                 allowBackgroundPlay: settings.enableBackgroundPlay,
                 allowedScreenSleep: !settings.enableScreenKeepOn,
               )

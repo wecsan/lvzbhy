@@ -81,6 +81,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("紧凑模式"),
         "enable_dense_favorites_mode_subtitle":
             MessageLookupByLibrary.simpleMessage("关注页面可显示更多直播间"),
+        "enable_fullscreen_default":
+            MessageLookupByLibrary.simpleMessage("自动全屏"),
+        "enable_fullscreen_default_subtitle":
+            MessageLookupByLibrary.simpleMessage("当处于直播播放页，自动进入全屏"),
         "enable_screen_keep_on": MessageLookupByLibrary.simpleMessage("屏幕常亮"),
         "enable_screen_keep_on_subtitle":
             MessageLookupByLibrary.simpleMessage("当处于直播播放页，屏幕保持常亮"),

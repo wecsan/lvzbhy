@@ -511,6 +511,26 @@ class S {
     );
   }
 
+  /// `Auto Full Screen`
+  String get enable_fullscreen_default {
+    return Intl.message(
+      'Auto Full Screen',
+      name: 'enable_fullscreen_default',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When in live play, auto into full screen`
+  String get enable_fullscreen_default_subtitle {
+    return Intl.message(
+      'When in live play, auto into full screen',
+      name: 'enable_fullscreen_default_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto Check Update`
   String get enable_auto_check_update {
     return Intl.message(

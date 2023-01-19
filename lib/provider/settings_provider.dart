@@ -49,6 +49,8 @@ class SettingsProvider with ChangeNotifier {
     _enableDenseFavorites = PrefUtil.getBool('enableDenseFavorites') ?? false;
     _enableBackgroundPlay = PrefUtil.getBool('enableBackgroundPlay') ?? false;
     _enableScreenKeepOn = PrefUtil.getBool('enableScreenKeepOn') ?? false;
+    _enableFullScreenDefault =
+        PrefUtil.getBool('enableFullScreenDefault') ?? false;
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     _hideOfflineRoom = PrefUtil.getBool('hideOfflineRoom') ?? false;
     _hideDanmaku = PrefUtil.getBool('hideDanmaku') ?? false;
@@ -68,6 +70,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableBackgroundPlay', _enableBackgroundPlay);
     PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
     PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
+    PrefUtil.setBool('enableFullScreenDefault', _enableFullScreenDefault);
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
     PrefUtil.setBool('hideOfflineRoom', _hideOfflineRoom);
     PrefUtil.setBool('hideDanmaku', _hideDanmaku);
@@ -164,6 +167,14 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
   }
 
+  bool _enableFullScreenDefault = true;
+  bool get enableFullScreenDefault => _enableFullScreenDefault;
+  set enableFullScreenDefault(bool value) {
+    _enableFullScreenDefault = value;
+    notifyListeners();
+    PrefUtil.setBool('enableFullScreenDefault', _enableFullScreenDefault);
+  }
+
   String _bilibiliCustomCookie = '';
   String get bilibiliCustomCookie => _bilibiliCustomCookie;
   set bilibiliCustomCookie(String value) {
@@ -256,6 +267,7 @@ class SettingsProvider with ChangeNotifier {
     _enableBackgroundPlay = json['enableBackgroundPlay'] ?? false;
     _enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
     _enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
+    _enableFullScreenDefault = json['enableFullScreenDefault'] ?? false;
     _hideOfflineRoom = json['hideOfflineRoom'] ?? false;
     _hideDanmaku = json['hideDanmaku'] ?? false;
     _bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
@@ -278,6 +290,7 @@ class SettingsProvider with ChangeNotifier {
     json['enableBackgroundPlay'] = _enableBackgroundPlay;
     json['enableScreenKeepOn'] = _enableScreenKeepOn;
     json['enableAutoCheckUpdate'] = _enableAutoCheckUpdate;
+    json['enableFullScreenDefault'] = _enableFullScreenDefault;
     json['hideOfflineRoom'] = _hideOfflineRoom;
     json['hideDanmaku'] = _hideDanmaku;
     json['bilibiliCustomCookie'] = _bilibiliCustomCookie;

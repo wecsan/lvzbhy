@@ -66,6 +66,13 @@ class _SettingsPageState extends State<SettingsPage> {
             onChanged: (bool value) => settings.enableScreenKeepOn = value,
           ),
           CupertinoSwitchListTile(
+            title: Text(S.of(context).enable_fullscreen_default),
+            subtitle: Text(S.of(context).enable_fullscreen_default_subtitle),
+            value: settings.enableFullScreenDefault,
+            activeColor: Theme.of(context).colorScheme.primary,
+            onChanged: (bool value) => settings.enableFullScreenDefault = value,
+          ),
+          CupertinoSwitchListTile(
             title: Text(S.of(context).enable_auto_check_update),
             subtitle: Text(S.of(context).enable_auto_check_update_subtitle),
             value: settings.enableAutoCheckUpdate,

@@ -8,18 +8,18 @@ class DanmakuVideoPlayer extends StatefulWidget {
   final DanmakuStream danmakuStream;
   final RoomInfo room;
   final String url;
+  final bool fullScreenByDefault;
   final bool allowBackgroundPlay;
   final bool allowedScreenSleep;
-  final bool allowedForceRetry;
 
   const DanmakuVideoPlayer({
     Key? key,
     required this.danmakuStream,
     required this.room,
     required this.url,
+    this.fullScreenByDefault = false,
     this.allowBackgroundPlay = false,
     this.allowedScreenSleep = false,
-    this.allowedForceRetry = false,
   }) : super(key: key);
 
   @override
@@ -48,6 +48,7 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
       BetterPlayerConfiguration(
         autoPlay: true,
         fit: BoxFit.contain,
+        fullScreenByDefault: widget.fullScreenByDefault,
         allowedScreenSleep: widget.allowedScreenSleep,
         autoDetectFullscreenDeviceOrientation: true,
         autoDetectFullscreenAspectRatio: true,
