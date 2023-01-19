@@ -88,8 +88,8 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   void setResolution(String url) {
     if (controller == null) {
       resumePlayer();
-      controller?.setResolution(url);
     }
+    controller?.setResolution(url);
   }
 
   Widget fullScreenPageBuilder(

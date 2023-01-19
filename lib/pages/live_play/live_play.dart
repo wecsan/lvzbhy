@@ -224,7 +224,10 @@ class _LivePlayPageState extends State<LivePlayPage> {
           resolution.substring(resolution.length - 2, resolution.length),
           style: Theme.of(context).textTheme.labelMedium,
         ),
-        onSelected: videoPlayer?.setResolution,
+        onSelected: (String url) {
+          datasource = url;
+          videoPlayer?.setResolution(url);
+        },
         itemBuilder: (context) {
           final menuList = <PopupMenuItem<String>>[];
           cdns.forEach((cdn, url) {
