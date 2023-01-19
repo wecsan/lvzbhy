@@ -22,8 +22,7 @@ class FavoriteProvider with ChangeNotifier {
     onlineRoomList.clear();
     List<String> prefs = PrefUtil.getStringList('favorites') ?? [];
     for (var item in prefs) {
-      final room = RoomInfo.fromJson(jsonDecode(item));
-      roomsList.add(room);
+      roomsList.add(RoomInfo.fromJson(jsonDecode(item)));
     }
   }
 
@@ -77,8 +76,15 @@ class FavoriteProvider with ChangeNotifier {
 
   void moveToTop(RoomInfo room) {
     final index = roomsList.indexWhere((e) => e.roomId == room.roomId);
-    roomsList.insert(0, roomsList[index]);
-    roomsList.removeAt(index + 1);
+    if (index != -1) {
+      roomsList.insert(0, roomsList[index]);
+      roomsList.removeAt(index + 1);
+    }
+    final index1 = onlineRoomList.indexWhere((e) => e.roomId == room.roomId);
+    if (index1 != -1) {
+      onlineRoomList.insert(0, onlineRoomList[index1]);
+      onlineRoomList.removeAt(index1 + 1);
+    }
     notifyListeners();
     _saveToPref();
   }
