@@ -32,6 +32,8 @@ class SettingsProvider with ChangeNotifier {
     _enableBackgroundPlay = PrefUtil.getBool('enableBackgroundPlay') ?? false;
     _enableScreenKeepOn = PrefUtil.getBool('enableScreenKeepOn') ?? false;
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
+    _hideOfflineRoom = PrefUtil.getBool('hideOfflineRoom') ?? false;
+    _hideDanmaku = PrefUtil.getBool('hideDanmaku') ?? false;
     _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
     _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
@@ -49,6 +51,8 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
     PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
+    PrefUtil.setBool('hideOfflineRoom', _hideOfflineRoom);
+    PrefUtil.setBool('hideDanmaku', _hideDanmaku);
     PrefUtil.setDouble('danmakuArea', _danmakuArea);
     PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
@@ -150,14 +154,24 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Danmaku settings
-  double _danmakuArea = 0.5;
-  double _danmakuSpeed = 8;
-  double _danmakuFontBorder = 0.5;
-  double _danmakuFontSize = 16;
-  double _danmakuOpacity = 1;
-  int _playerFitMode = 0;
+  bool _hideOfflineRoom = false;
+  bool get hideOfflineRoom => _hideOfflineRoom;
+  set hideOfflineRoom(bool value) {
+    _hideOfflineRoom = value;
+    notifyListeners();
+    PrefUtil.setBool("hideOfflineRoom", _hideOfflineRoom);
+  }
 
+  // Danmaku settings
+  bool _hideDanmaku = false;
+  bool get hideDanmaku => _hideDanmaku;
+  set hideDanmaku(bool value) {
+    _hideDanmaku = value;
+    notifyListeners();
+    PrefUtil.setBool("hideDanmaku", _hideDanmaku);
+  }
+
+  double _danmakuArea = 0.5;
   double get danmakuArea => _danmakuArea;
   set danmakuArea(value) {
     if (value < 0 || value > 1) return;
@@ -166,6 +180,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuArea', _danmakuArea);
   }
 
+  double _danmakuSpeed = 8;
   double get danmakuSpeed => _danmakuSpeed;
   set danmakuSpeed(value) {
     if (value < 1 || value > 20) return;
@@ -174,6 +189,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
   }
 
+  double _danmakuFontBorder = 0.5;
   double get danmakuFontBorder => _danmakuFontBorder;
   set danmakuFontBorder(value) {
     if (value < 0 || value > 2.5) return;
@@ -182,6 +198,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
   }
 
+  double _danmakuFontSize = 16;
   double get danmakuFontSize => _danmakuFontSize;
   set danmakuFontSize(value) {
     if (value < 10 || value > 30) return;
@@ -190,6 +207,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
   }
 
+  double _danmakuOpacity = 1;
   double get danmakuOpacity => _danmakuOpacity;
   set danmakuOpacity(value) {
     if (value < 0 || value > 1) return;
@@ -198,7 +216,13 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
   }
 
+  int _playerFitMode = 0;
   int get playerFitMode => _playerFitMode;
+  BoxFit get playerBoxFit => _playerFitMode == 0
+      ? BoxFit.contain
+      : _playerFitMode == 1
+          ? BoxFit.fill
+          : BoxFit.fitWidth;
   set playerFitMode(int value) {
     if (value < 0 || value > 2) return;
     _playerFitMode = value;
@@ -219,6 +243,8 @@ class SettingsProvider with ChangeNotifier {
     _enableBackgroundPlay = json['enableBackgroundPlay'] ?? false;
     _enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
     _enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
+    _hideOfflineRoom = json['hideOfflineRoom'] ?? false;
+    _hideDanmaku = json['hideDanmaku'] ?? false;
     _bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
     _danmakuArea = json['danmakuArea'] ?? 0.5;
     _danmakuSpeed = json['danmakuSpeed'] ?? 8;
@@ -239,6 +265,8 @@ class SettingsProvider with ChangeNotifier {
     json['enableBackgroundPlay'] = _enableBackgroundPlay;
     json['enableScreenKeepOn'] = _enableScreenKeepOn;
     json['enableAutoCheckUpdate'] = _enableAutoCheckUpdate;
+    json['hideOfflineRoom'] = _hideOfflineRoom;
+    json['hideDanmaku'] = _hideDanmaku;
     json['bilibiliCustomCookie'] = _bilibiliCustomCookie;
     json['danmakuArea'] = _danmakuArea;
     json['danmakuSpeed'] = _danmakuSpeed;

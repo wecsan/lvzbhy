@@ -71,10 +71,10 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 - [x] 大量弹幕时会有水平弹幕遮挡
 - [x] 支持DLNA投屏
+- [x] 支持视频填充/拉伸
 - [ ] 斗鱼某些直播间无法播放
 - [ ] 虎牙某些弹幕无法获取
 - [ ] 后台小窗播放
-- [ ] 支持视频填充/拉伸
 
 ### 部分链接无法播放
 

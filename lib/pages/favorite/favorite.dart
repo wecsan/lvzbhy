@@ -24,6 +24,9 @@ class _FavoritePageState extends State<FavoritePage> {
   late FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
   late SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
+  List<RoomInfo> get roomList =>
+      settings.hideOfflineRoom ? favorite.onlineRoomList : favorite.roomsList;
+
   void onLongPress(BuildContext context, RoomInfo room) {
     showDialog(
       context: context,
@@ -42,14 +45,14 @@ class _FavoritePageState extends State<FavoritePage> {
           TextButton(
             onPressed: () {
               favorite.removeRoom(room);
-              return Navigator.pop(context);
+              Navigator.of(context).pop();
             },
             child: Text(S.of(context).remove),
           ),
           TextButton(
             onPressed: () {
               favorite.moveToTop(room);
-              return Navigator.pop(context);
+              Navigator.of(context).pop();
             },
             child: Text(S.of(context).move_to_top),
           ),
@@ -102,20 +105,17 @@ class _FavoritePageState extends State<FavoritePage> {
         header: const WaterDropHeader(),
         controller: favorite.refreshController,
         onRefresh: favorite.onRefresh,
-        child: favorite.roomsList.isNotEmpty
+        child: roomList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
                 controller: ScrollController(),
                 crossAxisCount: crossAxisCount,
-                itemCount: favorite.roomsList.length,
-                itemBuilder: (context, index) {
-                  RoomInfo room = favorite.roomsList[index];
-                  return RoomCard(
-                    room: room,
-                    dense: settings.enableDenseFavorites,
-                    onLongPress: () => onLongPress(context, room),
-                  );
-                },
+                itemCount: roomList.length,
+                itemBuilder: (context, index) => RoomCard(
+                  room: roomList[index],
+                  dense: settings.enableDenseFavorites,
+                  onLongPress: () => onLongPress(context, roomList[index]),
+                ),
               )
             : EmptyView(
                 icon: Icons.favorite_rounded,
@@ -123,15 +123,15 @@ class _FavoritePageState extends State<FavoritePage> {
                 subtitle: S.of(context).empty_favorite_subtitle,
               ),
       ),
-      floatingActionButton: favorite.isHideOffline
+      floatingActionButton: settings.hideOfflineRoom
           ? FloatingActionButton(
               tooltip: S.of(context).show_offline_rooms,
-              onPressed: favorite.showOfflineRooms,
+              onPressed: () => settings.hideOfflineRoom = false,
               child: const Icon(Icons.add_circle_outline_rounded),
             )
           : FloatingActionButton(
               tooltip: S.of(context).hide_offline_rooms,
-              onPressed: favorite.hideOfflineRooms,
+              onPressed: () => settings.hideOfflineRoom = true,
               child: const Icon(Icons.remove_circle_outline_rounded),
             ),
     );

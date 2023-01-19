@@ -115,6 +115,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 url: datasource,
                 danmakuStream: danmakuStream,
                 room: widget.room,
+                playerBoxFit: settings.playerBoxFit,
                 allowBackgroundPlay: settings.enableBackgroundPlay,
                 allowedScreenSleep: !settings.enableScreenKeepOn,
               )

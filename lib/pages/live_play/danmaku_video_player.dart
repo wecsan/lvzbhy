@@ -8,6 +8,7 @@ class DanmakuVideoPlayer extends StatefulWidget {
   final DanmakuStream danmakuStream;
   final RoomInfo room;
   final String url;
+  final BoxFit playerBoxFit;
   final bool allowBackgroundPlay;
   final bool allowedScreenSleep;
   final bool allowedForceRetry;
@@ -17,6 +18,7 @@ class DanmakuVideoPlayer extends StatefulWidget {
     required this.danmakuStream,
     required this.room,
     required this.url,
+    this.playerBoxFit = BoxFit.contain,
     this.allowBackgroundPlay = false,
     this.allowedScreenSleep = false,
     this.allowedForceRetry = false,
@@ -28,6 +30,7 @@ class DanmakuVideoPlayer extends StatefulWidget {
 
 class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   late BetterPlayerController controller;
+  late Widget damakuVideoControls;
 
   @override
   void initState() {
@@ -35,7 +38,7 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     controller = BetterPlayerController(
       BetterPlayerConfiguration(
         autoPlay: true,
-        fit: BoxFit.contain,
+        fit: widget.playerBoxFit,
         allowedScreenSleep: widget.allowedScreenSleep,
         autoDetectFullscreenDeviceOrientation: true,
         autoDetectFullscreenAspectRatio: true,
@@ -57,18 +60,15 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
       ),
     );
     controller.setControlsEnabled(false);
-    // controller.addEventsListener(forceRetry);
+    damakuVideoControls = DanmakuVideoController(
+      controller: controller,
+      danmakuStream: widget.danmakuStream,
+      title: widget.room.title,
+    );
   }
-
-  // void forceRetry(BetterPlayerEvent event) {
-  //   if (event.betterPlayerEventType == BetterPlayerEventType.finished) {
-  //     controller.retryDataSource();
-  //   }
-  // }
 
   @override
   void dispose() {
-    // controller.removeEventsListener(forceRetry);
     controller.dispose();
     super.dispose();
   }
@@ -85,11 +85,7 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
         color: Colors.black,
         child: Stack(children: [
           controllerProvider,
-          DanmakuVideoController(
-            controller: controller,
-            danmakuStream: widget.danmakuStream,
-            title: widget.room.title,
-          ),
+          damakuVideoControls,
         ]),
       ),
     );
@@ -100,11 +96,7 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     return Stack(
       children: [
         BetterPlayer(controller: controller),
-        DanmakuVideoController(
-          controller: controller,
-          danmakuStream: widget.danmakuStream,
-          title: widget.room.title,
-        ),
+        damakuVideoControls,
       ],
     );
   }

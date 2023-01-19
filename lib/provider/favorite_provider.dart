@@ -14,37 +14,33 @@ class FavoriteProvider with ChangeNotifier {
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
-  final List<RoomInfo> _roomsList = [];
-  final List<RoomInfo> _onlineRoomList = [];
-  get roomsList => isHideOffline ? _onlineRoomList : _roomsList;
-
-  bool _isHideOffline = false;
-  get isHideOffline => _isHideOffline;
+  final List<RoomInfo> roomsList = [];
+  final List<RoomInfo> onlineRoomList = [];
 
   void _loadFromPref() {
-    _roomsList.clear();
-    _onlineRoomList.clear();
+    roomsList.clear();
+    onlineRoomList.clear();
     List<String> prefs = PrefUtil.getStringList('favorites') ?? [];
     for (var item in prefs) {
       final room = RoomInfo.fromJson(jsonDecode(item));
-      _roomsList.add(room);
+      roomsList.add(room);
     }
   }
 
   void _saveToPref() {
     var roomJsons = <String>[];
-    for (var element in _roomsList) {
+    for (var element in roomsList) {
       roomJsons.add(jsonEncode(element.toJson()));
     }
     PrefUtil.setStringList('favorites', roomJsons);
   }
 
   void _getRoomsInfoFromApi() async {
-    for (int i = 0; i < _roomsList.length; i++) {
-      _roomsList[i] = await LiveApi.getRoomInfo(_roomsList[i]);
+    for (int i = 0; i < roomsList.length; i++) {
+      roomsList[i] = await LiveApi.getRoomInfo(roomsList[i]);
     }
-    _onlineRoomList
-        .addAll(_roomsList.where((room) => room.liveStatus == LiveStatus.live));
+    onlineRoomList
+        .addAll(roomsList.where((room) => room.liveStatus == LiveStatus.live));
     refreshController.refreshCompleted();
     notifyListeners();
     _saveToPref();
@@ -56,7 +52,7 @@ class FavoriteProvider with ChangeNotifier {
   }
 
   bool isFavorite(String roomId) {
-    return _roomsList.indexWhere((e) => e.roomId == roomId) != -1;
+    return roomsList.indexWhere((e) => e.roomId == roomId) != -1;
   }
 
   void addRoom(RoomInfo room) async {
@@ -64,36 +60,26 @@ class FavoriteProvider with ChangeNotifier {
       room = await LiveApi.getRoomInfo(room);
     }
 
-    final idx = _roomsList.indexWhere((e) => e.roomId == room.roomId);
-    if (idx != -1) _roomsList[idx] = room;
-    _roomsList.add(room);
-    if (room.liveStatus == LiveStatus.live) _onlineRoomList.add(room);
+    final idx = roomsList.indexWhere((e) => e.roomId == room.roomId);
+    if (idx != -1) roomsList[idx] = room;
+    roomsList.add(room);
+    if (room.liveStatus == LiveStatus.live) onlineRoomList.add(room);
     notifyListeners();
     _saveToPref();
   }
 
   void removeRoom(RoomInfo room) {
-    _roomsList.removeWhere((e) => e.roomId == room.roomId);
-    _onlineRoomList.removeWhere((e) => e.roomId == room.roomId);
+    roomsList.removeWhere((e) => e.roomId == room.roomId);
+    onlineRoomList.removeWhere((e) => e.roomId == room.roomId);
     notifyListeners();
     _saveToPref();
   }
 
   void moveToTop(RoomInfo room) {
-    final index = _roomsList.indexWhere((e) => e.roomId == room.roomId);
-    _roomsList.insert(0, _roomsList[index]);
-    _roomsList.removeAt(index + 1);
+    final index = roomsList.indexWhere((e) => e.roomId == room.roomId);
+    roomsList.insert(0, roomsList[index]);
+    roomsList.removeAt(index + 1);
     notifyListeners();
     _saveToPref();
-  }
-
-  void hideOfflineRooms() {
-    _isHideOffline = true;
-    notifyListeners();
-  }
-
-  void showOfflineRooms() {
-    _isHideOffline = false;
-    notifyListeners();
   }
 }

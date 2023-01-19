@@ -80,10 +80,9 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   final marginSize = 5.0;
 
   bool _hideStuff = true;
-  bool _hideDanmaku = false;
   bool _lockStuff = false;
   bool _displayTapped = false;
-  bool _displayDanmakuSetting = false;
+  bool _displaySetting = false;
 
   Timer? _initTimer;
   Timer? _hideTimer;
@@ -146,12 +145,12 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     }
 
     List<Widget> ws = [];
-    if (!_hideDanmaku) {
+    if (!settings.hideDanmaku) {
       ws.add(_buildDanmakuView());
     }
     if (_lockStuff && controller.isFullScreen) {
       ws.add(_buidLockStateButton());
-    } else if (_displayDanmakuSetting) {
+    } else if (_displaySetting) {
       ws.add(_buildHitArea());
     } else {
       ws.add(_buildHitArea());
@@ -208,7 +207,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
       width: MediaQuery.of(context).size.width,
       height: danmukuHeight,
       child: AnimatedOpacity(
-        opacity: !_hideDanmaku ? settings.danmakuOpacity : 0.0,
+        opacity: !settings.hideDanmaku ? settings.danmakuOpacity : 0.0,
         duration: const Duration(milliseconds: 300),
         child: BarrageWall(
           width: MediaQuery.of(context).size.width,
@@ -225,12 +224,12 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   // Center hit and controller widgets
   Widget _buildHitArea() {
-    if (_displayDanmakuSetting) {
+    if (_displaySetting) {
       return GestureDetector(
         onTap: () {
           setState(() {
             _hideStuff = true;
-            _displayDanmakuSetting = false;
+            _displaySetting = false;
           });
         },
         child: Container(
@@ -333,7 +332,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     return Container(
       alignment: Alignment.centerRight,
       child: AnimatedOpacity(
-        opacity: _displayDanmakuSetting ? 0.8 : 0.0,
+        opacity: _displaySetting ? 0.8 : 0.0,
         duration: const Duration(milliseconds: 300),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -653,9 +652,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   Widget _buildDanmakuHideButton() {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _hideDanmaku = !_hideDanmaku;
-        });
+        setState(() => settings.hideDanmaku = !settings.hideDanmaku);
       },
       child: Container(
         height: barHeight,
@@ -663,7 +660,9 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
         margin: const EdgeInsets.only(right: 12.0),
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Icon(
-          _hideDanmaku ? CustomIcons.danmaku_close : CustomIcons.danmaku_open,
+          settings.hideDanmaku
+              ? CustomIcons.danmaku_close
+              : CustomIcons.danmaku_open,
           color: Colors.white,
         ),
       ),
@@ -674,7 +673,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     return GestureDetector(
       onTap: () {
         setState(() {
-          _displayDanmakuSetting = !_displayDanmakuSetting;
+          _displaySetting = !_displaySetting;
         });
       },
       child: Container(
