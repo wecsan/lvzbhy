@@ -5,6 +5,7 @@ import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/live_play.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/api/liveapi.dart';
+import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/empty_view.dart';
 import 'package:provider/provider.dart';
 
@@ -48,9 +49,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _toggleIsLive() {
-    setState(() {
-      isLive = !isLive;
-    });
+    setState(() => isLive = !isLive);
   }
 
   @override
@@ -114,7 +113,13 @@ class OwnerCard extends StatelessWidget {
     if (room.liveStatus == LiveStatus.live) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LivePlayPage(room: fullRoom)),
+        MaterialPageRoute(
+          builder: (context) => LivePlayPage(
+            room: fullRoom,
+            preferResolution:
+                Provider.of<SettingsProvider>(context).preferResolution,
+          ),
+        ),
       );
     } else {
       showDialog(

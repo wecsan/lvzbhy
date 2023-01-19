@@ -60,13 +60,16 @@
     "enable_screen_keep_on_subtitle": "When in live play, keep screen on",
 
     "enable_fullscreen_default": "Auto Full Screen",
-    "enable_fullscreen_default_subtitle": "When in live play, auto into full screen",
+    "enable_fullscreen_default_subtitle": "When enter live play, auto into full screen",
 
     "enable_auto_check_update": "Auto Check Update",
     "enable_auto_check_update_subtitle": "When enter into app, auto check update",
 
     "float_overlay_ratio": "float overlay ratio",
     "float_overlay_ratio_subtitle": "When using float window, ratio control the size",
+
+    "prefer_resolution": "Resolution Preference",
+    "prefer_resolution_subtitle": "When enter live play, first resolution choice",
 
     "bilibili_cookie": "Bilibili Cookie",
     "enable_bilibili_search_cookie": "Enable bilibili search cookie",

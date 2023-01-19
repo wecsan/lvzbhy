@@ -254,6 +254,18 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('floatOverlayRatio', _floatOverlayRatio);
   }
 
+  static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
+  String get preferResolution => resolutions[_preferResolutionIndex];
+  int _preferResolutionIndex = 0;
+  void changePreferResolution(String name) {
+    int index = resolutions.indexWhere((e) => e == name);
+    if (index != -1) {
+      _preferResolutionIndex = index;
+      notifyListeners();
+      PrefUtil.setDouble('preferResolutionIndex', _floatOverlayRatio);
+    }
+  }
+
   // for backup storage
   List<RoomInfo> _favorites = [];
 

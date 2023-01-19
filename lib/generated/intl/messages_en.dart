@@ -96,7 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Auto Full Screen"),
         "enable_fullscreen_default_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "When in live play, auto into full screen"),
+                "When enter live play, auto into full screen"),
         "enable_screen_keep_on":
             MessageLookupByLibrary.simpleMessage("Keep Screen On"),
         "enable_screen_keep_on_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -126,6 +126,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
         "only_living": MessageLookupByLibrary.simpleMessage("Only Living"),
         "popular_title": MessageLookupByLibrary.simpleMessage("Popular"),
+        "prefer_resolution":
+            MessageLookupByLibrary.simpleMessage("Resolution Preference"),
+        "prefer_resolution_subtitle": MessageLookupByLibrary.simpleMessage(
+            "When enter live play, first resolution choice"),
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
         "room_info_content": m2,
         "search_input_hint":

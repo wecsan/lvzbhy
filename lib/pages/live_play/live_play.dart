@@ -15,7 +15,13 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
 class LivePlayPage extends StatefulWidget {
-  const LivePlayPage({Key? key, required this.room}) : super(key: key);
+  final String preferResolution;
+
+  const LivePlayPage({
+    Key? key,
+    required this.room,
+    required this.preferResolution,
+  }) : super(key: key);
 
   final RoomInfo room;
 
@@ -45,7 +51,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
       streamList = value;
       setState(() {
         if (streamList.isNotEmpty && streamList.values.first.isNotEmpty) {
-          datasource = streamList.values.first.values.first;
+          datasource = selectPreferResolution();
         } else {
           datasourceError = true;
         }
@@ -59,6 +65,15 @@ class _LivePlayPageState extends State<LivePlayPage> {
     ScreenBrightness().resetScreenBrightness();
     danmakuStream.dispose();
     super.dispose();
+  }
+
+  String selectPreferResolution() {
+    for (var key in streamList.keys) {
+      if (key.contains(widget.preferResolution)) {
+        return streamList[key]!.values.first;
+      }
+    }
+    return streamList.values.last.values.first;
   }
 
   @override

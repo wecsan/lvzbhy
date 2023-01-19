@@ -521,10 +521,10 @@ class S {
     );
   }
 
-  /// `When in live play, auto into full screen`
+  /// `When enter live play, auto into full screen`
   String get enable_fullscreen_default_subtitle {
     return Intl.message(
-      'When in live play, auto into full screen',
+      'When enter live play, auto into full screen',
       name: 'enable_fullscreen_default_subtitle',
       desc: '',
       args: [],
@@ -566,6 +566,26 @@ class S {
     return Intl.message(
       'When using float window, ratio control the size',
       name: 'float_overlay_ratio_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resolution Preference`
+  String get prefer_resolution {
+    return Intl.message(
+      'Resolution Preference',
+      name: 'prefer_resolution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When enter live play, first resolution choice`
+  String get prefer_resolution_subtitle {
+    return Intl.message(
+      'When enter live play, first resolution choice',
+      name: 'prefer_resolution_subtitle',
       desc: '',
       args: [],
     );

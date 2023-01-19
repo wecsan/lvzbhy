@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/pages/live_play/live_play.dart';
+import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/keep_alive_wrapper.dart';
+import 'package:provider/provider.dart';
 
 class RoomCard extends StatelessWidget {
   const RoomCard({
@@ -21,7 +23,13 @@ class RoomCard extends StatelessWidget {
     if (room.liveStatus == LiveStatus.live) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LivePlayPage(room: room)),
+        MaterialPageRoute(
+          builder: (context) => LivePlayPage(
+            room: room,
+            preferResolution:
+                Provider.of<SettingsProvider>(context).preferResolution,
+          ),
+        ),
       );
     } else {
       showDialog(

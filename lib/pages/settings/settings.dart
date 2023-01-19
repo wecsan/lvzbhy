@@ -85,6 +85,11 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: showFloatOverlaySetDialog,
           ),
           ListTile(
+            title: Text(S.of(context).prefer_resolution),
+            subtitle: Text(S.of(context).prefer_resolution_subtitle),
+            onTap: showPreferResolutionSelectorDialog,
+          ),
+          ListTile(
             title: Text(S.of(context).enable_bilibili_search_cookie),
             subtitle:
                 Text(S.of(context).enable_bilibili_search_cookie_subtitle),
@@ -168,6 +173,29 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(name),
               onChanged: (value) {
                 settings.changeLanguage(value!);
+                Navigator.of(context).pop();
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  void showPreferResolutionSelectorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(S.of(context).prefer_resolution),
+          children: SettingsProvider.resolutions.map<Widget>((name) {
+            return RadioListTile<String>(
+              activeColor: Theme.of(context).colorScheme.primary,
+              groupValue: settings.preferResolution,
+              value: name,
+              title: Text(name),
+              onChanged: (value) {
+                settings.changePreferResolution(value!);
                 Navigator.of(context).pop();
               },
             );

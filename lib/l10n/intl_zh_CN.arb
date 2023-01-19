@@ -60,13 +60,16 @@
     "enable_screen_keep_on_subtitle": "当处于直播播放页，屏幕保持常亮",
 
     "enable_fullscreen_default": "自动全屏",
-    "enable_fullscreen_default_subtitle": "当处于直播播放页，自动进入全屏",
+    "enable_fullscreen_default_subtitle": "当进入直播播放页，自动进入全屏",
 
     "enable_auto_check_update": "自动检查更新",
     "enable_auto_check_update_subtitle": "在每次进入软件时，自动检查更新",
 
     "float_overlay_ratio": "悬浮窗尺寸",
     "float_overlay_ratio_subtitle": "小窗播放时，悬浮窗横向相对比例",
+
+    "prefer_resolution": "首选清晰度",
+    "prefer_resolution_subtitle": "当进入直播播放页，首选的视频清晰度",
 
     "bilibili_cookie": "Bilibili Cookie",
     "enable_bilibili_search_cookie": "启用Bilibili搜索Cookie",

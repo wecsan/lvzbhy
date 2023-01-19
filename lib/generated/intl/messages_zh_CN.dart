@@ -84,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_fullscreen_default":
             MessageLookupByLibrary.simpleMessage("自动全屏"),
         "enable_fullscreen_default_subtitle":
-            MessageLookupByLibrary.simpleMessage("当处于直播播放页，自动进入全屏"),
+            MessageLookupByLibrary.simpleMessage("当进入直播播放页，自动进入全屏"),
         "enable_screen_keep_on": MessageLookupByLibrary.simpleMessage("屏幕常亮"),
         "enable_screen_keep_on_subtitle":
             MessageLookupByLibrary.simpleMessage("当处于直播播放页，屏幕保持常亮"),
@@ -108,6 +108,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline": MessageLookupByLibrary.simpleMessage("未直播"),
         "only_living": MessageLookupByLibrary.simpleMessage("只搜索直播中"),
         "popular_title": MessageLookupByLibrary.simpleMessage("热门"),
+        "prefer_resolution": MessageLookupByLibrary.simpleMessage("首选清晰度"),
+        "prefer_resolution_subtitle":
+            MessageLookupByLibrary.simpleMessage("当进入直播播放页，首选的视频清晰度"),
         "remove": MessageLookupByLibrary.simpleMessage("删除"),
         "room_info_content": m2,
         "search_input_hint": MessageLookupByLibrary.simpleMessage("输入直播关键字"),
