@@ -277,17 +277,20 @@ class _LivePlayPageState extends State<LivePlayPage> {
         MediaQuery.of(context).devicePixelRatio *
         settings.floatOverlayRatio;
     final height = width / 16 * 9;
-    await FlutterOverlayWindow.showOverlay(
-      width: width.toInt(),
-      height: height.toInt(),
-      enableDrag: true,
-      overlayTitle: '悬浮播放${widget.room.nick}的直播间',
-      overlayContent: widget.room.title,
-      flag: OverlayFlag.defaultFlag,
-      alignment: OverlayAlignment.topRight,
-      visibility: NotificationVisibility.visibilityPrivate,
-      positionGravity: PositionGravity.auto,
-    );
+
+    if (!(await FlutterOverlayWindow.isActive())) {
+      await FlutterOverlayWindow.showOverlay(
+        width: width.toInt(),
+        height: height.toInt(),
+        enableDrag: true,
+        overlayTitle: '悬浮播放${widget.room.nick}的直播间',
+        overlayContent: widget.room.title,
+        flag: OverlayFlag.defaultFlag,
+        alignment: OverlayAlignment.topRight,
+        visibility: NotificationVisibility.visibilityPrivate,
+        positionGravity: PositionGravity.auto,
+      );
+    }
     FlutterOverlayWindow.shareData({"url": datasource});
   }
 }

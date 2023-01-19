@@ -12,12 +12,15 @@ class VideoFloatOverlay extends StatefulWidget {
 class VideoFloatOverlayState extends State<VideoFloatOverlay> {
   BetterPlayerController? controller;
   Widget? damakuVideoControls;
-  bool showPlayer = false;
 
   @override
   void initState() {
     super.initState();
     FlutterOverlayWindow.overlayListener.listen((event) {
+      controller?.pause();
+      controller?.dispose();
+      controller = null;
+
       String url = event['url'];
       controller = BetterPlayerController(
         const BetterPlayerConfiguration(
@@ -32,7 +35,7 @@ class VideoFloatOverlayState extends State<VideoFloatOverlay> {
         ),
       );
       controller?.setControlsEnabled(false);
-      setState(() => showPlayer = true);
+      setState(() {});
     });
   }
 
@@ -51,7 +54,7 @@ class VideoFloatOverlayState extends State<VideoFloatOverlay> {
         margin: const EdgeInsets.all(8),
         child: Stack(
           children: [
-            showPlayer
+            controller != null
                 ? BetterPlayer(controller: controller!)
                 : const Center(child: CircularProgressIndicator()),
             Positioned(
@@ -59,11 +62,10 @@ class VideoFloatOverlayState extends State<VideoFloatOverlay> {
               right: 0,
               child: IconButton(
                 onPressed: () async {
+                  await FlutterOverlayWindow.closeOverlay();
                   controller?.pause();
                   controller?.dispose();
                   controller = null;
-                  setState(() => showPlayer = false);
-                  await FlutterOverlayWindow.closeOverlay();
                 },
                 icon: Icon(
                   Icons.close_rounded,
