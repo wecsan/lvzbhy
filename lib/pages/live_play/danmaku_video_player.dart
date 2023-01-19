@@ -76,15 +76,18 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
       Animation<double> animation,
       Animation<double> second,
       BetterPlayerControllerProvider controllerProvider) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: Stack(children: [
-          controllerProvider,
-          damakuVideoControls,
-        ]),
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          alignment: Alignment.center,
+          color: Colors.black,
+          child: Stack(children: [
+            controllerProvider,
+            damakuVideoControls,
+          ]),
+        ),
       ),
     );
   }

@@ -81,7 +81,6 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   bool _hideStuff = true;
   bool _lockStuff = false;
-  bool _displayTapped = false;
   bool _displaySetting = false;
 
   Timer? _initTimer;
@@ -142,15 +141,28 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     if (latestValue.hasError) {
       return Container();
     }
+    // display setting view
+    if (_displaySetting) {
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            _hideStuff = false;
+            _displaySetting = false;
+          });
+        },
+        child: Container(
+          color: Colors.transparent,
+          child: _buildSettingView(),
+        ),
+      );
+    }
 
     List<Widget> ws = [];
     if (!settings.hideDanmaku) {
       ws.add(_buildDanmakuView());
     }
-    if (_lockStuff && controller.isFullScreen) {
+    if (_lockStuff) {
       ws.add(_buidLockStateButton());
-    } else if (_displaySetting) {
-      ws.add(_buildHitArea());
     } else {
       ws.add(_buildHitArea());
       if (controller.isFullScreen) {
@@ -161,14 +173,8 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     }
 
     return MouseRegion(
-      onHover: (_) => _cancelAndRestartTimer(),
-      child: GestureDetector(
-        onTap: _cancelAndRestartTimer,
-        child: AbsorbPointer(
-          absorbing: _hideStuff,
-          child: Stack(children: ws),
-        ),
-      ),
+      onHover: (_) => _cancelAndRestartHideTimer(),
+      child: Stack(children: ws),
     );
   }
 
@@ -223,34 +229,8 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   // Center hit and controller widgets
   Widget _buildHitArea() {
-    if (_displaySetting) {
-      return GestureDetector(
-        onTap: () {
-          setState(() {
-            _hideStuff = true;
-            _displaySetting = false;
-          });
-        },
-        child: Container(
-          color: Colors.transparent,
-          child: _buildSettingView(),
-        ),
-      );
-    }
-
     return GestureDetector(
-      onTap: () {
-        if (latestValue.isPlaying) {
-          if (_displayTapped) {
-            setState(() => _hideStuff = true);
-          } else {
-            _cancelAndRestartTimer();
-          }
-        } else {
-          _playPause();
-          setState(() => _hideStuff = true);
-        }
-      },
+      onTap: _cancelAndRestartHideTimer,
       onDoubleTap: _playPause,
       onVerticalDragStart: _onVerticalDragStart,
       onVerticalDragUpdate: _onVerticalDragUpdate,
@@ -525,10 +505,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   Widget _buildBackButton() {
     return GestureDetector(
-      onTap: () {
-        _hideStuff = true;
-        controller.toggleFullScreen();
-      },
+      onTap: _toggleFullScreen,
       child: Container(
         height: barHeight,
         alignment: Alignment.center,
@@ -619,8 +596,9 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
           child: Row(
             children: <Widget>[
               _buildPlayPauseButton(),
+              _buildRefreshButton(),
               _buildDanmakuHideButton(),
-              if (controller.isFullScreen) _buildDanmakuSettingButton(),
+              if (controller.isFullScreen) _buildSettingButton(),
               if (controller.isFullScreen || screenWidth < 640) const Spacer(),
               _buildExpandButton(),
             ],
@@ -648,6 +626,22 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     );
   }
 
+  Widget _buildRefreshButton() {
+    return GestureDetector(
+      onTap: () => controller.retryDataSource(),
+      child: Container(
+        height: barHeight,
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(right: 12.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: const Icon(
+          Icons.refresh_rounded,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
   Widget _buildDanmakuHideButton() {
     return GestureDetector(
       onTap: () {
@@ -668,12 +662,10 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     );
   }
 
-  Widget _buildDanmakuSettingButton() {
+  Widget _buildSettingButton() {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _displaySetting = !_displaySetting;
-        });
+        setState(() => _displaySetting = !_displaySetting);
       },
       child: Container(
         height: barHeight,
@@ -690,10 +682,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   Widget _buildExpandButton() {
     return GestureDetector(
-      onTap: () {
-        _hideStuff = true;
-        controller.toggleFullScreen();
-      },
+      onTap: _toggleFullScreen,
       child: Container(
         height: barHeight,
         alignment: Alignment.center,
@@ -713,36 +702,30 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   // Callback functions
   void _onVerticalDragStart(detills) async {
     double clientW = MediaQuery.of(context).size.width;
-    double curTouchPosX = detills.globalPosition.dx;
-
     setState(() {
-      // 更新位置
       updatePrevDy = detills.globalPosition.dy;
-      // 是否左边
-      isDargVerLeft = (curTouchPosX > (clientW / 2)) ? false : true;
+      isDargVerLeft =
+          (detills.globalPosition.dx > (clientW / 2)) ? false : true;
     });
-    // 大于 右边 音量 ， 小于 左边 亮度
-    if (!isDargVerLeft!) {
-      // 音量
-      await volumeController.getVolume().then((double v) {
-        _dragingBV = true;
-        setState(() {
-          updateDargVarVal = v;
-        });
-      });
-    } else {
+
+    if (isDargVerLeft!) {
       // 亮度
       await brightnessController.current.then((double v) {
         _dragingBV = true;
-        setState(() {
-          updateDargVarVal = v;
-        });
+        setState(() => updateDargVarVal = v);
+      });
+    } else {
+      // 音量
+      await volumeController.getVolume().then((double v) {
+        _dragingBV = true;
+        setState(() => updateDargVarVal = v);
       });
     }
   }
 
   void _onVerticalDragUpdate(detills) {
     if (!_dragingBV) return;
+
     double curDragDy = detills.globalPosition.dy;
     // 确定当前是前进或者后退
     int cdy = curDragDy.toInt();
@@ -754,56 +737,50 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     double dragRange =
         isBefore ? updateDargVarVal! + 0.03 : updateDargVarVal! - 0.03;
     // 是否溢出
-    if (dragRange > 1) {
-      dragRange = 1.0;
-    }
-    if (dragRange < 0) {
-      dragRange = 0.0;
-    }
+    dragRange = dragRange > 1 ? 1.0 : dragRange;
+    dragRange = dragRange < 0 ? 0.0 : dragRange;
+
     setState(() {
       updatePrevDy = curDragDy;
       _dragingBV = true;
       updateDargVarVal = dragRange;
-      // 音量
-      if (!isDargVerLeft!) {
-        volumeController.setVolume(dragRange);
-      } else {
+      // 亮度 & 音量
+      if (isDargVerLeft!) {
         brightnessController.setScreenBrightness(dragRange);
+      } else {
+        volumeController.setVolume(dragRange);
       }
     });
   }
 
   void _onVerticalDragEnd(detills) {
-    setState(() {
-      _dragingBV = false;
-    });
+    setState(() => _dragingBV = false);
   }
 
-  void _cancelAndRestartTimer() {
+  void _cancelAndRestartHideTimer() {
     _hideTimer?.cancel();
-    _startHideTimer();
-
-    setState(() {
-      _hideStuff = false;
-      _displayTapped = true;
-    });
-  }
-
-  void _startHideTimer() {
-    _hideTimer = Timer(const Duration(seconds: 3), () {
+    _hideTimer = Timer(const Duration(seconds: 2), () {
       setState(() => _hideStuff = true);
     });
+    setState(() => _hideStuff = false);
   }
 
   void _playPause() {
     if (latestValue.isPlaying) {
-      _cancelAndRestartTimer();
+      _hideTimer?.cancel();
+      setState(() => _hideStuff = false);
       controller.pause();
     } else {
-      _hideStuff = false;
-      _hideTimer?.cancel();
+      _cancelAndRestartHideTimer();
       controller.play();
     }
-    setState(() {});
+  }
+
+  void _toggleFullScreen() {
+    setState(() {
+      _hideStuff = true;
+      _lockStuff = false;
+    });
+    controller.toggleFullScreen();
   }
 }
