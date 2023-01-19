@@ -62,6 +62,9 @@
     "enable_auto_check_update": "Auto Check Update",
     "enable_auto_check_update_subtitle": "When enter into app, auto check update",
 
+    "float_overlay_ratio": "float overlay ratio",
+    "float_overlay_ratio_subtitle": "When using float window, ratio control the size",
+
     "bilibili_cookie": "Bilibili Cookie",
     "enable_bilibili_search_cookie": "Enable bilibili search cookie",
     "enable_bilibili_search_cookie_subtitle": "Set custom bilibili search needed cookie",

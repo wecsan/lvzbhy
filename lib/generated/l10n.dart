@@ -531,6 +531,26 @@ class S {
     );
   }
 
+  /// `float overlay ratio`
+  String get float_overlay_ratio {
+    return Intl.message(
+      'float overlay ratio',
+      name: 'float_overlay_ratio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When using float window, ratio control the size`
+  String get float_overlay_ratio_subtitle {
+    return Intl.message(
+      'When using float window, ratio control the size',
+      name: 'float_overlay_ratio_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Bilibili Cookie`
   String get bilibili_cookie {
     return Intl.message(

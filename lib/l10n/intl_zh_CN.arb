@@ -62,6 +62,9 @@
     "enable_auto_check_update": "自动检查更新",
     "enable_auto_check_update_subtitle": "在每次进入软件时，自动检查更新",
 
+    "float_overlay_ratio": "悬浮窗尺寸",
+    "float_overlay_ratio_subtitle": "小窗播放时，悬浮窗横向相对比例",
+
     "bilibili_cookie": "Bilibili Cookie",
     "enable_bilibili_search_cookie": "启用Bilibili搜索Cookie",
     "enable_bilibili_search_cookie_subtitle": "设置Bilibili搜索所需Cookie",

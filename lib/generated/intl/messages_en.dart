@@ -98,6 +98,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "When in live play, keep screen on"),
         "experiment": MessageLookupByLibrary.simpleMessage("Experiment"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("Favorites"),
+        "float_overlay_ratio":
+            MessageLookupByLibrary.simpleMessage("float overlay ratio"),
+        "float_overlay_ratio_subtitle": MessageLookupByLibrary.simpleMessage(
+            "When using float window, ratio control the size"),
         "follow": MessageLookupByLibrary.simpleMessage("Follow"),
         "followed": MessageLookupByLibrary.simpleMessage("Followed"),
         "general": MessageLookupByLibrary.simpleMessage("General"),

@@ -73,6 +73,11 @@ class _SettingsPageState extends State<SettingsPage> {
             onChanged: (bool value) => settings.enableAutoCheckUpdate = value,
           ),
           ListTile(
+            title: Text(S.of(context).float_overlay_ratio),
+            subtitle: Text(S.of(context).float_overlay_ratio_subtitle),
+            onTap: showFloatOverlaySetDialog,
+          ),
+          ListTile(
             title: Text(S.of(context).enable_bilibili_search_cookie),
             subtitle:
                 Text(S.of(context).enable_bilibili_search_cookie_subtitle),
@@ -214,6 +219,32 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
       ],
+    );
+  }
+
+  void showFloatOverlaySetDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(S.of(context).float_overlay_ratio),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Slider(
+                  min: 0.1,
+                  max: 1.0,
+                  value: settings.floatOverlayRatio,
+                  onChanged: (value) => settings.floatOverlayRatio = value,
+                ),
+                Text((settings.floatOverlayRatio * 100).toInt().toString() +
+                    '%'),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
