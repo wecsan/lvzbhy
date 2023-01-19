@@ -57,6 +57,7 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
+    _floatOverlayRatio = PrefUtil.getDouble('floatOverlayRatio') ?? 0.8;
   }
 
   void _saveToPref() {
@@ -75,6 +76,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
+    PrefUtil.setDouble('floatOverlayRatio', _floatOverlayRatio);
   }
 
   // Theme settings
@@ -232,6 +234,15 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
   }
 
+  double _floatOverlayRatio = 0.8;
+  double get floatOverlayRatio => _floatOverlayRatio;
+  set floatOverlayRatio(double value) {
+    if (value < 0.1 || value > 1.0) return;
+    _floatOverlayRatio = value;
+    notifyListeners();
+    PrefUtil.setDouble('floatOverlayRatio', _floatOverlayRatio);
+  }
+
   // for backup storage
   List<RoomInfo> _favorites = [];
 
@@ -253,6 +264,7 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = json['danmakuFontBorder'] ?? 0.8;
     _danmakuFontSize = json['danmakuFontSize'] ?? 16;
     _danmakuOpacity = json['danmakuOpcity'] ?? 1.0;
+    _floatOverlayRatio = json['floatOverlayRatio'] ?? 0.8;
     _saveToPref();
   }
 
@@ -274,6 +286,7 @@ class SettingsProvider with ChangeNotifier {
     json['danmakuFontBorder'] = _danmakuFontBorder;
     json['danmakuFontSize'] = _danmakuFontSize;
     json['danmakuOpcity'] = _danmakuOpacity;
+    json['floatOverlayRatio'] = _floatOverlayRatio;
     return json;
   }
 }

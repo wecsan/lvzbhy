@@ -51,6 +51,7 @@ dependencies:
   battery_plus: ^3.0.2
   screen_brightness: ^0.2.2
   volume_controller: ^2.0.6
+  flutter_overlay_window: ^0.3.3
 
   # utils
   provider: ^6.0.3

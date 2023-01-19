@@ -27,12 +27,23 @@ class DanmakuVideoPlayer extends StatefulWidget {
 }
 
 class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
-  late BetterPlayerController controller;
-  late Widget damakuVideoControls;
+  BetterPlayerController? controller;
+  Widget? damakuVideoControls;
+  final GlobalKey<DanmakuVideoControllerState> _contollerViewKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    resumePlayer();
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  void resumePlayer() {
     controller = BetterPlayerController(
       BetterPlayerConfiguration(
         autoPlay: true,
@@ -57,18 +68,28 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
             : null,
       ),
     );
-    controller.setControlsEnabled(false);
+    controller?.setControlsEnabled(false);
     damakuVideoControls = DanmakuVideoController(
-      controller: controller,
+      key: _contollerViewKey,
+      controller: controller!,
       danmakuStream: widget.danmakuStream,
       title: widget.room.title,
     );
+    setState(() {});
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  void stopPlayer() {
+    controller?.dispose();
+    controller = null;
+    _contollerViewKey.currentState?.dispose();
+    setState(() {});
+  }
+
+  void setResolution(String url) {
+    if (controller == null) {
+      resumePlayer();
+      controller?.setResolution(url);
+    }
   }
 
   Widget fullScreenPageBuilder(
@@ -85,7 +106,7 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
           color: Colors.black,
           child: Stack(children: [
             controllerProvider,
-            damakuVideoControls,
+            damakuVideoControls!,
           ]),
         ),
       ),
@@ -94,10 +115,20 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    if (controller == null || damakuVideoControls == null) {
+      return Center(
+        child: IconButton(
+          onPressed: resumePlayer,
+          icon: const Icon(Icons.refresh_rounded),
+          iconSize: 30,
+        ),
+      );
+    }
+
     return Stack(
       children: [
-        BetterPlayer(controller: controller),
-        damakuVideoControls,
+        BetterPlayer(controller: controller!),
+        damakuVideoControls!,
       ],
     );
   }

@@ -1,14 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/generated/l10n.dart';
-import 'package:hot_live/model/liveroom.dart';
+import 'package:hot_live/model/liveroom.dart' hide Platform;
 import 'package:hot_live/pages/live_dlna/live_dlna.dart';
 import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
-import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
@@ -33,7 +35,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   // 控制唯一子组件
   final GlobalKey<DanmakuVideoPlayerState> _videoPlayerKey = GlobalKey();
   final GlobalKey<DanmakuListViewState> _danmakuViewKey = GlobalKey();
-  DanmakuVideoPlayerState get videoPlayer => _videoPlayerKey.currentState!;
+  DanmakuVideoPlayerState? get videoPlayer => _videoPlayerKey.currentState;
 
   @override
   void initState() {
@@ -67,12 +69,42 @@ class _LivePlayPageState extends State<LivePlayPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.room.title),
+        title: Row(children: [
+          CircleAvatar(
+            foregroundImage: (widget.room.avatar == '')
+                ? null
+                : NetworkImage(widget.room.avatar),
+            radius: 13,
+            backgroundColor: Theme.of(context).disabledColor,
+          ),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.room.nick,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+              Text(
+                '${widget.room.platform} / ${widget.room.area}',
+                style:
+                    Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
+              ),
+            ],
+          ),
+        ]),
         actions: [
+          IconButton(
+            tooltip: "小窗播放",
+            onPressed: showFloatingWindow,
+            icon: const Icon(Icons.photo_size_select_small_rounded, size: 22),
+          ),
           IconButton(
             tooltip: S.of(context).dlan_button_info,
             onPressed: showDlnaSelectorDialog,
-            icon: const Icon(CustomIcons.cast, size: 22),
+            icon: const Icon(Icons.cast_rounded, size: 22),
           ),
         ],
       ),
@@ -192,7 +224,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
           resolution.substring(resolution.length - 2, resolution.length),
           style: Theme.of(context).textTheme.labelMedium,
         ),
-        onSelected: (String link) => videoPlayer.controller.setResolution(link),
+        onSelected: videoPlayer?.setResolution,
         itemBuilder: (context) {
           final menuList = <PopupMenuItem<String>>[];
           cdns.forEach((cdn, url) {
@@ -211,36 +243,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const SizedBox(width: 8),
-          CircleAvatar(
-            foregroundImage: (widget.room.avatar == '')
-                ? null
-                : NetworkImage(widget.room.avatar),
-            radius: 13,
-            backgroundColor: Theme.of(context).disabledColor,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.room.nick,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                Text(
-                  widget.room.platform,
-                  style: Theme.of(context)
-                      .textTheme
-                      .caption
-                      ?.copyWith(fontSize: 10),
-                ),
-              ],
-            ),
-          ),
           const IconButton(onPressed: null, icon: Text('')),
           ...resolutionBtns,
         ],
@@ -253,5 +257,37 @@ class _LivePlayPageState extends State<LivePlayPage> {
       context: context,
       builder: (context) => LiveDlnaPage(datasource: datasource),
     );
+  }
+
+  void showFloatingWindow() async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
+    var allowed = await FlutterOverlayWindow.isPermissionGranted();
+    if (!allowed) {
+      allowed = (await FlutterOverlayWindow.requestPermission()) ?? false;
+    }
+    if (!allowed) {
+      return;
+    }
+
+    videoPlayer?.stopPlayer();
+    final width = MediaQuery.of(context).size.width *
+        MediaQuery.of(context).devicePixelRatio *
+        settings.floatOverlayRatio;
+    final height = width / 16 * 9;
+    await FlutterOverlayWindow.showOverlay(
+      width: width.toInt(),
+      height: height.toInt(),
+      enableDrag: true,
+      overlayTitle: '悬浮播放${widget.room.nick}的直播间',
+      overlayContent: widget.room.title,
+      flag: OverlayFlag.defaultFlag,
+      alignment: OverlayAlignment.topRight,
+      visibility: NotificationVisibility.visibilityPrivate,
+      positionGravity: PositionGravity.auto,
+    );
+    FlutterOverlayWindow.shareData({"url": datasource});
   }
 }
