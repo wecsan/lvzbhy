@@ -90,7 +90,20 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     if (controller == null) {
       resumePlayer();
     }
-    controller?.setResolution(url);
+    controller?.setupDataSource(BetterPlayerDataSource(
+      BetterPlayerDataSourceType.network,
+      url,
+      liveStream: true,
+      notificationConfiguration: widget.allowBackgroundPlay
+          ? BetterPlayerNotificationConfiguration(
+              showNotification: true,
+              title: widget.room.title,
+              author: widget.room.nick,
+              imageUrl: widget.room.cover,
+              activityName: "MainActivity",
+            )
+          : null,
+    ));
   }
 
   Widget fullScreenPageBuilder(

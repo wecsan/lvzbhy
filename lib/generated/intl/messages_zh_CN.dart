@@ -74,7 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_background_play_subtitle":
             MessageLookupByLibrary.simpleMessage("当暂时切出APP时，允许后台播放"),
         "enable_bilibili_search_cookie":
-            MessageLookupByLibrary.simpleMessage("启用Bilibili搜索Cookie"),
+            MessageLookupByLibrary.simpleMessage("启用Bilibili搜索"),
         "enable_bilibili_search_cookie_subtitle":
             MessageLookupByLibrary.simpleMessage("设置Bilibili搜索所需Cookie"),
         "enable_dense_favorites_mode":

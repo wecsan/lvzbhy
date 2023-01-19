@@ -73,7 +73,7 @@
     "prefer_resolution_subtitle": "当进入直播播放页，首选的视频清晰度",
 
     "bilibili_cookie": "Bilibili Cookie",
-    "enable_bilibili_search_cookie": "启用Bilibili搜索Cookie",
+    "enable_bilibili_search_cookie": "启用Bilibili搜索",
     "enable_bilibili_search_cookie_subtitle": "设置Bilibili搜索所需Cookie",
 
     "check_update": "检查更新",
