@@ -214,7 +214,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
           speed: settings.danmakuSpeed.toInt(),
           controller: barrageWallController,
           massiveMode: true,
-          maxBulletHeight: settings.danmakuFontSize + 4,
+          maxBulletHeight: settings.danmakuFontSize * 1.25,
           child: Container(),
         ),
       ),
