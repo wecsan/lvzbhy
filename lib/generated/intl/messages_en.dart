@@ -104,7 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "experiment": MessageLookupByLibrary.simpleMessage("Experiment"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("Favorites"),
         "float_overlay_ratio":
-            MessageLookupByLibrary.simpleMessage("float overlay ratio"),
+            MessageLookupByLibrary.simpleMessage("Float Video Ratio"),
         "float_overlay_ratio_subtitle": MessageLookupByLibrary.simpleMessage(
             "When using float window, ratio control the size"),
         "follow": MessageLookupByLibrary.simpleMessage("Follow"),
@@ -151,6 +151,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Switch platform"),
         "unfollow": MessageLookupByLibrary.simpleMessage("Unfollow"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
+        "video": MessageLookupByLibrary.simpleMessage("Video"),
         "what_is_new": MessageLookupByLibrary.simpleMessage("New Features")
       };
 }

@@ -38,6 +38,7 @@
     "settings_title": "设置",
     "general": "通用",
     "about": "关于",
+    "video": "视频",
     "custom": "定制",
     "experiment": "实验",
 
@@ -66,7 +67,7 @@
     "enable_auto_check_update_subtitle": "在每次进入软件时，自动检查更新",
 
     "float_overlay_ratio": "悬浮窗尺寸",
-    "float_overlay_ratio_subtitle": "小窗播放时，悬浮窗横向相对比例",
+    "float_overlay_ratio_subtitle": "视频小窗播放时，悬浮窗横向相对比例",
 
     "prefer_resolution": "首选清晰度",
     "prefer_resolution_subtitle": "当进入直播播放页，首选的视频清晰度",

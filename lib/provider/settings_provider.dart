@@ -60,6 +60,7 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
     _floatOverlayRatio = PrefUtil.getDouble('floatOverlayRatio') ?? 0.8;
+    _preferResolutionIndex = PrefUtil.getInt('preferResolutionIndex') ?? 0;
   }
 
   void _saveToPref() {
@@ -80,6 +81,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
     PrefUtil.setDouble('floatOverlayRatio', _floatOverlayRatio);
+    PrefUtil.setInt('preferResolutionIndex', _preferResolutionIndex);
   }
 
   // Theme settings
@@ -262,7 +264,7 @@ class SettingsProvider with ChangeNotifier {
     if (index != -1) {
       _preferResolutionIndex = index;
       notifyListeners();
-      PrefUtil.setDouble('preferResolutionIndex', _floatOverlayRatio);
+      PrefUtil.setInt('preferResolutionIndex', _preferResolutionIndex);
     }
   }
 
@@ -289,6 +291,7 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontSize = json['danmakuFontSize'] ?? 16;
     _danmakuOpacity = json['danmakuOpcity'] ?? 1.0;
     _floatOverlayRatio = json['floatOverlayRatio'] ?? 0.8;
+    _preferResolutionIndex = json['preferResolutionIndex'] ?? 0;
     _saveToPref();
   }
 
@@ -312,6 +315,7 @@ class SettingsProvider with ChangeNotifier {
     json['danmakuFontSize'] = _danmakuFontSize;
     json['danmakuOpcity'] = _danmakuOpacity;
     json['floatOverlayRatio'] = _floatOverlayRatio;
+    json['preferResolutionIndex'] = _preferResolutionIndex;
     return json;
   }
 }

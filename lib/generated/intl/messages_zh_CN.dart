@@ -92,7 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "favorites_title": MessageLookupByLibrary.simpleMessage("关注"),
         "float_overlay_ratio": MessageLookupByLibrary.simpleMessage("悬浮窗尺寸"),
         "float_overlay_ratio_subtitle":
-            MessageLookupByLibrary.simpleMessage("小窗播放时，悬浮窗横向相对比例"),
+            MessageLookupByLibrary.simpleMessage("视频小窗播放时，悬浮窗横向相对比例"),
         "follow": MessageLookupByLibrary.simpleMessage("关注"),
         "followed": MessageLookupByLibrary.simpleMessage("已关注"),
         "general": MessageLookupByLibrary.simpleMessage("通用"),
@@ -127,6 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "switch_platform": MessageLookupByLibrary.simpleMessage("切换直播平台"),
         "unfollow": MessageLookupByLibrary.simpleMessage("取消关注"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
+        "video": MessageLookupByLibrary.simpleMessage("视频"),
         "what_is_new": MessageLookupByLibrary.simpleMessage("最新特性")
       };
 }

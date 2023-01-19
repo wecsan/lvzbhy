@@ -371,6 +371,16 @@ class S {
     );
   }
 
+  /// `Video`
+  String get video {
+    return Intl.message(
+      'Video',
+      name: 'video',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Custom`
   String get custom {
     return Intl.message(
@@ -551,10 +561,10 @@ class S {
     );
   }
 
-  /// `float overlay ratio`
+  /// `Float Video Ratio`
   String get float_overlay_ratio {
     return Intl.message(
-      'float overlay ratio',
+      'Float Video Ratio',
       name: 'float_overlay_ratio',
       desc: '',
       args: [],

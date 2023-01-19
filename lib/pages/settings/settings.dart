@@ -43,14 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: Text(S.of(context).change_language_subtitle),
             onTap: showLanguageSelecterDialog,
           ),
-          SectionTitle(title: S.of(context).custom),
-          CupertinoSwitchListTile(
-            title: Text(S.of(context).enable_dense_favorites_mode),
-            subtitle: Text(S.of(context).enable_dense_favorites_mode_subtitle),
-            value: settings.enableDenseFavorites,
-            activeColor: Theme.of(context).colorScheme.primary,
-            onChanged: (bool value) => settings.enableDenseFavorites = value,
-          ),
+          SectionTitle(title: S.of(context).video),
           CupertinoSwitchListTile(
             title: Text(S.of(context).enable_background_play),
             subtitle: Text(S.of(context).enable_background_play_subtitle),
@@ -72,22 +65,30 @@ class _SettingsPageState extends State<SettingsPage> {
             activeColor: Theme.of(context).colorScheme.primary,
             onChanged: (bool value) => settings.enableFullScreenDefault = value,
           ),
-          CupertinoSwitchListTile(
-            title: Text(S.of(context).enable_auto_check_update),
-            subtitle: Text(S.of(context).enable_auto_check_update_subtitle),
-            value: settings.enableAutoCheckUpdate,
-            activeColor: Theme.of(context).colorScheme.primary,
-            onChanged: (bool value) => settings.enableAutoCheckUpdate = value,
+          ListTile(
+            title: Text(S.of(context).prefer_resolution),
+            subtitle: Text(S.of(context).prefer_resolution_subtitle),
+            onTap: showPreferResolutionSelectorDialog,
           ),
           ListTile(
             title: Text(S.of(context).float_overlay_ratio),
             subtitle: Text(S.of(context).float_overlay_ratio_subtitle),
             onTap: showFloatOverlaySetDialog,
           ),
-          ListTile(
-            title: Text(S.of(context).prefer_resolution),
-            subtitle: Text(S.of(context).prefer_resolution_subtitle),
-            onTap: showPreferResolutionSelectorDialog,
+          SectionTitle(title: S.of(context).custom),
+          CupertinoSwitchListTile(
+            title: Text(S.of(context).enable_dense_favorites_mode),
+            subtitle: Text(S.of(context).enable_dense_favorites_mode_subtitle),
+            value: settings.enableDenseFavorites,
+            activeColor: Theme.of(context).colorScheme.primary,
+            onChanged: (bool value) => settings.enableDenseFavorites = value,
+          ),
+          CupertinoSwitchListTile(
+            title: Text(S.of(context).enable_auto_check_update),
+            subtitle: Text(S.of(context).enable_auto_check_update_subtitle),
+            value: settings.enableAutoCheckUpdate,
+            activeColor: Theme.of(context).colorScheme.primary,
+            onChanged: (bool value) => settings.enableAutoCheckUpdate = value,
           ),
           ListTile(
             title: Text(S.of(context).enable_bilibili_search_cookie),

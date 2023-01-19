@@ -38,6 +38,7 @@
     "settings_title": "Settings",
     "general": "General",
     "about": "About",
+    "video": "Video",
     "custom": "Custom",
     "experiment": "Experiment",
 
@@ -65,7 +66,7 @@
     "enable_auto_check_update": "Auto Check Update",
     "enable_auto_check_update_subtitle": "When enter into app, auto check update",
 
-    "float_overlay_ratio": "float overlay ratio",
+    "float_overlay_ratio": "Float Video Ratio",
     "float_overlay_ratio_subtitle": "When using float window, ratio control the size",
 
     "prefer_resolution": "Resolution Preference",
