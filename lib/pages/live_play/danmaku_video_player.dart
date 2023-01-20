@@ -29,7 +29,9 @@ class DanmakuVideoPlayer extends StatefulWidget {
 class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   BetterPlayerController? controller;
   Widget? danmakuVideoControl;
+  Widget? danmakuVideoControlFullScreen;
   final GlobalKey<DanmakuVideoControllerState> _danmakuNormal = GlobalKey();
+  final GlobalKey<DanmakuVideoControllerState> _danmakuFullScreen = GlobalKey();
 
   @override
   void initState() {
@@ -72,6 +74,12 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     controller?.setControlsEnabled(false);
     danmakuVideoControl = DanmakuVideoController(
       key: _danmakuNormal,
+      controller: controller!,
+      danmakuStream: widget.danmakuStream,
+      title: widget.room.title,
+    );
+    danmakuVideoControlFullScreen = DanmakuVideoController(
+      key: _danmakuFullScreen,
       controller: controller!,
       danmakuStream: widget.danmakuStream,
       title: widget.room.title,
@@ -119,7 +127,7 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
           color: Colors.black,
           child: Stack(children: [
             controllerProvider,
-            danmakuVideoControl!,
+            danmakuVideoControlFullScreen!,
           ]),
         ),
       ),
