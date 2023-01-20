@@ -28,8 +28,8 @@ class DanmakuVideoPlayer extends StatefulWidget {
 
 class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   BetterPlayerController? controller;
-  Widget? damakuVideoControls;
-  final GlobalKey<DanmakuVideoControllerState> _contollerViewKey = GlobalKey();
+  final GlobalKey<DanmakuVideoControllerState> _danmakuNormal = GlobalKey();
+  final GlobalKey<DanmakuVideoControllerState> _danmakuFullscreen = GlobalKey();
 
   @override
   void initState() {
@@ -70,19 +70,12 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
       ),
     );
     controller?.setControlsEnabled(false);
-    damakuVideoControls = DanmakuVideoController(
-      key: _contollerViewKey,
-      controller: controller!,
-      danmakuStream: widget.danmakuStream,
-      title: widget.room.title,
-    );
     setState(() {});
   }
 
   void stopPlayer() {
     controller?.dispose();
     controller = null;
-    _contollerViewKey.currentState?.dispose();
     setState(() {});
   }
 
@@ -120,7 +113,12 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
           color: Colors.black,
           child: Stack(children: [
             controllerProvider,
-            damakuVideoControls!,
+            DanmakuVideoController(
+              key: _danmakuFullscreen,
+              controller: controller!,
+              danmakuStream: widget.danmakuStream,
+              title: widget.room.title,
+            ),
           ]),
         ),
       ),
@@ -129,7 +127,7 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null || damakuVideoControls == null) {
+    if (controller == null) {
       return Center(
         child: IconButton(
           onPressed: resumePlayer,
@@ -142,7 +140,12 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     return Stack(
       children: [
         BetterPlayer(controller: controller!),
-        damakuVideoControls!,
+        DanmakuVideoController(
+          key: _danmakuNormal,
+          controller: controller!,
+          danmakuStream: widget.danmakuStream,
+          title: widget.room.title,
+        ),
       ],
     );
   }

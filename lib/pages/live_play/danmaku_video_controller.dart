@@ -82,8 +82,6 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   bool _hideStuff = false;
   bool _lockStuff = false;
   bool _displaySetting = false;
-
-  Timer? _initTimer;
   Timer? _hideTimer;
 
   // 滑动调节控制
@@ -97,9 +95,9 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   ScreenBrightness brightnessController = ScreenBrightness();
 
   BetterPlayerController? _controller;
-
-  final BarrageWallController barrageWallController = BarrageWallController();
   late final SettingsProvider settings = Provider.of<SettingsProvider>(context);
+
+  final BarrageWallController _barrageWallController = BarrageWallController();
 
   // We know that _controller is set in didChangeDependencies
   BetterPlayerController get controller => _controller!;
@@ -111,19 +109,21 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     _controller = widget.controller;
     _controller?.addEventsListener(eventListener);
     widget.danmakuStream.listen((info) {
-      barrageWallController
-          .send([Bullet(child: DanmakuText(message: info.msg))]);
+      try {
+        _barrageWallController
+            .send([Bullet(child: DanmakuText(message: info.msg))]);
+      } catch (e) {
+        return;
+      }
     });
-    _initTimer = Timer(const Duration(seconds: 3), () {
-      setState(() => _hideStuff = true);
-    });
+    _cancelAndRestartHideTimer();
   }
 
   @override
   void dispose() {
+    _barrageWallController.dispose();
     _controller?.removeEventsListener(eventListener);
     _hideTimer?.cancel();
-    _initTimer?.cancel();
     super.dispose();
   }
 
@@ -152,10 +152,8 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     if (_displaySetting) {
       return GestureDetector(
         onTap: () {
-          setState(() {
-            _hideStuff = false;
-            _displaySetting = false;
-          });
+          _cancelAndRestartHideTimer();
+          setState(() => _displaySetting = false);
         },
         child: Container(
           color: Colors.transparent,
@@ -169,24 +167,22 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
       ws.add(_buildDanmakuView());
     }
 
-    if (_lockStuff) {
-      ws.add(_buidLockStateButton());
-    } else {
-      ws.add(_buildHitArea());
+    ws.add(_buildHitArea());
+    ws.add(_buidLockStateButton());
+    if (!_lockStuff) {
       ws.add(_buildActionBar());
-      ws.add(_buidLockStateButton());
       ws.add(_buildBottomBar());
     }
 
-    return MouseRegion(
-      onHover: (_) => _cancelAndRestartHideTimer(),
+    return GestureDetector(
+      onTap: _cancelAndRestartHideTimer,
       child: Stack(children: ws),
     );
   }
 
   Widget _buidLockStateButton() {
     return AnimatedOpacity(
-      opacity: _hideStuff || !controller.isFullScreen ? 0.0 : 0.9,
+      opacity: controller.isFullScreen && !_hideStuff ? 0.9 : 0.0,
       duration: const Duration(milliseconds: 300),
       child: Align(
         alignment: Alignment.centerRight,
@@ -195,6 +191,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
           child: IconButton(
             iconSize: 28,
             onPressed: () {
+              _cancelAndRestartHideTimer();
               setState(() => _lockStuff = !_lockStuff);
             },
             icon:
@@ -214,7 +211,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
         settings.danmakuArea;
 
     return Positioned(
-      top: 4,
+      top: 0,
       width: MediaQuery.of(context).size.width,
       height: danmukuHeight,
       child: AnimatedOpacity(
@@ -224,7 +221,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
           width: MediaQuery.of(context).size.width,
           height: danmukuHeight,
           speed: settings.danmakuSpeed.toInt(),
-          controller: barrageWallController,
+          controller: _barrageWallController,
           massiveMode: true,
           maxBulletHeight: settings.danmakuFontSize * 1.25,
           child: Container(),
@@ -236,7 +233,6 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   // Center hit and controller widgets
   Widget _buildHitArea() {
     return GestureDetector(
-      onTap: _cancelAndRestartHideTimer,
       onDoubleTap: controller.isFullScreen ? _playPause : _toggleFullScreen,
       onVerticalDragStart: _onVerticalDragStart,
       onVerticalDragUpdate: _onVerticalDragUpdate,
