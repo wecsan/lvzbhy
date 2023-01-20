@@ -79,7 +79,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   final barHeight = 56.0;
   final marginSize = 5.0;
 
-  bool _hideStuff = true;
+  bool _hideStuff = false;
   bool _lockStuff = false;
   bool _displaySetting = false;
 
@@ -109,21 +109,28 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   void initState() {
     super.initState();
     _controller = widget.controller;
-    _initTimer = Timer(const Duration(milliseconds: 200), () {
-      setState(() => _hideStuff = true);
-    });
-
+    _controller?.addEventsListener(eventListener);
     widget.danmakuStream.listen((info) {
       barrageWallController
           .send([Bullet(child: DanmakuText(message: info.msg))]);
+    });
+    _initTimer = Timer(const Duration(seconds: 3), () {
+      setState(() => _hideStuff = true);
     });
   }
 
   @override
   void dispose() {
+    _controller?.removeEventsListener(eventListener);
     _hideTimer?.cancel();
     _initTimer?.cancel();
     super.dispose();
+  }
+
+  dynamic eventListener(BetterPlayerEvent event) {
+    if (event.betterPlayerEventType == BetterPlayerEventType.initialized) {
+      setState(() {});
+    }
   }
 
   void setBoxFit(int index) {
@@ -161,14 +168,13 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     if (!settings.hideDanmaku) {
       ws.add(_buildDanmakuView());
     }
+
     if (_lockStuff) {
       ws.add(_buidLockStateButton());
     } else {
       ws.add(_buildHitArea());
-      if (controller.isFullScreen) {
-        ws.add(_buidLockStateButton());
-        ws.add(_buildActionBar());
-      }
+      ws.add(_buildActionBar());
+      ws.add(_buidLockStateButton());
       ws.add(_buildBottomBar());
     }
 
@@ -180,7 +186,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   Widget _buidLockStateButton() {
     return AnimatedOpacity(
-      opacity: _hideStuff ? 0.0 : 0.9,
+      opacity: _hideStuff || !controller.isFullScreen ? 0.0 : 0.9,
       duration: const Duration(milliseconds: 300),
       child: Align(
         alignment: Alignment.centerRight,
@@ -231,7 +237,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   Widget _buildHitArea() {
     return GestureDetector(
       onTap: _cancelAndRestartHideTimer,
-      onDoubleTap: _playPause,
+      onDoubleTap: controller.isFullScreen ? _playPause : _toggleFullScreen,
       onVerticalDragStart: _onVerticalDragStart,
       onVerticalDragUpdate: _onVerticalDragUpdate,
       onVerticalDragEnd: _onVerticalDragEnd,
@@ -470,6 +476,31 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   // Action bar widgets
   Widget _buildActionBar() {
+    List<Widget> rows = [];
+    if (controller.isFullScreen) {
+      rows = [
+        _buildBackButton(),
+        Expanded(
+          child: Text(
+            widget.title,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+        _buildBatteryInfo(),
+        _buildTimeInfo()
+      ];
+    } else {
+      rows.add(Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            widget.title,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ));
+    }
+
     return Positioned(
       top: 0,
       height: barHeight,
@@ -485,19 +516,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
                 end: Alignment.topCenter,
                 colors: [Color.fromRGBO(0, 0, 0, 0.02), Colors.black]),
           ),
-          child: Row(
-            children: <Widget>[
-              _buildBackButton(),
-              Expanded(
-                child: Text(
-                  widget.title,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-              _buildBatteryInfo(),
-              _buildTimeInfo(),
-            ],
-          ),
+          child: Row(children: rows),
         ),
       ),
     );
@@ -663,18 +682,20 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   }
 
   Widget _buildSettingButton() {
-    return GestureDetector(
-      onTap: () {
-        setState(() => _displaySetting = !_displaySetting);
-      },
-      child: Container(
-        height: barHeight,
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(right: 12.0),
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: const Icon(
-          CustomIcons.danmaku_setting,
-          color: Colors.white,
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          setState(() => _displaySetting = !_displaySetting);
+        },
+        child: Container(
+          height: barHeight,
+          alignment: Alignment.center,
+          margin: const EdgeInsets.only(right: 12.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+          child: const Icon(
+            CustomIcons.danmaku_setting,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -700,6 +721,34 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
   }
 
   // Callback functions
+  void _cancelAndRestartHideTimer() {
+    _hideTimer?.cancel();
+    _hideTimer = Timer(const Duration(seconds: 2), () {
+      setState(() => _hideStuff = true);
+    });
+    setState(() => _hideStuff = false);
+  }
+
+  void _playPause() {
+    if (latestValue.isPlaying) {
+      _hideTimer?.cancel();
+      setState(() => _hideStuff = false);
+      controller.pause();
+    } else {
+      _cancelAndRestartHideTimer();
+      controller.play();
+    }
+  }
+
+  void _toggleFullScreen() {
+    setState(() {
+      _hideStuff = true;
+      _lockStuff = false;
+    });
+    controller.toggleFullScreen();
+  }
+
+  // Gesture functions
   void _onVerticalDragStart(detills) async {
     double clientW = MediaQuery.of(context).size.width;
     setState(() {
@@ -755,32 +804,5 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   void _onVerticalDragEnd(detills) {
     setState(() => _dragingBV = false);
-  }
-
-  void _cancelAndRestartHideTimer() {
-    _hideTimer?.cancel();
-    _hideTimer = Timer(const Duration(seconds: 2), () {
-      setState(() => _hideStuff = true);
-    });
-    setState(() => _hideStuff = false);
-  }
-
-  void _playPause() {
-    if (latestValue.isPlaying) {
-      _hideTimer?.cancel();
-      setState(() => _hideStuff = false);
-      controller.pause();
-    } else {
-      _cancelAndRestartHideTimer();
-      controller.play();
-    }
-  }
-
-  void _toggleFullScreen() {
-    setState(() {
-      _hideStuff = true;
-      _lockStuff = false;
-    });
-    controller.toggleFullScreen();
   }
 }
