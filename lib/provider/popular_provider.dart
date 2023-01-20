@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/api/liveapi.dart';
+import 'package:hot_live/provider/settings_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PopularProvider with ChangeNotifier {
-  PopularProvider() {
+  final BuildContext context;
+  late SettingsProvider settings;
+
+  PopularProvider(this.context) {
+    settings = Provider.of<SettingsProvider>(context);
+    platform = settings.preferPlatform;
     initRefresh();
   }
 
   final RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
-  final List<String> platforms = [
-    'bilibili',
-    'douyu',
-    'huya',
-  ];
+  final List<String> platforms = SettingsProvider.platforms;
   String platform = 'bilibili';
   Map<String, List<RoomInfo>> roomsMap = {
     'bilibili': [],

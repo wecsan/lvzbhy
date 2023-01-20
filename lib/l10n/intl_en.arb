@@ -71,6 +71,9 @@
     "float_overlay_ratio": "Float Video Ratio",
     "float_overlay_ratio_subtitle": "When using float window, ratio control the size",
 
+    "prefer_platform": "Platform Preference",
+    "prefer_platform_subtitle": "When enter popular/areas, first platform choice",
+
     "prefer_resolution": "Resolution Preference",
     "prefer_resolution_subtitle": "When enter live play, first resolution choice",
 

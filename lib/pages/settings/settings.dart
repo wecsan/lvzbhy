@@ -91,6 +91,11 @@ class _SettingsPageState extends State<SettingsPage> {
             onChanged: (bool value) => settings.enableAutoCheckUpdate = value,
           ),
           ListTile(
+            title: Text(S.of(context).prefer_platform),
+            subtitle: Text(S.of(context).prefer_platform_subtitle),
+            onTap: showPreferPlatformSelectorDialog,
+          ),
+          ListTile(
             title: Text(S.of(context).enable_bilibili_search_cookie),
             subtitle:
                 Text(S.of(context).enable_bilibili_search_cookie_subtitle),
@@ -197,6 +202,29 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(name),
               onChanged: (value) {
                 settings.changePreferResolution(value!);
+                Navigator.of(context).pop();
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  void showPreferPlatformSelectorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(S.of(context).prefer_resolution),
+          children: SettingsProvider.platforms.map<Widget>((name) {
+            return RadioListTile<String>(
+              activeColor: Theme.of(context).colorScheme.primary,
+              groupValue: settings.preferPlatform,
+              value: name,
+              title: Text(name.toUpperCase()),
+              onChanged: (value) {
+                settings.changePreferPlatform(value!);
                 Navigator.of(context).pop();
               },
             );

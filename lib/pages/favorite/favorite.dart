@@ -24,9 +24,6 @@ class _FavoritePageState extends State<FavoritePage> {
   late FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
   late SettingsProvider settings = Provider.of<SettingsProvider>(context);
 
-  List<RoomInfo> get roomList =>
-      settings.hideOfflineRoom ? favorite.onlineRoomList : favorite.roomsList;
-
   void onLongPress(BuildContext context, RoomInfo room) {
     showDialog(
       context: context,
@@ -105,37 +102,38 @@ class _FavoritePageState extends State<FavoritePage> {
         header: const WaterDropHeader(),
         controller: favorite.refreshController,
         onRefresh: favorite.onRefresh,
-        child: roomList.isNotEmpty
+        child: favorite.roomList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
                 controller: ScrollController(),
                 crossAxisCount: crossAxisCount,
-                itemCount: roomList.length,
+                itemCount: favorite.roomList.length,
                 itemBuilder: (context, index) => RoomCard(
-                  room: roomList[index],
+                  room: favorite.roomList[index],
                   dense: settings.enableDenseFavorites,
-                  onLongPress: () => onLongPress(context, roomList[index]),
+                  onLongPress: () =>
+                      onLongPress(context, favorite.roomList[index]),
                 ),
               )
             : EmptyView(
                 icon: Icons.favorite_rounded,
-                title: settings.hideOfflineRoom
+                title: favorite.hideOffline
                     ? S.of(context).empty_favorite_online_title
                     : S.of(context).empty_favorite_title,
-                subtitle: settings.hideOfflineRoom
+                subtitle: favorite.hideOffline
                     ? S.of(context).empty_favorite_online_subtitle
                     : S.of(context).empty_favorite_subtitle,
               ),
       ),
-      floatingActionButton: settings.hideOfflineRoom
+      floatingActionButton: favorite.hideOffline
           ? FloatingActionButton(
               tooltip: S.of(context).show_offline_rooms,
-              onPressed: () => settings.hideOfflineRoom = false,
+              onPressed: favorite.toggleHideOffline,
               child: const Icon(Icons.add_circle_outline_rounded),
             )
           : FloatingActionButton(
               tooltip: S.of(context).hide_offline_rooms,
-              onPressed: () => settings.hideOfflineRoom = true,
+              onPressed: favorite.toggleHideOffline,
               child: const Icon(Icons.remove_circle_outline_rounded),
             ),
     );

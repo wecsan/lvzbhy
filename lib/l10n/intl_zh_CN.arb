@@ -71,6 +71,9 @@
     "float_overlay_ratio": "悬浮窗尺寸",
     "float_overlay_ratio_subtitle": "视频小窗播放时，悬浮窗横向相对比例",
 
+    "prefer_platform": "首选直播平台",
+    "prefer_platform_subtitle": "当进入热门/分区，首选的直播平台",
+
     "prefer_resolution": "首选清晰度",
     "prefer_resolution_subtitle": "当进入直播播放页，首选的视频清晰度",
 

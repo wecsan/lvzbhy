@@ -113,6 +113,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline": MessageLookupByLibrary.simpleMessage("未直播"),
         "only_living": MessageLookupByLibrary.simpleMessage("只搜索直播中"),
         "popular_title": MessageLookupByLibrary.simpleMessage("热门"),
+        "prefer_platform": MessageLookupByLibrary.simpleMessage("首选直播平台"),
+        "prefer_platform_subtitle":
+            MessageLookupByLibrary.simpleMessage("当进入热门/分区，首选的直播平台"),
         "prefer_resolution": MessageLookupByLibrary.simpleMessage("首选清晰度"),
         "prefer_resolution_subtitle":
             MessageLookupByLibrary.simpleMessage("当进入直播播放页，首选的视频清晰度"),

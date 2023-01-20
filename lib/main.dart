@@ -22,15 +22,15 @@ void main() async {
       lazy: false,
     ),
     ChangeNotifierProvider(
-      create: (_) => FavoriteProvider(),
+      create: (context) => FavoriteProvider(context),
       lazy: false,
     ),
     ChangeNotifierProvider(
-      create: (_) => PopularProvider(),
+      create: (context) => PopularProvider(context),
       lazy: false,
     ),
     ChangeNotifierProvider(
-      create: (_) => AreasProvider(),
+      create: (context) => AreasProvider(context),
       lazy: false,
     ),
   ], child: const MyApp()));

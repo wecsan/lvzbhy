@@ -132,6 +132,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
         "only_living": MessageLookupByLibrary.simpleMessage("Only Living"),
         "popular_title": MessageLookupByLibrary.simpleMessage("Popular"),
+        "prefer_platform":
+            MessageLookupByLibrary.simpleMessage("Platform Preference"),
+        "prefer_platform_subtitle": MessageLookupByLibrary.simpleMessage(
+            "When enter popular/areas, first platform choice"),
         "prefer_resolution":
             MessageLookupByLibrary.simpleMessage("Resolution Preference"),
         "prefer_resolution_subtitle": MessageLookupByLibrary.simpleMessage(

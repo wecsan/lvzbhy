@@ -601,6 +601,26 @@ class S {
     );
   }
 
+  /// `Platform Preference`
+  String get prefer_platform {
+    return Intl.message(
+      'Platform Preference',
+      name: 'prefer_platform',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When enter popular/areas, first platform choice`
+  String get prefer_platform_subtitle {
+    return Intl.message(
+      'When enter popular/areas, first platform choice',
+      name: 'prefer_platform_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Resolution Preference`
   String get prefer_resolution {
     return Intl.message(

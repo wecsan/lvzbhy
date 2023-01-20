@@ -60,7 +60,9 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
     _floatOverlayRatio = PrefUtil.getDouble('floatOverlayRatio') ?? 0.8;
-    _preferResolutionIndex = PrefUtil.getInt('preferResolutionIndex') ?? 0;
+    _preferResolution =
+        PrefUtil.getString('preferResolution') ?? resolutions[0];
+    _preferPlatform = PrefUtil.getString('preferPlatform') ?? platforms[0];
   }
 
   void _saveToPref() {
@@ -81,7 +83,8 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
     PrefUtil.setDouble('floatOverlayRatio', _floatOverlayRatio);
-    PrefUtil.setInt('preferResolutionIndex', _preferResolutionIndex);
+    PrefUtil.setString('preferResolution', _preferResolution);
+    PrefUtil.setString('preferPlatform', _preferPlatform);
   }
 
   // Theme settings
@@ -257,14 +260,24 @@ class SettingsProvider with ChangeNotifier {
   }
 
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
-  String get preferResolution => resolutions[_preferResolutionIndex];
-  int _preferResolutionIndex = 0;
+  String _preferResolution = resolutions[0];
+  String get preferResolution => _preferResolution;
   void changePreferResolution(String name) {
-    int index = resolutions.indexWhere((e) => e == name);
-    if (index != -1) {
-      _preferResolutionIndex = index;
+    if (resolutions.indexWhere((e) => e == name) != -1) {
+      _preferResolution = name;
       notifyListeners();
-      PrefUtil.setInt('preferResolutionIndex', _preferResolutionIndex);
+      PrefUtil.setString('preferResolution', _preferResolution);
+    }
+  }
+
+  static const List<String> platforms = ['bilibili', 'douyu', 'huya'];
+  String _preferPlatform = platforms[0];
+  String get preferPlatform => _preferPlatform;
+  void changePreferPlatform(String name) {
+    if (platforms.indexWhere((e) => e == name) != -1) {
+      _preferPlatform = name;
+      notifyListeners();
+      PrefUtil.setString('preferPlatform', _preferPlatform);
     }
   }
 
@@ -291,7 +304,8 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontSize = json['danmakuFontSize'] ?? 16;
     _danmakuOpacity = json['danmakuOpcity'] ?? 1.0;
     _floatOverlayRatio = json['floatOverlayRatio'] ?? 0.8;
-    _preferResolutionIndex = json['preferResolutionIndex'] ?? 0;
+    _preferResolution = json['preferResolution'] ?? resolutions[0];
+    _preferPlatform = json['preferPlatform'] ?? platforms[0];
     _saveToPref();
   }
 
@@ -315,7 +329,8 @@ class SettingsProvider with ChangeNotifier {
     json['danmakuFontSize'] = _danmakuFontSize;
     json['danmakuOpcity'] = _danmakuOpacity;
     json['floatOverlayRatio'] = _floatOverlayRatio;
-    json['preferResolutionIndex'] = _preferResolutionIndex;
+    json['preferResolution'] = _preferResolution;
+    json['preferPlatform'] = _preferPlatform;
     return json;
   }
 }

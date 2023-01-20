@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/api/liveapi.dart';
+import 'package:hot_live/provider/settings_provider.dart';
+import 'package:provider/provider.dart';
 
 class AreasProvider with ChangeNotifier {
-  AreasProvider() {
+  final BuildContext context;
+  late SettingsProvider settings;
+
+  AreasProvider(this.context) {
+    settings = Provider.of<SettingsProvider>(context);
+    platform = settings.preferPlatform;
     onLoading();
   }
 
-  final List<String> platforms = [
-    'bilibili',
-    'douyu',
-    'huya',
-  ];
+  final List<String> platforms = SettingsProvider.platforms;
   String platform = 'bilibili';
   Map<String, List<List<AreaInfo>>> areaMap = {
     'bilibili': [],
