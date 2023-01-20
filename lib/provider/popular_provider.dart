@@ -72,6 +72,7 @@ class PopularProvider with ChangeNotifier {
 
   void setPlatform(String name) {
     platform = name;
+    onRefresh();
     notifyListeners();
   }
 }
