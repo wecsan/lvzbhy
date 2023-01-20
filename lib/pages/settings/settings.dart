@@ -100,7 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
           const CheckUpdateListTile(),
           ListTile(
             title: Text(S.of(context).what_is_new),
-            leading: const Icon(Icons.newspaper_rounded, size: 28),
+            leading: const Icon(Icons.fiber_new_rounded, size: 30),
             onTap: showNewFeaturesDialog,
           ),
           ListTile(
