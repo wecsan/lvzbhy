@@ -119,8 +119,12 @@ class _FavoritePageState extends State<FavoritePage> {
               )
             : EmptyView(
                 icon: Icons.favorite_rounded,
-                title: S.of(context).empty_favorite_title,
-                subtitle: S.of(context).empty_favorite_subtitle,
+                title: settings.hideOfflineRoom
+                    ? S.of(context).empty_favorite_online_title
+                    : S.of(context).empty_favorite_title,
+                subtitle: settings.hideOfflineRoom
+                    ? S.of(context).empty_favorite_online_subtitle
+                    : S.of(context).empty_favorite_subtitle,
               ),
       ),
       floatingActionButton: settings.hideOfflineRoom

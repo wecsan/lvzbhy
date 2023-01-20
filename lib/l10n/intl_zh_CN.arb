@@ -15,6 +15,8 @@
     "favorites_title": "关注",
     "empty_favorite_title": "无关注直播",
     "empty_favorite_subtitle": "请先关注其他直播间",
+    "empty_favorite_online_title": "无在线直播",
+    "empty_favorite_online_subtitle": "请先关注其他直播间",
     "show_offline_rooms": "显示未直播的直播间",
     "hide_offline_rooms": "隐藏未直播的直播间",
     "room_info_content": "房间号: {roomid}\n平台: {platform}\n昵称: {nickname}\n标题: {title}\n状态: {livestatus}",

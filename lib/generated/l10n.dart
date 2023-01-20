@@ -180,6 +180,26 @@ class S {
     );
   }
 
+  /// `No Online Room`
+  String get empty_favorite_online_title {
+    return Intl.message(
+      'No Online Room',
+      name: 'empty_favorite_online_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please follow live rooms first`
+  String get empty_favorite_online_subtitle {
+    return Intl.message(
+      'Please follow live rooms first',
+      name: 'empty_favorite_online_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Show Offline Rooms`
   String get show_offline_rooms {
     return Intl.message(

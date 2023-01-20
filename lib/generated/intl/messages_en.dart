@@ -61,6 +61,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Click the button below\nto switch platform"),
         "empty_areas_title":
             MessageLookupByLibrary.simpleMessage("No Area Found"),
+        "empty_favorite_online_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Please follow live rooms first"),
+        "empty_favorite_online_title":
+            MessageLookupByLibrary.simpleMessage("No Online Room"),
         "empty_favorite_subtitle": MessageLookupByLibrary.simpleMessage(
             "Please follow live rooms first"),
         "empty_favorite_title":
