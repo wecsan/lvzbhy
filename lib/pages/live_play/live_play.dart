@@ -11,6 +11,7 @@ import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
+import 'package:hot_live/utils/text_util.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -240,7 +241,38 @@ class _LivePlayPageState extends State<LivePlayPage> {
       resolutionBtns.add(btn);
     });
 
+    final List<Widget> infos = [];
+    if (widget.room.followers.isNotEmpty) {
+      infos.addAll([
+        const Icon(Icons.person_rounded, size: 14),
+        const SizedBox(width: 4),
+        Text(
+          transformCount(widget.room.followers),
+          style: Theme.of(context).textTheme.caption,
+        ),
+        const SizedBox(width: 12),
+      ]);
+    }
+    if (widget.room.watching.isNotEmpty) {
+      infos.addAll([
+        const Icon(Icons.whatshot_rounded, size: 14),
+        const SizedBox(width: 4),
+        Text(
+          transformCount(widget.room.watching),
+          style: Theme.of(context).textTheme.caption,
+        ),
+      ]);
+    }
+
     return ListTile(
+      leading: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: infos,
+        ),
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: resolutionBtns,
