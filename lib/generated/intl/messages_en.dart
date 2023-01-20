@@ -107,6 +107,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Float Video Ratio"),
         "float_overlay_ratio_subtitle": MessageLookupByLibrary.simpleMessage(
             "When using float window, ratio control the size"),
+        "float_window_play":
+            MessageLookupByLibrary.simpleMessage("Play by float window"),
         "follow": MessageLookupByLibrary.simpleMessage("Follow"),
         "followed": MessageLookupByLibrary.simpleMessage("Followed"),
         "general": MessageLookupByLibrary.simpleMessage("General"),

@@ -771,6 +771,16 @@ class S {
     );
   }
 
+  /// `Play by float window`
+  String get float_window_play {
+    return Intl.message(
+      'Play by float window',
+      name: 'float_window_play',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `DLNA Broadcast`
   String get dlan_button_info {
     return Intl.message(

@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "float_overlay_ratio": MessageLookupByLibrary.simpleMessage("悬浮窗尺寸"),
         "float_overlay_ratio_subtitle":
             MessageLookupByLibrary.simpleMessage("视频小窗播放时，悬浮窗横向相对比例"),
+        "float_window_play": MessageLookupByLibrary.simpleMessage("小窗播放"),
         "follow": MessageLookupByLibrary.simpleMessage("关注"),
         "followed": MessageLookupByLibrary.simpleMessage("已关注"),
         "general": MessageLookupByLibrary.simpleMessage("通用"),

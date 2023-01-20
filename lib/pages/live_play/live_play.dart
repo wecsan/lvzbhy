@@ -11,6 +11,7 @@ import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
+import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
@@ -112,14 +113,14 @@ class _LivePlayPageState extends State<LivePlayPage> {
         ]),
         actions: [
           IconButton(
-            tooltip: "小窗播放",
+            tooltip: S.of(context).float_window_play,
             onPressed: showFloatingWindow,
-            icon: const Icon(Icons.photo_size_select_small_rounded, size: 22),
+            icon: const Icon(CustomIcons.float_window),
           ),
           IconButton(
             tooltip: S.of(context).dlan_button_info,
             onPressed: showDlnaSelectorDialog,
-            icon: const Icon(Icons.cast_rounded, size: 22),
+            icon: const Icon(CustomIcons.cast),
           ),
         ],
       ),
@@ -135,7 +136,13 @@ class _LivePlayPageState extends State<LivePlayPage> {
                   child: Column(children: [
                     _buildInfoResolutionRow(),
                     const Divider(height: 1),
-                    Expanded(child: _buildDanmakuListView()),
+                    Expanded(
+                      child: DanmakuListView(
+                        key: _danmakuViewKey,
+                        room: widget.room,
+                        danmakuStream: danmakuStream,
+                      ),
+                    ),
                   ]),
                 ),
               ])
@@ -144,11 +151,17 @@ class _LivePlayPageState extends State<LivePlayPage> {
                   _buildVideoPlayer(),
                   _buildInfoResolutionRow(),
                   const Divider(height: 1),
-                  Expanded(child: _buildDanmakuListView()),
+                  Expanded(
+                    child: DanmakuListView(
+                      key: _danmakuViewKey,
+                      room: widget.room,
+                      danmakuStream: danmakuStream,
+                    ),
+                  ),
                 ],
               ),
       ),
-      floatingActionButton: _buildFavoriteButton(),
+      floatingActionButton: FavoriteFloatingButton(room: widget.room),
     );
   }
 
@@ -169,66 +182,14 @@ class _LivePlayPageState extends State<LivePlayPage> {
               )
             : Center(
                 child: datasourceError
-                    ? const Icon(
-                        Icons.error_outline_rounded,
-                        size: 42,
-                        color: Colors.white70,
+                    ? const Text(
+                        "未发现直播源",
+                        style: TextStyle(color: Colors.white),
                       )
                     : Container(),
               ),
       ),
     );
-  }
-
-  Widget _buildDanmakuListView() {
-    return DanmakuListView(
-      key: _danmakuViewKey,
-      room: widget.room,
-      danmakuStream: danmakuStream,
-    );
-  }
-
-  Widget _buildFavoriteButton() {
-    return favorite.isFavorite(widget.room.roomId)
-        ? FloatingActionButton(
-            elevation: 2,
-            backgroundColor: Theme.of(context).cardColor,
-            tooltip: S.of(context).unfollow,
-            onPressed: () => favorite.removeRoom(widget.room),
-            child: CircleAvatar(
-              foregroundImage: (widget.room.avatar == '')
-                  ? null
-                  : NetworkImage(widget.room.avatar),
-              radius: 18,
-              backgroundColor: Theme.of(context).disabledColor,
-            ),
-          )
-        : FloatingActionButton.extended(
-            elevation: 2,
-            backgroundColor: Theme.of(context).cardColor,
-            onPressed: () => favorite.addRoom(widget.room),
-            icon: CircleAvatar(
-              foregroundImage: (widget.room.avatar == '')
-                  ? null
-                  : NetworkImage(widget.room.avatar),
-              radius: 18,
-              backgroundColor: Theme.of(context).disabledColor,
-            ),
-            label: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  S.of(context).follow,
-                  style: Theme.of(context).textTheme.caption,
-                ),
-                Text(
-                  widget.room.nick,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          );
   }
 
   Widget _buildInfoResolutionRow() {
@@ -311,5 +272,57 @@ class _LivePlayPageState extends State<LivePlayPage> {
       );
     }
     FlutterOverlayWindow.shareData({"url": datasource});
+  }
+}
+
+class FavoriteFloatingButton extends StatelessWidget {
+  const FavoriteFloatingButton({
+    Key? key,
+    required this.room,
+  }) : super(key: key);
+
+  final RoomInfo room;
+
+  @override
+  Widget build(BuildContext context) {
+    final favorite = Provider.of<FavoriteProvider>(context);
+    return favorite.isFavorite(room.roomId)
+        ? FloatingActionButton(
+            elevation: 2,
+            backgroundColor: Theme.of(context).cardColor,
+            tooltip: S.of(context).unfollow,
+            onPressed: () => favorite.removeRoom(room),
+            child: CircleAvatar(
+              foregroundImage:
+                  (room.avatar == '') ? null : NetworkImage(room.avatar),
+              radius: 18,
+              backgroundColor: Theme.of(context).disabledColor,
+            ),
+          )
+        : FloatingActionButton.extended(
+            elevation: 2,
+            backgroundColor: Theme.of(context).cardColor,
+            onPressed: () => favorite.addRoom(room),
+            icon: CircleAvatar(
+              foregroundImage:
+                  (room.avatar == '') ? null : NetworkImage(room.avatar),
+              radius: 18,
+              backgroundColor: Theme.of(context).disabledColor,
+            ),
+            label: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  S.of(context).follow,
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                Text(
+                  room.nick,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          );
   }
 }
