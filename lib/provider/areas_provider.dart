@@ -9,7 +9,7 @@ class AreasProvider with ChangeNotifier {
   late SettingsProvider settings;
 
   AreasProvider(this.context) {
-    settings = Provider.of<SettingsProvider>(context);
+    settings = Provider.of<SettingsProvider>(context, listen: false);
     platform = settings.preferPlatform;
     onLoading();
   }

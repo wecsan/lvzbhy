@@ -13,7 +13,7 @@ class FavoriteProvider with ChangeNotifier {
   late SettingsProvider settings;
 
   FavoriteProvider(this.context) {
-    settings = Provider.of<SettingsProvider>(context);
+    settings = Provider.of<SettingsProvider>(context, listen: false);
     onRefresh();
   }
 

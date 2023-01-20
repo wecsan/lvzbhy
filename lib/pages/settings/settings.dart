@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/utils/version_util.dart';
+import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -276,10 +277,7 @@ class _SettingsPageState extends State<SettingsPage> {
       children: [
         ListTile(
           title: const Text('Github'),
-          leading: const Icon(
-            Icons.open_in_new_rounded,
-            size: 32,
-          ),
+          leading: const Icon(CustomIcons.github_circled, size: 30),
           onTap: () {
             launchUrl(
               Uri.parse(VersionUtil.projectUrl),
@@ -321,7 +319,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(S.of(context).float_overlay_ratio),
+        title: Text(S.of(context).what_is_new),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -332,6 +330,7 @@ class _SettingsPageState extends State<SettingsPage> {
               VersionUtil.latestUpdateLog,
               style: Theme.of(context).textTheme.caption,
             ),
+            const SizedBox(height: 10),
           ],
         ),
       ),

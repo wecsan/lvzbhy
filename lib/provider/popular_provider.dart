@@ -10,7 +10,7 @@ class PopularProvider with ChangeNotifier {
   late SettingsProvider settings;
 
   PopularProvider(this.context) {
-    settings = Provider.of<SettingsProvider>(context);
+    settings = Provider.of<SettingsProvider>(context, listen: false);
     platform = settings.preferPlatform;
     initRefresh();
   }

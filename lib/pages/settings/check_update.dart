@@ -65,6 +65,21 @@ class NewVersionDialog extends StatelessWidget {
             VersionUtil.latestUpdateLog,
             style: Theme.of(context).textTheme.caption,
           ),
+          const SizedBox(height: 10),
+          TextButton(
+            onPressed: () {
+              if (entry != null) {
+                entry!.remove();
+              } else {
+                Navigator.pop(context);
+              }
+              launchUrl(
+                Uri.parse('https://wwrg.lanzouy.com/b047m4fyh'),
+                mode: LaunchMode.externalApplication,
+              );
+            },
+            child: const Text('国内下载：蓝奏云（3344）'),
+          )
         ],
       ),
       actions: <Widget>[

@@ -11,7 +11,11 @@
 ///      fonts:
 ///       - asset: fonts/CustomIcons.ttf
 ///
-///
+/// 
+/// * Font Awesome 4, Copyright (C) 2016 by Dave Gandy
+///         Author:    Dave Gandy
+///         License:   SIL ()
+///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 ///
 // ignore_for_file: constant_identifier_names
 
@@ -30,4 +34,5 @@ class CustomIcons {
   static const IconData search = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData float_window = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData cast = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData github_circled = IconData(0xf09b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
