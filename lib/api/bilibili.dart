@@ -12,7 +12,7 @@ class BilibiliApi {
     final cookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     Map<String, String> _headers = {
       'User-Agent':
-          'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Mobile Safari/537.36 Edg/108.0.1462.76'
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
     };
     if (cookie.isNotEmpty) _headers['cookie'] = cookie;
 

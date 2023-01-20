@@ -46,14 +46,21 @@ class DouyuApi {
         String? key = match?.group(1);
 
         // add stream links
+        Map<String, String> resolutions = {
+          '原画': '',
+          '蓝光8M': '_2000',
+          '蓝光4M': '_1500',
+          '超清': '_1200',
+          '流畅': '_900',
+        };
         List<String> cdns = ['hw', 'ws', 'akm'];
-        links['原画'] = {};
-        links['流畅'] = {};
-        for (String cdn in cdns) {
-          links['原画']![cdn] =
-              'https://$cdn-tct.douyucdn.cn/live/$key.flv?uuid=';
-          links['流畅']![cdn] =
-              'https://$cdn-tct.douyucdn.cn/live/${key}_900.flv?uuid=';
+        for (String res in resolutions.keys) {
+          String v = resolutions[res]!;
+          links[res] = {};
+          for (String cdn in cdns) {
+            links[res]![cdn] =
+                'https://$cdn-tct.douyucdn.cn/live/$key$v.flv?uuid=';
+          }
         }
       }
     } catch (e) {
