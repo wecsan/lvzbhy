@@ -21,9 +21,9 @@ class FavoriteProvider with ChangeNotifier {
     roomsList.clear();
     onlineRoomList.clear();
     List<String> prefs = PrefUtil.getStringList('favorites') ?? [];
-    for (var item in prefs) {
-      roomsList.add(RoomInfo.fromJson(jsonDecode(item)));
-    }
+    roomsList.addAll(prefs.map((e) => RoomInfo.fromJson(jsonDecode(e))));
+    onlineRoomList
+        .addAll(roomsList.where((room) => room.liveStatus == LiveStatus.live));
   }
 
   void _saveToPref() {
@@ -38,6 +38,7 @@ class FavoriteProvider with ChangeNotifier {
     for (int i = 0; i < roomsList.length; i++) {
       roomsList[i] = await LiveApi.getRoomInfo(roomsList[i]);
     }
+    onlineRoomList.clear();
     onlineRoomList
         .addAll(roomsList.where((room) => room.liveStatus == LiveStatus.live));
     refreshController.refreshCompleted();
