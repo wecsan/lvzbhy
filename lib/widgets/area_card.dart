@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hot_live/model/livearea.dart';
 import 'package:hot_live/pages/areas/areas_room.dart';
+import 'package:hot_live/utils/cache_manager.dart';
 import 'package:hot_live/widgets/keep_alive_wrapper.dart';
 
 class AreaCard extends StatelessWidget {
@@ -45,6 +46,7 @@ class AreaCard extends StatelessWidget {
                   elevation: 0,
                   child: CachedNetworkImage(
                     imageUrl: area.areaPic,
+                    cacheManager: CustomCacheManager.instance,
                     fit: BoxFit.fill,
                     errorWidget: (context, error, stackTrace) => const Center(
                       child: Text(
