@@ -15,6 +15,7 @@ import 'package:hot_live/utils/text_util.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:wakelock/wakelock.dart';
 
 class LivePlayPage extends StatefulWidget {
   final String preferResolution;
@@ -59,10 +60,12 @@ class _LivePlayPageState extends State<LivePlayPage> {
       }
       setState(() {});
     });
+    Wakelock.enable();
   }
 
   @override
   void dispose() {
+    Wakelock.disable();
     settings.resetPlayerFitMode();
     ScreenBrightness().resetScreenBrightness();
     danmakuStream.dispose();
@@ -102,6 +105,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
   Widget build(BuildContext context) {
     favorite = Provider.of<FavoriteProvider>(context);
     settings = Provider.of<SettingsProvider>(context);
+    if (settings.enableScreenKeepOn) {
+      Wakelock.toggle(enable: settings.enableScreenKeepOn);
+    }
 
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
