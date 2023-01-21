@@ -81,7 +81,7 @@ class DouyuApi {
         room.avatar = data['avatar'] ?? '';
         room.cover = data['room_thumb'] ?? '';
         room.area = data['cate_name'] ?? '';
-        room.followers = data['hn']?.toString() ?? '';
+        room.watching = data['hn']?.toString() ?? '';
         room.liveStatus =
             (data.containsKey('room_status') && data['room_status'] == '1')
                 ? LiveStatus.live
@@ -129,7 +129,7 @@ class DouyuApi {
             room.title = roomInfo["roomName"] ?? '';
             room.cover = roomInfo["roomSrc"] ?? '';
             room.avatar = roomInfo["avatar"] ?? '';
-            room.followers = roomInfo["hn"] ?? '';
+            room.watching = roomInfo["hn"] ?? '';
             room.liveStatus =
                 (roomInfo.containsKey("isLive") && roomInfo["isLive"] == 1)
                     ? LiveStatus.live
@@ -217,7 +217,7 @@ class DouyuApi {
             room.cover = roomInfo["roomSrc"] ?? '';
             room.avatar = roomInfo["avatar"] ?? '';
             room.area = area.areaName;
-            room.followers = roomInfo["hn"] ?? '';
+            room.watching = roomInfo["hn"] ?? '';
             room.liveStatus =
                 (roomInfo.containsKey("isLive") && roomInfo["isLive"] == 1)
                     ? LiveStatus.live
@@ -265,7 +265,7 @@ class DouyuApi {
           owner.cover = ownerInfo["roomSrc"] ?? '';
           owner.avatar = ownerInfo["avatar"] ?? '';
           owner.area = ownerInfo["cateName"] ?? '';
-          owner.followers = ownerInfo["hn"] ?? '';
+          owner.watching = ownerInfo["hn"] ?? '';
           owner.liveStatus =
               (ownerInfo.containsKey("isLive") && ownerInfo["isLive"] == 1)
                   ? LiveStatus.live
