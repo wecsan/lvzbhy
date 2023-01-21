@@ -27,7 +27,7 @@ class DanmakuListViewState extends State<DanmakuListView>
   @override
   void initState() {
     super.initState();
-    _danmakuList.add(DanmakuInfo("系统信息", "已接入弹幕监听"));
+    _danmakuList.add(DanmakuInfo("系统信息", "欢迎进入${widget.room.nick}的直播间"));
     widget.danmakuStream.listen((info) {
       setState(() => _danmakuList.add(info));
     });
