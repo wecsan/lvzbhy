@@ -6,10 +6,10 @@ import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/generated/l10n.dart';
 import 'package:hot_live/model/liveroom.dart' hide Platform;
-import 'package:hot_live/pages/live_dlna/live_dlna.dart';
-import 'package:hot_live/pages/live_play/danmaku_video_player.dart';
+import 'package:hot_live/pages/live_play/widgets/live_dlna_dialog.dart';
+import 'package:hot_live/pages/live_play/widgets/danmaku_video_player.dart';
 import 'package:hot_live/provider/favorite_provider.dart';
-import 'package:hot_live/pages/live_play/danmaku_list_view.dart';
+import 'package:hot_live/pages/live_play/widgets/danmaku_list_view.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/utils/text_util.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
@@ -214,33 +214,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   }
 
   Widget _buildResolutions() {
-    final List<Widget> resolutionBtns = [];
-    streamList.forEach((resolution, cdns) {
-      final btn = PopupMenuButton(
-        iconSize: 24,
-        icon: Text(
-          resolution.substring(resolution.length - 2, resolution.length),
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: resolution == selectedResolution
-                  ? Theme.of(context).colorScheme.primary
-                  : null),
-        ),
-        onSelected: (String url) => selectResolution(resolution, url),
-        itemBuilder: (context) {
-          final menuList = <PopupMenuItem<String>>[];
-          cdns.forEach((cdn, url) {
-            final menuItem = PopupMenuItem<String>(
-              child: Text(cdn, style: const TextStyle(fontSize: 14.0)),
-              value: url,
-            );
-            menuList.add(menuItem);
-          });
-          return menuList;
-        },
-      );
-      resolutionBtns.add(btn);
-    });
-
+    // room watching or followers
     final List<Widget> infos = [];
     if (widget.room.followers.isNotEmpty) {
       infos.addAll([
@@ -264,6 +238,29 @@ class _LivePlayPageState extends State<LivePlayPage> {
       ]);
     }
 
+    // resolution popmenu buttons
+    final resButtons = streamList.keys
+        .map<Widget>((res) => PopupMenuButton(
+              iconSize: 24,
+              icon: Text(
+                res.substring(res.length - 2, res.length),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: res == selectedResolution
+                        ? Theme.of(context).colorScheme.primary
+                        : null),
+              ),
+              onSelected: (String url) => selectResolution(res, url),
+              itemBuilder: (context) => streamList[res]!
+                  .keys
+                  .map((cdn) => PopupMenuItem<String>(
+                        child:
+                            Text(cdn, style: const TextStyle(fontSize: 14.0)),
+                        value: streamList[res]![cdn],
+                      ))
+                  .toList(),
+            ))
+        .toList();
+
     return ListTile(
       leading: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -275,7 +272,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        children: resolutionBtns,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: resButtons,
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/model/liveroom.dart';
-import 'package:hot_live/pages/live_play/danmaku_video_controller.dart';
+import 'package:hot_live/pages/live_play/widgets/danmaku_video_controller.dart';
 
 class DanmakuVideoPlayer extends StatefulWidget {
   final DanmakuStream danmakuStream;
