@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -51,6 +52,25 @@ class _HomePageRouterState extends State<HomePageRouter> {
             ),
           );
           Overlay.of(context)?.insert(entry);
+        }
+
+        // 新年祝福页
+        DateTime now = DateTime.now();
+        if (now.year == 2023 && now.month == 1 && now.day == 22) {
+          final newyearEntry = OverlayEntry(
+            builder: (context) => Container(
+              alignment: Alignment.center,
+              color: Colors.black54,
+              child: const AlertDialog(
+                title: Text("兔年快乐🎉🎉"),
+                content: Text('祝大家新年快乐，兔年吉祥安康~'),
+              ),
+            ),
+          );
+          Overlay.of(context)?.insert(newyearEntry);
+          Timer(const Duration(seconds: 3), () {
+            newyearEntry.remove();
+          });
         }
       },
     );
