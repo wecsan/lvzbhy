@@ -22,9 +22,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(name) => "${name}未开始直播.";
 
-  static String m1(version) => "发现新版本: v${version}";
+  static String m1(name) => "${name}轮播视频中.";
 
-  static String m2(roomid, platform, nickname, title, livestatus) =>
+  static String m2(version) => "发现新版本: v${version}";
+
+  static String m3(roomid, platform, nickname, title, livestatus) =>
       "房间号: ${roomid}\n平台: ${platform}\n昵称: ${nickname}\n标题: ${title}\n状态: ${livestatus}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -103,12 +105,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "general": MessageLookupByLibrary.simpleMessage("通用"),
         "hide_offline_rooms": MessageLookupByLibrary.simpleMessage("隐藏未直播的直播间"),
         "info_is_offline": m0,
+        "info_is_replay": m1,
         "loading_canload": MessageLookupByLibrary.simpleMessage("释放以加载"),
         "loading_failed": MessageLookupByLibrary.simpleMessage("加载失败！上滑重试"),
         "loading_idle": MessageLookupByLibrary.simpleMessage("上滑以加载"),
         "loading_nomore": MessageLookupByLibrary.simpleMessage("没有更多数据"),
         "move_to_top": MessageLookupByLibrary.simpleMessage("移到顶部"),
-        "new_version_info": m1,
+        "new_version_info": m2,
         "no_new_version_info": MessageLookupByLibrary.simpleMessage("已在使用最新版本"),
         "offline": MessageLookupByLibrary.simpleMessage("未直播"),
         "only_living": MessageLookupByLibrary.simpleMessage("只搜索直播中"),
@@ -120,7 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "prefer_resolution_subtitle":
             MessageLookupByLibrary.simpleMessage("当进入直播播放页，首选的视频清晰度"),
         "remove": MessageLookupByLibrary.simpleMessage("删除"),
-        "room_info_content": m2,
+        "room_info_content": m3,
         "search_input_hint": MessageLookupByLibrary.simpleMessage("输入直播关键字"),
         "settings_danmaku_area": MessageLookupByLibrary.simpleMessage("弹幕区域"),
         "settings_danmaku_fontBorder":

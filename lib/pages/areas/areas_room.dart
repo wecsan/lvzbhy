@@ -6,7 +6,7 @@ import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/widgets/empty_view.dart';
 import 'package:hot_live/widgets/onloading_footer.dart';
-import 'package:hot_live/widgets/room_card.dart';
+import 'package:hot_live/pages/favorite/widgets/room_card.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AreasRoomPage extends StatefulWidget {

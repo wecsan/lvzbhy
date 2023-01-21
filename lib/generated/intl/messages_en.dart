@@ -22,9 +22,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(name) => "${name} is offline.";
 
-  static String m1(version) => "New version found: v${version}";
+  static String m1(name) => "${name} is replaying.";
 
-  static String m2(roomid, platform, nickname, title, livestatus) =>
+  static String m2(version) => "New version found: v${version}";
+
+  static String m3(roomid, platform, nickname, title, livestatus) =>
       "RoomId: ${roomid}\nPlatform: ${platform}\nName: ${nickname}\nTitle: ${title}\nLiveStatus: ${livestatus}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -119,6 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_offline_rooms":
             MessageLookupByLibrary.simpleMessage("Hide Offline Rooms"),
         "info_is_offline": m0,
+        "info_is_replay": m1,
         "loading_canload":
             MessageLookupByLibrary.simpleMessage("release to load"),
         "loading_failed":
@@ -126,7 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loading_idle": MessageLookupByLibrary.simpleMessage("pull up to load"),
         "loading_nomore": MessageLookupByLibrary.simpleMessage("No more Data"),
         "move_to_top": MessageLookupByLibrary.simpleMessage("Move To Top"),
-        "new_version_info": m1,
+        "new_version_info": m2,
         "no_new_version_info": MessageLookupByLibrary.simpleMessage(
             "You are using the latest version."),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
@@ -141,7 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "prefer_resolution_subtitle": MessageLookupByLibrary.simpleMessage(
             "When enter live play, first resolution choice"),
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
-        "room_info_content": m2,
+        "room_info_content": m3,
         "search_input_hint":
             MessageLookupByLibrary.simpleMessage("Input live room keyword"),
         "settings_danmaku_area":

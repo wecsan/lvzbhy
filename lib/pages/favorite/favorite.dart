@@ -9,7 +9,7 @@ import 'package:hot_live/provider/favorite_provider.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:hot_live/widgets/empty_view.dart';
-import 'package:hot_live/widgets/room_card.dart';
+import 'package:hot_live/pages/favorite/widgets/room_card.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

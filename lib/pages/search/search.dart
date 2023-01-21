@@ -110,7 +110,7 @@ class OwnerCard extends StatelessWidget {
 
   void _onTap(BuildContext context) async {
     final fullRoom = await LiveApi.getRoomInfo(room);
-    if (room.liveStatus == LiveStatus.live) {
+    if (fullRoom.liveStatus == LiveStatus.live) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -122,12 +122,15 @@ class OwnerCard extends StatelessWidget {
         ),
       );
     } else {
+      final info = fullRoom.liveStatus == LiveStatus.offline
+          ? S.of(context).info_is_offline(fullRoom.nick)
+          : S.of(context).info_is_replay(fullRoom.nick);
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             content: Text(
-              S.of(context).info_is_offline(room.nick),
+              info,
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           );

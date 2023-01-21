@@ -98,6 +98,7 @@
     "followed": "已关注",
     "offline": "未直播",
     "info_is_offline": "{name}未开始直播.",
+    "info_is_replay": "{name}轮播视频中.",
 
     "float_window_play": "小窗播放",
     "dlan_button_info": "DLNA投屏",

@@ -811,6 +811,16 @@ class S {
     );
   }
 
+  /// `{name} is replaying.`
+  String info_is_replay(Object name) {
+    return Intl.message(
+      '$name is replaying.',
+      name: 'info_is_replay',
+      desc: '',
+      args: [name],
+    );
+  }
+
   /// `Play by float window`
   String get float_window_play {
     return Intl.message(

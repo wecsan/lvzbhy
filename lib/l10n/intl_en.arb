@@ -98,6 +98,7 @@
     "followed": "Followed",
     "offline": "Offline",
     "info_is_offline": "{name} is offline.",
+    "info_is_replay": "{name} is replaying.",
 
     "float_window_play": "Play by float window",
     "dlan_button_info": "DLNA Broadcast",
