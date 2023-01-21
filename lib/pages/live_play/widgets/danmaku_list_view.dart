@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/model/danmaku.dart';
@@ -21,57 +22,102 @@ class DanmakuListViewState extends State<DanmakuListView>
     with AutomaticKeepAliveClientMixin<DanmakuListView> {
   final List<DanmakuInfo> _danmakuList = [];
   final ScrollController _scrollController = ScrollController();
+  bool _scrollHappen = false;
 
   @override
   void initState() {
+    super.initState();
     _danmakuList.add(DanmakuInfo("系统信息", "已接入弹幕监听"));
     widget.danmakuStream.listen((info) {
-      setState(() {
-        _danmakuList.add(info);
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.linearToEaseOut,
-        );
-      });
+      setState(() => _danmakuList.add(info));
     });
-    super.initState();
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToBottom() {
+    if (_scrollHappen) return;
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.linearToEaseOut,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
     super.build(context);
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: _danmakuList.length,
-      padding: const EdgeInsets.only(left: 5, top: 2, right: 5),
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        final danmaku = _danmakuList[index];
-        return Container(
-          padding: const EdgeInsets.all(5),
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: " ${danmaku.name} : ",
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+    return Stack(
+      children: [
+        NotificationListener<UserScrollNotification>(
+          onNotification: (notification) {
+            setState(() => _scrollHappen = true);
+            return true;
+          },
+          child: ListView.builder(
+            controller: _scrollController,
+            dragStartBehavior: DragStartBehavior.down,
+            itemCount: _danmakuList.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final danmaku = _danmakuList[index];
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withOpacity(0.04),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${danmaku.name}: ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              ?.copyWith(fontSize: 13.5),
+                        ),
+                        TextSpan(
+                          text: danmaku.action.isEmpty
+                              ? danmaku.msg
+                              : "${danmaku.action} ${danmaku.count} 个 ${danmaku.msg}",
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                TextSpan(
-                  text: danmaku.action.isEmpty
-                      ? danmaku.msg
-                      : "${danmaku.action} ${danmaku.count} 个 ${danmaku.msg}",
-                ),
-              ],
-            ),
+              );
+            },
           ),
-        );
-      },
+        ),
+        if (_scrollHappen)
+          Positioned(
+            left: 12,
+            bottom: 12,
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.arrow_downward_rounded),
+              label: const Text('回到底部'),
+              onPressed: () {
+                setState(() => _scrollHappen = false);
+                _scrollToBottom();
+              },
+            ),
+          )
+      ],
     );
   }
 
