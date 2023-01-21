@@ -1,5 +1,5 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/model/danmaku.dart';
 import 'package:hot_live/model/liveroom.dart';
@@ -48,6 +48,18 @@ class DanmakuListViewState extends State<DanmakuListView>
     );
   }
 
+  bool _userScrollAction(UserScrollNotification notification) {
+    if (notification.direction == ScrollDirection.forward) {
+      setState(() => _scrollHappen = true);
+    } else if (notification.direction == ScrollDirection.reverse) {
+      final pos = _scrollController.position;
+      if (pos.maxScrollExtent - pos.pixels <= 100) {
+        setState(() => _scrollHappen = false);
+      }
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
@@ -56,13 +68,9 @@ class DanmakuListViewState extends State<DanmakuListView>
     return Stack(
       children: [
         NotificationListener<UserScrollNotification>(
-          onNotification: (notification) {
-            setState(() => _scrollHappen = true);
-            return true;
-          },
+          onNotification: _userScrollAction,
           child: ListView.builder(
             controller: _scrollController,
-            dragStartBehavior: DragStartBehavior.down,
             itemCount: _danmakuList.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
