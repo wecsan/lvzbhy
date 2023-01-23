@@ -75,12 +75,9 @@ class _HomePageRouterState extends State<HomePageRouter> {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
 
-    return ScreenTypeLayout.builder(
-      mobile: (context) => OrientationLayoutBuilder(
-        portrait: (context) => _buildMobileView(),
-        landscape: (context) => _buildTabletView(),
-      ),
-      tablet: (context) => _buildTabletView(),
+    return OrientationLayoutBuilder(
+      portrait: (context) => _buildMobileView(),
+      landscape: (context) => _buildTabletView(),
     );
   }
 
