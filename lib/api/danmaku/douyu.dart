@@ -94,6 +94,8 @@ class DouyuDanmaku {
         var content = byteDatas
             .substring(byteDatas.indexOf("txt@="), byteDatas.indexOf("/cid"))
             .replaceAll("txt@=", "");
+        // 修复斗鱼弹幕@信息
+        content.replaceAll('@A', '@');
         controller.sink.add(DanmakuInfo(nickname, content));
       }
     }
