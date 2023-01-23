@@ -6,7 +6,6 @@ import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/utils/pref_util.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FavoriteProvider with ChangeNotifier {
   final BuildContext context;
@@ -16,9 +15,6 @@ class FavoriteProvider with ChangeNotifier {
     settings = Provider.of<SettingsProvider>(context, listen: false);
     onRefresh();
   }
-
-  RefreshController refreshController =
-      RefreshController(initialRefresh: false);
 
   final List<RoomInfo> _roomsList = [];
   final List<RoomInfo> _onlineRoomList = [];
@@ -48,21 +44,20 @@ class FavoriteProvider with ChangeNotifier {
     PrefUtil.setStringList('favorites', roomJsons);
   }
 
-  void _getRoomsInfoFromApi() async {
+  Future<void> onRefresh() async {
+    _loadFromPref();
+    await _getRoomsInfoFromApi();
+  }
+
+  Future<void> _getRoomsInfoFromApi() async {
     for (int i = 0; i < _roomsList.length; i++) {
       _roomsList[i] = await LiveApi.getRoomInfo(_roomsList[i]);
     }
     _onlineRoomList.clear();
     _onlineRoomList
         .addAll(_roomsList.where((room) => room.liveStatus == LiveStatus.live));
-    refreshController.refreshCompleted();
     notifyListeners();
     _saveToPref();
-  }
-
-  void onRefresh() {
-    _loadFromPref();
-    _getRoomsInfoFromApi();
   }
 
   bool isFavorite(String roomId) {

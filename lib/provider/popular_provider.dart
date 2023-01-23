@@ -3,7 +3,6 @@ import 'package:hot_live/model/liveroom.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/provider/settings_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PopularProvider with ChangeNotifier {
   final BuildContext context;
@@ -14,9 +13,6 @@ class PopularProvider with ChangeNotifier {
     platform = settings.preferPlatform;
     initRefresh();
   }
-
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: false);
 
   final List<String> platforms = SettingsProvider.platforms;
   String platform = 'bilibili';
@@ -44,30 +40,24 @@ class PopularProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onRefresh() async {
+  Future<bool> onRefresh() async {
     page = 0;
     roomList = await LiveApi.getRecommend(platform, page: page);
-    if (roomList.isEmpty) {
-      refreshController.refreshFailed();
-    } else {
-      refreshController.refreshCompleted();
-    }
     notifyListeners();
+    return roomList.isNotEmpty;
   }
 
-  void onLoading() async {
+  Future<bool> onLoading() async {
     page++;
     final items = await LiveApi.getRecommend(platform, page: page);
-    if (items.isEmpty) {
-      refreshController.loadFailed();
-    } else {
+    if (items.isNotEmpty) {
       for (var item in items) {
         if (roomList.indexWhere((e) => e.roomId == item.roomId) != -1) continue;
         roomList.add(item);
       }
-      refreshController.loadComplete();
     }
     notifyListeners();
+    return items.isNotEmpty;
   }
 
   void setPlatform(String name) {

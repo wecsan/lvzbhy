@@ -17,6 +17,8 @@ class PopularPage extends StatefulWidget {
 
 class _PopularPageState extends State<PopularPage> {
   late PopularProvider provider = Provider.of<PopularProvider>(context);
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   void showSwitchPlatformDialog() {
     showDialog(
@@ -54,6 +56,7 @@ class _PopularPageState extends State<PopularPage> {
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: screenWidth > 640 ? 0 : null,
         title: Text(
           S.of(context).popular_title.toUpperCase(),
           style: const TextStyle(fontWeight: FontWeight.w600),
@@ -75,9 +78,17 @@ class _PopularPageState extends State<PopularPage> {
         enablePullUp: true,
         header: const WaterDropHeader(),
         footer: const OnLoadingFooter(),
-        controller: provider.refreshController,
-        onRefresh: provider.onRefresh,
-        onLoading: provider.onLoading,
+        controller: refreshController,
+        onRefresh: () => provider.onRefresh().then(
+              (value) => value
+                  ? refreshController.refreshCompleted()
+                  : refreshController.refreshFailed(),
+            ),
+        onLoading: () => provider.onLoading().then(
+              (value) => value
+                  ? refreshController.loadComplete()
+                  : refreshController.loadFailed(),
+            ),
         child: provider.roomList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),

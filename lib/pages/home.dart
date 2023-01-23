@@ -13,6 +13,7 @@ import 'package:hot_live/provider/settings_provider.dart';
 import 'package:hot_live/utils/version_util.dart';
 import 'package:hot_live/widgets/custom_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -76,6 +77,12 @@ class _HomePageRouterState extends State<HomePageRouter> {
     );
   }
 
+  Widget get body => [
+        const FavoritePage(),
+        const PopularPage(),
+        const AreasPage()
+      ][_selectedIndex];
+
   @override
   Widget build(BuildContext context) {
     // Android statusbar and navigationbar
@@ -88,6 +95,16 @@ class _HomePageRouterState extends State<HomePageRouter> {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
 
+    return ScreenTypeLayout.builder(
+      mobile: (context) => OrientationLayoutBuilder(
+        portrait: (context) => _buildMobileView(),
+        landscape: (context) => _buildTabletView(),
+      ),
+      tablet: (context) => _buildTabletView(),
+    );
+  }
+
+  Scaffold _buildMobileView() {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         destinations: [
@@ -111,14 +128,44 @@ class _HomePageRouterState extends State<HomePageRouter> {
           });
         },
       ),
-      body: [
-        // Favorites
-        const FavoritePage(),
-        // Popular
-        const PopularPage(),
-        // Areas
-        const AreasPage(),
-      ][_selectedIndex],
+      body: body,
+    );
+  }
+
+  Scaffold _buildTabletView() {
+    return Scaffold(
+      body: SafeArea(
+        child: Row(
+          children: [
+            NavigationRail(
+              groupAlignment: -0.9,
+              labelType: NavigationRailLabelType.all,
+              destinations: [
+                NavigationRailDestination(
+                  icon: const Icon(Icons.favorite_rounded),
+                  label: Text(S.of(context).favorites_title),
+                ),
+                NavigationRailDestination(
+                  icon: const Icon(CustomIcons.popular),
+                  label: Text(S.of(context).popular_title),
+                ),
+                NavigationRailDestination(
+                  icon: const Icon(Icons.area_chart_rounded),
+                  label: Text(S.of(context).areas_title),
+                ),
+              ],
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
+            const VerticalDivider(thickness: 1, width: 1),
+            Expanded(child: body),
+          ],
+        ),
+      ),
     );
   }
 }

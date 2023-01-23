@@ -23,6 +23,8 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   late FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
   late SettingsProvider settings = Provider.of<SettingsProvider>(context);
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   void onLongPress(BuildContext context, RoomInfo room) {
     showDialog(
@@ -72,6 +74,7 @@ class _FavoritePageState extends State<FavoritePage> {
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: screenWidth > 640 ? 0 : null,
         title: Text(
           S.of(context).favorites_title.toUpperCase(),
           style: const TextStyle(fontWeight: FontWeight.w600),
@@ -100,8 +103,10 @@ class _FavoritePageState extends State<FavoritePage> {
       body: SmartRefresher(
         enablePullDown: true,
         header: const WaterDropHeader(),
-        controller: favorite.refreshController,
-        onRefresh: favorite.onRefresh,
+        controller: refreshController,
+        onRefresh: () => favorite.onRefresh().then((value) {
+          refreshController.refreshCompleted();
+        }),
         child: favorite.roomList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
