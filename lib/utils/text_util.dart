@@ -1,4 +1,4 @@
-String transformCount(String info) {
+String readableCount(String info) {
   try {
     int count = int.parse(info);
     if (count > 10000) {

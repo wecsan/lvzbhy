@@ -131,9 +131,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 style: Theme.of(context).textTheme.labelSmall,
               ),
               Text(
-                '${widget.room.platform} / ${widget.room.area}',
+                '${widget.room.platform.toUpperCase()} / ${widget.room.area}',
                 style:
-                    Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
+                    Theme.of(context).textTheme.caption?.copyWith(fontSize: 8),
               ),
             ],
           ),
@@ -227,18 +227,16 @@ class _LivePlayPageState extends State<LivePlayPage> {
         const Icon(Icons.person_rounded, size: 14),
         const SizedBox(width: 4),
         Text(
-          transformCount(widget.room.followers),
+          readableCount(widget.room.followers),
           style: Theme.of(context).textTheme.caption,
         ),
-        const SizedBox(width: 12),
       ]);
-    }
-    if (widget.room.watching.isNotEmpty) {
+    } else if (widget.room.watching.isNotEmpty) {
       infos.addAll([
         const Icon(Icons.whatshot_rounded, size: 14),
         const SizedBox(width: 4),
         Text(
-          transformCount(widget.room.watching),
+          readableCount(widget.room.watching),
           style: Theme.of(context).textTheme.caption,
         ),
       ]);
