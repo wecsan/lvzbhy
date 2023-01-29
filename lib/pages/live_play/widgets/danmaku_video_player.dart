@@ -135,15 +135,15 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   Widget errorBuilder(BuildContext context, String? errorMessage) {
     return Center(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            errorMessage ?? '未知错误',
-            style: const TextStyle(color: Colors.white),
+          const Text(
+            '无法播放直播',
+            style: TextStyle(color: Colors.white),
           ),
-          IconButton(
+          TextButton(
             onPressed: resumePlayer,
-            icon: const Icon(Icons.refresh_rounded),
-            iconSize: 30,
+            child: const Text('重试'),
           ),
         ],
       ),

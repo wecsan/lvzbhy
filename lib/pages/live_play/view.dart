@@ -25,28 +25,23 @@ class _LivePlayPageState extends State<LivePlayPage> {
   late SettingsProvider settings;
   late DanmakuStream danmakuStream;
 
-  bool noStreamError = false;
-  Map<String, Map<String, String>> streamList = {};
-  String selectedResolution = '';
-  String datasource = '';
+  bool _loading = true;
+  Map<String, Map<String, String>> _streamList = {};
+  String _selectedResolution = '';
+  String _datasource = '';
 
   // 控制唯一子组件
   final GlobalKey<DanmakuVideoPlayerState> _videoPlayerKey = GlobalKey();
   final GlobalKey<DanmakuListViewState> _danmakuViewKey = GlobalKey();
-  DanmakuVideoPlayerState? get videoPlayer => _videoPlayerKey.currentState;
 
   @override
   void initState() {
     super.initState();
     danmakuStream = DanmakuStream(room: widget.room);
     LiveApi.getRoomStreamLink(widget.room).then((value) {
-      streamList = value;
-      if (streamList.isNotEmpty && streamList.values.first.isNotEmpty) {
-        setPreferResolution();
-      } else {
-        noStreamError = true;
-      }
-      setState(() {});
+      _streamList = value;
+      setPreferResolution();
+      setState(() => _loading = false);
     });
     Wakelock.enable();
   }
@@ -61,32 +56,34 @@ class _LivePlayPageState extends State<LivePlayPage> {
   }
 
   void setPreferResolution() {
-    for (var key in streamList.keys) {
+    if (_streamList.isEmpty || _streamList.values.first.isEmpty) return;
+
+    for (var key in _streamList.keys) {
       if (widget.preferResolution.contains(key)) {
-        selectedResolution = key;
-        datasource = streamList[key]!.values.first;
+        _selectedResolution = key;
+        _datasource = _streamList[key]!.values.first;
         return;
       }
     }
     // 蓝光8M/4M选择缺陷
     if (widget.preferResolution.contains('蓝光')) {
-      for (var key in streamList.keys) {
+      for (var key in _streamList.keys) {
         if (key.contains('蓝光')) {
-          selectedResolution = key;
-          datasource = streamList[key]!.values.first;
+          _selectedResolution = key;
+          _datasource = _streamList[key]!.values.first;
           return;
         }
       }
     }
     // 偏好选择失败，选择最低清晰度
-    selectedResolution = streamList.keys.last;
-    datasource = streamList.values.last.values.first;
+    _selectedResolution = _streamList.keys.last;
+    _datasource = _streamList.values.last.values.first;
   }
 
   void setResolution(String name, String url) {
-    setState(() => selectedResolution = name);
-    datasource = url;
-    videoPlayer?.setResolution(url);
+    setState(() => _selectedResolution = name);
+    _datasource = url;
+    _videoPlayerKey.currentState?.setResolution(_datasource);
   }
 
   @override
@@ -182,24 +179,17 @@ class _LivePlayPageState extends State<LivePlayPage> {
       aspectRatio: 16 / 9,
       child: Container(
         color: Colors.black,
-        child: datasource.isNotEmpty
-            ? DanmakuVideoPlayer(
+        child: _loading
+            ? Container()
+            : DanmakuVideoPlayer(
                 key: _videoPlayerKey,
-                url: datasource,
+                url: _datasource,
                 danmakuStream: danmakuStream,
                 room: widget.room,
                 fullScreenByDefault: settings.enableFullScreenDefault,
                 allowBackgroundPlay: settings.enableBackgroundPlay,
                 allowedScreenSleep: !settings.enableScreenKeepOn,
                 width: width,
-              )
-            : Center(
-                child: noStreamError
-                    ? const Text(
-                        "未发现直播源",
-                        style: TextStyle(color: Colors.white),
-                      )
-                    : Container(),
               ),
       ),
     );
@@ -229,23 +219,23 @@ class _LivePlayPageState extends State<LivePlayPage> {
     }
 
     // resolution popmenu buttons
-    final resButtons = streamList.keys
+    final resButtons = _streamList.keys
         .map<Widget>((res) => PopupMenuButton(
               iconSize: 24,
               icon: Text(
                 res.substring(res.length - 2, res.length),
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: res == selectedResolution
+                    color: res == _selectedResolution
                         ? Theme.of(context).colorScheme.primary
                         : null),
               ),
               onSelected: (String url) => setResolution(res, url),
-              itemBuilder: (context) => streamList[res]!
+              itemBuilder: (context) => _streamList[res]!
                   .keys
                   .map((cdn) => PopupMenuItem<String>(
                         child:
                             Text(cdn, style: const TextStyle(fontSize: 14.0)),
-                        value: streamList[res]![cdn],
+                        value: _streamList[res]![cdn],
                       ))
                   .toList(),
             ))
@@ -271,7 +261,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   void showDlnaCastDialog() {
     showDialog(
       context: context,
-      builder: (context) => LiveDlnaPage(datasource: datasource),
+      builder: (context) => LiveDlnaPage(datasource: _datasource),
     );
   }
 }
