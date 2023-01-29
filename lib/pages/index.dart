@@ -1,6 +1,6 @@
 library pages;
 
-export 'home.dart';
+export 'home/view.dart';
 export 'favorite/index.dart';
 export 'popular/index.dart';
 export 'areas/index.dart';
