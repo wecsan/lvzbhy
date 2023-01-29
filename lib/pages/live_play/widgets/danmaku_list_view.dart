@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:hot_live/api/danmaku/danmaku_stream.dart';
-import 'package:hot_live/model/danmaku.dart';
-import 'package:hot_live/model/liveroom.dart';
+import 'package:hot_live/common/index.dart';
 
 class DanmakuListView extends StatefulWidget {
   final RoomInfo room;

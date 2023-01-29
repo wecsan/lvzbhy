@@ -1,13 +1,8 @@
 import 'dart:async';
 
 import 'package:better_player/better_player.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
-import 'package:hot_live/api/danmaku/danmaku_stream.dart';
-import 'package:hot_live/generated/l10n.dart';
-import 'package:hot_live/provider/settings_provider.dart';
-import 'package:hot_live/widgets/custom_icons.dart';
-import 'package:provider/provider.dart';
+import 'package:hot_live/common/index.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 

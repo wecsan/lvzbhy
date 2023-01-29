@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:hot_live/model/livearea.dart';
-import 'package:hot_live/pages/areas/areas_room.dart';
-import 'package:hot_live/utils/cache_manager.dart';
+import 'package:hot_live/common/index.dart';
+import 'package:hot_live/pages/index.dart';
 
 class AreaCard extends StatelessWidget {
   const AreaCard({

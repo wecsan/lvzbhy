@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:dlna_dart/dlna.dart';
-import 'package:flutter/material.dart';
-import 'package:hot_live/generated/l10n.dart';
+import 'package:hot_live/common/index.dart';
 
 class LiveDlnaPage extends StatefulWidget {
   final String datasource;

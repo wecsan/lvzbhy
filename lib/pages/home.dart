@@ -1,17 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hot_live/generated/l10n.dart';
-
-import 'package:hot_live/pages/areas/areas.dart';
-import 'package:hot_live/pages/favorite/favorite.dart';
-import 'package:hot_live/pages/popular/popular.dart';
-import 'package:hot_live/pages/settings/check_update.dart';
-import 'package:hot_live/provider/settings_provider.dart';
-import 'package:hot_live/utils/version_util.dart';
-import 'package:hot_live/widgets/custom_icons.dart';
-import 'package:provider/provider.dart';
+import 'package:hot_live/common/index.dart';
+import 'package:hot_live/pages/index.dart';
+import 'package:hot_live/pages/settings/widgets/check_update.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class HomePage extends StatelessWidget {
