@@ -59,46 +59,60 @@ class RoomCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Card(
-                margin: const EdgeInsets.all(0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                clipBehavior: Clip.antiAlias,
-                color: Theme.of(context).focusColor,
-                elevation: 0,
-                child: room.liveStatus.name == 'live'
-                    ? CachedNetworkImage(
-                        imageUrl: room.cover,
-                        fit: BoxFit.fill,
-                        errorWidget: (context, error, stackTrace) => Center(
-                          child: Icon(
-                            Icons.live_tv_rounded,
-                            size: dense ? 30 : 48,
-                          ),
-                        ),
-                      )
-                    : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.tv_off_rounded,
-                              size: dense ? 38 : 48,
-                            ),
-                            Text(
-                              S.of(context).offline,
-                              style: TextStyle(
-                                fontSize: dense ? 18 : 26,
-                                fontWeight: FontWeight.w500,
+            Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Card(
+                    margin: const EdgeInsets.all(0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    color: Theme.of(context).focusColor,
+                    elevation: 0,
+                    child: room.liveStatus.name == 'live'
+                        ? CachedNetworkImage(
+                            imageUrl: room.cover,
+                            fit: BoxFit.fill,
+                            errorWidget: (context, error, stackTrace) => Center(
+                              child: Icon(
+                                Icons.live_tv_rounded,
+                                size: dense ? 30 : 48,
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-              ),
+                            ),
+                          )
+                        : Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.tv_off_rounded,
+                                  size: dense ? 38 : 48,
+                                ),
+                                Text(
+                                  S.of(context).offline,
+                                  style: TextStyle(
+                                    fontSize: dense ? 18 : 26,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                  ),
+                ),
+                if (room.liveStatus == LiveStatus.live)
+                  Positioned(
+                    right: dense ? 1 : 4,
+                    bottom: dense ? 1 : 4,
+                    child: CountChip(
+                      icon: Icons.whatshot_rounded,
+                      count: readableCount(room.watching),
+                      dense: dense,
+                    ),
+                  ),
+              ],
             ),
             ListTile(
               dense: dense,
@@ -141,6 +155,49 @@ class RoomCard extends StatelessWidget {
                       ),
                     ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CountChip extends StatelessWidget {
+  const CountChip({
+    Key? key,
+    required this.icon,
+    required this.count,
+    this.dense = false,
+  }) : super(key: key);
+
+  final IconData icon;
+  final String count;
+  final bool dense;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: const StadiumBorder(),
+      color: Colors.black.withOpacity(0.4),
+      shadowColor: Colors.transparent,
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(dense ? 4 : 6),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: Colors.white.withOpacity(0.8),
+              size: dense ? 13 : 16,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              count,
+              style: Theme.of(context).textTheme.caption?.copyWith(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: dense ? 10 : null,
+                  ),
+            ),
           ],
         ),
       ),

@@ -1,6 +1,5 @@
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/favorite/widgets/room_card.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AreasRoomPage extends StatefulWidget {

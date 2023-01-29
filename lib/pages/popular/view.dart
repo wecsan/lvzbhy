@@ -3,8 +3,6 @@ import 'package:hot_live/pages/index.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../favorite/widgets/room_card.dart';
-
 class PopularPage extends StatefulWidget {
   const PopularPage({Key? key}) : super(key: key);
 
