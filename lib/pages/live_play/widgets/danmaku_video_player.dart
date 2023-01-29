@@ -50,22 +50,16 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   void resumePlayer() {
     controller = BetterPlayerController(
       BetterPlayerConfiguration(
-          autoPlay: true,
-          fit: BoxFit.contain,
-          fullScreenByDefault: widget.fullScreenByDefault,
-          allowedScreenSleep: widget.allowedScreenSleep,
-          autoDetectFullscreenDeviceOrientation: true,
-          autoDetectFullscreenAspectRatio: true,
-          errorBuilder: errorBuilder,
-          routePageBuilder: routePageBuilder,
-          eventListener: ((p0) {
-            if (p0.betterPlayerEventType == BetterPlayerEventType.pipStart) {
-              setState(() => _isPipMode = true);
-            } else if (p0.betterPlayerEventType ==
-                BetterPlayerEventType.pipStop) {
-              setState(() => _isPipMode = false);
-            }
-          })),
+        autoPlay: true,
+        fit: BoxFit.contain,
+        fullScreenByDefault: widget.fullScreenByDefault,
+        allowedScreenSleep: widget.allowedScreenSleep,
+        autoDetectFullscreenDeviceOrientation: true,
+        autoDetectFullscreenAspectRatio: true,
+        errorBuilder: errorBuilder,
+        routePageBuilder: routePageBuilder,
+        eventListener: pipModeListener,
+      ),
       betterPlayerDataSource: BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
         widget.url,
@@ -83,6 +77,14 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     );
     controller?.setControlsEnabled(false);
     setState(() {});
+  }
+
+  void pipModeListener(BetterPlayerEvent event) {
+    if (event.betterPlayerEventType == BetterPlayerEventType.pipStart) {
+      _isPipMode = true;
+    } else if (event.betterPlayerEventType == BetterPlayerEventType.pipStop) {
+      _isPipMode = false;
+    }
   }
 
   void setResolution(String url) {
@@ -110,6 +112,17 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
+        if (_isPipMode) {
+          return Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Container(
+              alignment: Alignment.center,
+              color: Colors.black,
+              child: controllerProvider,
+            ),
+          );
+        }
+
         return Scaffold(
           resizeToAvoidBottomInset: false,
           body: Container(
@@ -117,14 +130,13 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
             color: Colors.black,
             child: Stack(children: [
               controllerProvider,
-              if (!_isPipMode)
-                DanmakuVideoController(
-                  key: _danmakuFullScreen,
-                  playerKey: _betterPlayerKey,
-                  controller: controller!,
-                  danmakuStream: widget.danmakuStream,
-                  title: widget.room.title,
-                ),
+              DanmakuVideoController(
+                key: _danmakuFullScreen,
+                playerKey: _betterPlayerKey,
+                controller: controller!,
+                danmakuStream: widget.danmakuStream,
+                title: widget.room.title,
+              ),
             ]),
           ),
         );
@@ -152,16 +164,6 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null) {
-      return Center(
-        child: IconButton(
-          onPressed: resumePlayer,
-          icon: const Icon(Icons.refresh_rounded),
-          iconSize: 30,
-        ),
-      );
-    }
-
     return Stack(
       children: [
         BetterPlayer(
