@@ -57,7 +57,6 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
     _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
-    _floatOverlayRatio = PrefUtil.getDouble('floatOverlayRatio') ?? 0.8;
     _preferResolution =
         PrefUtil.getString('preferResolution') ?? resolutions[0];
     _preferPlatform = PrefUtil.getString('preferPlatform') ?? platforms[0];
@@ -80,7 +79,6 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
     PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
-    PrefUtil.setDouble('floatOverlayRatio', _floatOverlayRatio);
     PrefUtil.setString('preferResolution', _preferResolution);
     PrefUtil.setString('preferPlatform', _preferPlatform);
   }
@@ -248,15 +246,6 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
   }
 
-  double _floatOverlayRatio = 0.8;
-  double get floatOverlayRatio => _floatOverlayRatio;
-  set floatOverlayRatio(double value) {
-    if (value < 0.1 || value > 1.0) return;
-    _floatOverlayRatio = value;
-    notifyListeners();
-    PrefUtil.setDouble('floatOverlayRatio', _floatOverlayRatio);
-  }
-
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
   String _preferResolution = resolutions[0];
   String get preferResolution => _preferResolution;
@@ -301,7 +290,6 @@ class SettingsProvider with ChangeNotifier {
     _danmakuFontBorder = json['danmakuFontBorder'] ?? 0.8;
     _danmakuFontSize = json['danmakuFontSize'] ?? 16;
     _danmakuOpacity = json['danmakuOpcity'] ?? 1.0;
-    _floatOverlayRatio = json['floatOverlayRatio'] ?? 0.8;
     _preferResolution = json['preferResolution'] ?? resolutions[0];
     _preferPlatform = json['preferPlatform'] ?? platforms[0];
     _saveToPref();
@@ -326,7 +314,6 @@ class SettingsProvider with ChangeNotifier {
     json['danmakuFontBorder'] = _danmakuFontBorder;
     json['danmakuFontSize'] = _danmakuFontSize;
     json['danmakuOpcity'] = _danmakuOpacity;
-    json['floatOverlayRatio'] = _floatOverlayRatio;
     json['preferResolution'] = _preferResolution;
     json['preferPlatform'] = _preferPlatform;
     return json;
