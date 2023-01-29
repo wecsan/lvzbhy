@@ -48,17 +48,18 @@ dependencies:
   # video player needed
   better_player: ^0.0.83
   flutter_barrage: ^0.5.2
-  dlna_dart: ^0.0.8
-  battery_plus: ^3.0.2
   screen_brightness: ^0.2.2
   volume_controller: ^2.0.6
-  flutter_overlay_window: ^0.3.3
+  
   wakelock: ^0.6.2
-
+  dlna_dart: ^0.0.8
+  battery_plus: ^3.0.2
+  
   # utils
   provider: ^6.0.3
   shared_preferences: ^2.0.15
   flutter_cache_manager: ^3.3.0
+  # dpad_container: ^1.0.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 

@@ -57,15 +57,19 @@ class DanmakuText extends StatelessWidget {
 }
 
 class DanmakuVideoController extends StatefulWidget {
+  final GlobalKey playerKey;
   final BetterPlayerController controller;
   final DanmakuStream danmakuStream;
   final String title;
+  final double? width;
 
   const DanmakuVideoController({
     Key? key,
     required this.controller,
     required this.danmakuStream,
+    required this.playerKey,
     this.title = '',
+    this.width,
   }) : super(key: key);
 
   @override
@@ -482,31 +486,33 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     if (controller.isFullScreen) {
       rows = [
         _buildBackButton(),
-        Expanded(
-          child: Text(
-            widget.title,
-            style: const TextStyle(color: Colors.white),
-          ),
+        Text(
+          widget.title,
+          style: const TextStyle(color: Colors.white),
         ),
+        const Spacer(),
         _buildBatteryInfo(),
         _buildTimeInfo()
       ];
     } else {
-      rows.add(Expanded(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            widget.title,
-            style: const TextStyle(color: Colors.white),
+      rows = [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              widget.title,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ),
-      ));
+        _buildPIPButton(),
+      ];
     }
 
     return Positioned(
       top: 0,
       height: barHeight,
-      width: MediaQuery.of(context).size.width,
+      width: widget.width ?? MediaQuery.of(context).size.width,
       child: AnimatedOpacity(
         opacity: _hideStuff ? 0.0 : 1,
         duration: const Duration(milliseconds: 300),
@@ -596,13 +602,39 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
     );
   }
 
+  Widget _buildPIPButton() {
+    return GestureDetector(
+      onTap: () async {
+        if (await controller.isPictureInPictureSupported()) {
+          controller.enablePictureInPicture(widget.playerKey);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              margin: EdgeInsets.symmetric(horizontal: 16),
+              content: Text('暂不支持画中画'),
+            ),
+          );
+        }
+      },
+      child: Container(
+        height: barHeight,
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(right: 12.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: const Icon(
+          CustomIcons.float_window,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
   // Bottom bar widgets
   Widget _buildBottomBar() {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Positioned(
       bottom: 0,
       height: barHeight,
-      width: MediaQuery.of(context).size.width,
+      width: widget.width ?? MediaQuery.of(context).size.width,
       child: AnimatedOpacity(
         opacity: _hideStuff ? 0.0 : 1,
         duration: const Duration(milliseconds: 300),
@@ -620,7 +652,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
               _buildRefreshButton(),
               _buildDanmakuHideButton(),
               if (controller.isFullScreen) _buildSettingButton(),
-              if (controller.isFullScreen || screenWidth < 640) const Spacer(),
+              const Spacer(),
               _buildExpandButton(),
             ],
           ),
@@ -753,7 +785,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
 
   // Gesture functions
   void _onVerticalDragStart(detills) async {
-    if (_displaySetting) return;
+    if (_displaySetting || _lockStuff) return;
 
     double clientW = MediaQuery.of(context).size.width;
     setState(() {

@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:hot_live/api/danmaku/danmaku_stream.dart';
 import 'package:hot_live/api/liveapi.dart';
 import 'package:hot_live/generated/l10n.dart';
@@ -54,7 +51,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     LiveApi.getRoomStreamLink(widget.room).then((value) {
       streamList = value;
       if (streamList.isNotEmpty && streamList.values.first.isNotEmpty) {
-        selectPreferResolution();
+        setPreferResolution();
       } else {
         noStreamError = true;
       }
@@ -72,7 +69,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     super.dispose();
   }
 
-  void selectPreferResolution() {
+  void setPreferResolution() {
     for (var key in streamList.keys) {
       if (widget.preferResolution.contains(key)) {
         selectedResolution = key;
@@ -95,7 +92,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     datasource = streamList.values.last.values.first;
   }
 
-  void selectResolution(String name, String url) {
+  void setResolution(String name, String url) {
     setState(() => selectedResolution = name);
     datasource = url;
     videoPlayer?.setResolution(url);
@@ -140,11 +137,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
         ]),
         actions: [
           IconButton(
-            tooltip: S.of(context).float_window_play,
-            onPressed: showFloatingWindow,
-            icon: const Icon(CustomIcons.float_window),
-          ),
-          IconButton(
             tooltip: S.of(context).dlan_button_info,
             onPressed: showDlnaCastDialog,
             icon: const Icon(CustomIcons.cast),
@@ -156,7 +148,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
             ? Row(children: <Widget>[
                 Flexible(
                   flex: 5,
-                  child: _buildVideoPlayer(),
+                  child: _buildVideoPlayer(
+                    width: MediaQuery.of(context).size.width / 8.0 * 5.0,
+                  ),
                 ),
                 Flexible(
                   flex: 3,
@@ -192,7 +186,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     );
   }
 
-  Widget _buildVideoPlayer() {
+  Widget _buildVideoPlayer({double? width}) {
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: Container(
@@ -206,6 +200,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 fullScreenByDefault: settings.enableFullScreenDefault,
                 allowBackgroundPlay: settings.enableBackgroundPlay,
                 allowedScreenSleep: !settings.enableScreenKeepOn,
+                width: width,
               )
             : Center(
                 child: noStreamError
@@ -253,7 +248,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                         ? Theme.of(context).colorScheme.primary
                         : null),
               ),
-              onSelected: (String url) => selectResolution(res, url),
+              onSelected: (String url) => setResolution(res, url),
               itemBuilder: (context) => streamList[res]!
                   .keys
                   .map((cdn) => PopupMenuItem<String>(
@@ -287,41 +282,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
       context: context,
       builder: (context) => LiveDlnaPage(datasource: datasource),
     );
-  }
-
-  void showFloatingWindow() async {
-    if (!Platform.isAndroid) {
-      return;
-    }
-
-    var allowed = await FlutterOverlayWindow.isPermissionGranted();
-    if (!allowed) {
-      allowed = (await FlutterOverlayWindow.requestPermission()) ?? false;
-    }
-    if (!allowed) {
-      return;
-    }
-
-    videoPlayer?.stopPlayer();
-    final width = MediaQuery.of(context).size.width *
-        MediaQuery.of(context).devicePixelRatio *
-        settings.floatOverlayRatio;
-    final height = width / 16 * 9;
-
-    if (!(await FlutterOverlayWindow.isActive())) {
-      await FlutterOverlayWindow.showOverlay(
-        width: width.toInt(),
-        height: height.toInt(),
-        enableDrag: true,
-        overlayTitle: '悬浮播放${widget.room.nick}的直播间',
-        overlayContent: widget.room.title,
-        flag: OverlayFlag.defaultFlag,
-        alignment: OverlayAlignment.topRight,
-        visibility: NotificationVisibility.visibilityPrivate,
-        positionGravity: PositionGravity.auto,
-      );
-    }
-    FlutterOverlayWindow.shareData({"url": datasource});
   }
 }
 

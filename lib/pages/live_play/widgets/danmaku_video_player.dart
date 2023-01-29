@@ -11,6 +11,7 @@ class DanmakuVideoPlayer extends StatefulWidget {
   final bool fullScreenByDefault;
   final bool allowBackgroundPlay;
   final bool allowedScreenSleep;
+  final double? width;
 
   const DanmakuVideoPlayer({
     Key? key,
@@ -20,6 +21,7 @@ class DanmakuVideoPlayer extends StatefulWidget {
     this.fullScreenByDefault = false,
     this.allowBackgroundPlay = false,
     this.allowedScreenSleep = false,
+    this.width,
   }) : super(key: key);
 
   @override
@@ -28,10 +30,11 @@ class DanmakuVideoPlayer extends StatefulWidget {
 
 class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   BetterPlayerController? controller;
-  Widget? danmakuVideoControl;
-  Widget? danmakuVideoControlFullScreen;
+  final GlobalKey _betterPlayerKey = GlobalKey();
   final GlobalKey<DanmakuVideoControllerState> _danmakuNormal = GlobalKey();
   final GlobalKey<DanmakuVideoControllerState> _danmakuFullScreen = GlobalKey();
+
+  bool _isPipMode = false;
 
   @override
   void initState() {
@@ -48,14 +51,22 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
   void resumePlayer() {
     controller = BetterPlayerController(
       BetterPlayerConfiguration(
-        autoPlay: true,
-        fit: BoxFit.contain,
-        fullScreenByDefault: widget.fullScreenByDefault,
-        allowedScreenSleep: widget.allowedScreenSleep,
-        autoDetectFullscreenDeviceOrientation: true,
-        autoDetectFullscreenAspectRatio: true,
-        routePageBuilder: fullScreenPageBuilder,
-      ),
+          autoPlay: true,
+          fit: BoxFit.contain,
+          fullScreenByDefault: widget.fullScreenByDefault,
+          allowedScreenSleep: widget.allowedScreenSleep,
+          autoDetectFullscreenDeviceOrientation: true,
+          autoDetectFullscreenAspectRatio: true,
+          errorBuilder: errorBuilder,
+          routePageBuilder: routePageBuilder,
+          eventListener: ((p0) {
+            if (p0.betterPlayerEventType == BetterPlayerEventType.pipStart) {
+              setState(() => _isPipMode = true);
+            } else if (p0.betterPlayerEventType ==
+                BetterPlayerEventType.pipStop) {
+              setState(() => _isPipMode = false);
+            }
+          })),
       betterPlayerDataSource: BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
         widget.url,
@@ -72,31 +83,10 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
       ),
     );
     controller?.setControlsEnabled(false);
-    danmakuVideoControl = DanmakuVideoController(
-      key: _danmakuNormal,
-      controller: controller!,
-      danmakuStream: widget.danmakuStream,
-      title: widget.room.title,
-    );
-    danmakuVideoControlFullScreen = DanmakuVideoController(
-      key: _danmakuFullScreen,
-      controller: controller!,
-      danmakuStream: widget.danmakuStream,
-      title: widget.room.title,
-    );
-    setState(() {});
-  }
-
-  void stopPlayer() {
-    controller?.dispose();
-    controller = null;
     setState(() {});
   }
 
   void setResolution(String url) {
-    if (controller == null) {
-      resumePlayer();
-    }
     controller?.setupDataSource(BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       url,
@@ -113,23 +103,50 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
     ));
   }
 
-  Widget fullScreenPageBuilder(
+  Widget routePageBuilder(
       BuildContext context,
       Animation<double> animation,
       Animation<double> second,
       BetterPlayerControllerProvider controllerProvider) {
     return AnimatedBuilder(
       animation: animation,
-      builder: (context, child) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          alignment: Alignment.center,
-          color: Colors.black,
-          child: Stack(children: [
-            controllerProvider,
-            danmakuVideoControlFullScreen!,
-          ]),
-        ),
+      builder: (context, child) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Container(
+            alignment: Alignment.center,
+            color: Colors.black,
+            child: Stack(children: [
+              controllerProvider,
+              if (!_isPipMode)
+                DanmakuVideoController(
+                  key: _danmakuFullScreen,
+                  playerKey: _betterPlayerKey,
+                  controller: controller!,
+                  danmakuStream: widget.danmakuStream,
+                  title: widget.room.title,
+                ),
+            ]),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget errorBuilder(BuildContext context, String? errorMessage) {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            errorMessage ?? '未知错误',
+            style: const TextStyle(color: Colors.white),
+          ),
+          IconButton(
+            onPressed: resumePlayer,
+            icon: const Icon(Icons.refresh_rounded),
+            iconSize: 30,
+          ),
+        ],
       ),
     );
   }
@@ -148,8 +165,18 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
 
     return Stack(
       children: [
-        BetterPlayer(controller: controller!),
-        danmakuVideoControl!,
+        BetterPlayer(
+          key: _betterPlayerKey,
+          controller: controller!,
+        ),
+        DanmakuVideoController(
+          key: _danmakuNormal,
+          playerKey: _betterPlayerKey,
+          controller: controller!,
+          danmakuStream: widget.danmakuStream,
+          title: widget.room.title,
+          width: widget.width,
+        ),
       ],
     );
   }
