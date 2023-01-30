@@ -15,6 +15,12 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   late AreasProvider provider = Provider.of<AreasProvider>(context);
   late TabController tabController;
 
+  static const Map<String, String> names = {
+    'bilibili': '哔哩',
+    'douyu': '斗鱼',
+    'huya': '虎牙',
+  };
+
   @override
   Widget build(BuildContext context) {
     tabController =
@@ -27,12 +33,11 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
           icon: const Icon(Icons.keyboard_arrow_down_rounded),
           style: Theme.of(context)
               .textTheme
-              .titleLarge
+              .headline6
               ?.copyWith(fontWeight: FontWeight.w600),
           value: provider.platform,
           items: provider.platforms
-              .map((e) =>
-                  DropdownMenuItem(value: e, child: Text(e.toUpperCase())))
+              .map((e) => DropdownMenuItem(value: e, child: Text(names[e]!)))
               .toList(),
           onChanged: (String? value) {
             provider.setPlatform(value ?? 'bilibili');

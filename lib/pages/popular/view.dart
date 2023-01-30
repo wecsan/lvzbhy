@@ -20,6 +20,12 @@ class _PopularPageState extends State<PopularPage> {
 
   bool loading = false;
 
+  static const Map<String, String> names = {
+    'bilibili': '哔哩',
+    'douyu': '斗鱼',
+    'huya': '虎牙',
+  };
+
   void _onRefresh() {
     provider.onRefresh().then(
           (value) => value
@@ -54,12 +60,11 @@ class _PopularPageState extends State<PopularPage> {
           icon: const Icon(Icons.keyboard_arrow_down_rounded),
           style: Theme.of(context)
               .textTheme
-              .titleLarge
+              .headline6
               ?.copyWith(fontWeight: FontWeight.w600),
           value: provider.platform,
           items: provider.platforms
-              .map((e) =>
-                  DropdownMenuItem(value: e, child: Text(e.toUpperCase())))
+              .map((e) => DropdownMenuItem(value: e, child: Text(names[e]!)))
               .toList(),
           onChanged: (String? value) {
             provider.setPlatform(value ?? 'bilibili');
