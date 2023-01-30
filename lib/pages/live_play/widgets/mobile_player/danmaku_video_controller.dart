@@ -483,7 +483,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
         _buildBackButton(),
         Text(
           widget.title,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white, fontSize: 16),
         ),
         const Spacer(),
         _buildBatteryInfo(),
@@ -496,7 +496,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
               widget.title,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
         ),
@@ -556,7 +556,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: Text(
         '$hour:$minute',
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
   }
@@ -573,8 +573,8 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
           ClipRRect(
             borderRadius: BorderRadius.circular(1),
             child: SizedBox(
-              width: 20,
-              height: 10,
+              width: 28,
+              height: 14,
               child: LinearProgressIndicator(
                 value: batteryLevel / 100.0,
                 backgroundColor: Colors.white38,
@@ -587,10 +587,7 @@ class DanmakuVideoControllerState extends State<DanmakuVideoController>
           const SizedBox(width: 4),
           Text(
             '$batteryLevel%',
-            style: Theme.of(context)
-                .textTheme
-                .labelSmall
-                ?.copyWith(color: Colors.white),
+            style: const TextStyle(color: Colors.white, fontSize: 14),
           ),
         ],
       ),

@@ -65,41 +65,43 @@ class DesktopDanmakuVideoPlayerState extends State<DesktopDanmakuVideoPlayer> {
 
   void fullScreenBuilder(BuildContext context, bool isFullScreen) {
     if (!isFullScreen) {
-      Navigator.push(
-        context,
-        MaterialPageRoute<void>(
-          builder: (context) => Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: Container(
-              alignment: Alignment.center,
-              color: Colors.black,
-              child: Hero(
-                tag: widget.datasource,
-                child: Stack(children: [
-                  Video(
-                    player: controller,
-                    scale: 1.0, // default
-                    showControls: false, // default
-                  ),
-                  DanmakuVideoController(
-                    controller: controller,
-                    danmakuStream: widget.danmakuStream,
-                    fullScreenBuilder: fullScreenBuilder,
-                    title: widget.room.title,
-                    isFullScreen: true,
-                  ),
-                ]),
+      WindowManager.instance.setFullScreen(true);
+      Timer(const Duration(milliseconds: 500), () {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: Container(
+                alignment: Alignment.center,
+                color: Colors.black,
+                child: Hero(
+                  tag: widget.datasource,
+                  child: Stack(children: [
+                    Video(
+                      player: controller,
+                      scale: 1.0, // default
+                      showControls: false, // default
+                    ),
+                    DanmakuVideoController(
+                      controller: controller,
+                      danmakuStream: widget.danmakuStream,
+                      fullScreenBuilder: fullScreenBuilder,
+                      title: widget.room.title,
+                      isFullScreen: true,
+                    ),
+                  ]),
+                ),
               ),
             ),
           ),
-        ),
-      );
-      Timer(const Duration(seconds: 1), () {
-        WindowManager.instance.setFullScreen(true);
+        );
       });
     } else {
-      WindowManager.instance.setFullScreen(false);
       Navigator.pop(context);
+      Timer(const Duration(milliseconds: 500), () {
+        WindowManager.instance.setFullScreen(false);
+      });
     }
   }
 
