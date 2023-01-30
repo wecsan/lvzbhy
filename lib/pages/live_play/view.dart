@@ -31,8 +31,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
   String _datasource = '';
 
   // 控制唯一子组件
-  final GlobalKey<DanmakuVideoPlayerState> _videoPlayerKey = GlobalKey();
-  final GlobalKey<DanmakuListViewState> _danmakuViewKey = GlobalKey();
+  final GlobalKey<VideoPlayerViewState> _playerKey = GlobalKey();
+  final _danmakuViewKey = GlobalKey();
 
   @override
   void initState() {
@@ -83,7 +83,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   void setResolution(String name, String url) {
     setState(() => _selectedResolution = name);
     _datasource = url;
-    _videoPlayerKey.currentState?.setResolution(_datasource);
+    _playerKey.currentState?.setDataSource(_datasource);
   }
 
   @override
@@ -181,11 +181,11 @@ class _LivePlayPageState extends State<LivePlayPage> {
         color: Colors.black,
         child: _loading
             ? Container()
-            : DanmakuVideoPlayer(
-                key: _videoPlayerKey,
-                url: _datasource,
-                danmakuStream: danmakuStream,
+            : VideoPlayerView(
+                key: _playerKey,
                 room: widget.room,
+                datasource: _datasource,
+                danmakuStream: danmakuStream,
                 fullScreenByDefault: settings.enableFullScreenDefault,
                 allowBackgroundPlay: settings.enableBackgroundPlay,
                 allowedScreenSleep: !settings.enableScreenKeepOn,

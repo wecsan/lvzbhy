@@ -1,4 +1,5 @@
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_meedu_videoplayer/init_meedu_player.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PrefUtil.prefs = await SharedPreferences.getInstance();
+  initMeeduPlayer();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(

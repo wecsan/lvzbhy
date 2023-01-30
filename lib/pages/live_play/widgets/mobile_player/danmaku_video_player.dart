@@ -3,20 +3,20 @@ import 'package:hot_live/common/index.dart';
 
 import './danmaku_video_controller.dart';
 
-class DanmakuVideoPlayer extends StatefulWidget {
+class MobileDanmakuVideoPlayer extends StatefulWidget {
   final DanmakuStream danmakuStream;
   final RoomInfo room;
-  final String url;
+  final String datasource;
   final bool fullScreenByDefault;
   final bool allowBackgroundPlay;
   final bool allowedScreenSleep;
   final double? width;
 
-  const DanmakuVideoPlayer({
+  const MobileDanmakuVideoPlayer({
     Key? key,
     required this.danmakuStream,
     required this.room,
-    required this.url,
+    required this.datasource,
     this.fullScreenByDefault = false,
     this.allowBackgroundPlay = false,
     this.allowedScreenSleep = false,
@@ -24,14 +24,15 @@ class DanmakuVideoPlayer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DanmakuVideoPlayer> createState() => DanmakuVideoPlayerState();
+  State<MobileDanmakuVideoPlayer> createState() =>
+      MobileDanmakuVideoPlayerState();
 }
 
-class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
+class MobileDanmakuVideoPlayerState extends State<MobileDanmakuVideoPlayer> {
   BetterPlayerController? controller;
-  final GlobalKey _betterPlayerKey = GlobalKey();
-  final GlobalKey<DanmakuVideoControllerState> _danmakuNormal = GlobalKey();
-  final GlobalKey<DanmakuVideoControllerState> _danmakuFullScreen = GlobalKey();
+  final _betterPlayerKey = GlobalKey();
+  final _danmakuNormal = GlobalKey();
+  final _danmakuFullScreen = GlobalKey();
 
   bool _isPipMode = false;
 
@@ -60,34 +61,13 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
         routePageBuilder: routePageBuilder,
         eventListener: pipModeListener,
       ),
-      betterPlayerDataSource: BetterPlayerDataSource(
-        BetterPlayerDataSourceType.network,
-        widget.url,
-        liveStream: true,
-        notificationConfiguration: widget.allowBackgroundPlay
-            ? BetterPlayerNotificationConfiguration(
-                showNotification: true,
-                title: widget.room.title,
-                author: widget.room.nick,
-                imageUrl: widget.room.cover,
-                activityName: "MainActivity",
-              )
-            : null,
-      ),
     );
     controller?.setControlsEnabled(false);
+    setDataSource(widget.datasource);
     setState(() {});
   }
 
-  void pipModeListener(BetterPlayerEvent event) {
-    if (event.betterPlayerEventType == BetterPlayerEventType.pipStart) {
-      _isPipMode = true;
-    } else if (event.betterPlayerEventType == BetterPlayerEventType.pipStop) {
-      _isPipMode = false;
-    }
-  }
-
-  void setResolution(String url) {
+  void setDataSource(String url) {
     controller?.setupDataSource(BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       url,
@@ -102,6 +82,32 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
             )
           : null,
     ));
+  }
+
+  void pipModeListener(BetterPlayerEvent event) {
+    if (event.betterPlayerEventType == BetterPlayerEventType.pipStart) {
+      _isPipMode = true;
+    } else if (event.betterPlayerEventType == BetterPlayerEventType.pipStop) {
+      _isPipMode = false;
+    }
+  }
+
+  Widget errorBuilder(BuildContext context, String? errorMessage) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            '无法播放直播',
+            style: TextStyle(color: Colors.white),
+          ),
+          TextButton(
+            onPressed: resumePlayer,
+            child: const Text('重试'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget routePageBuilder(
@@ -141,24 +147,6 @@ class DanmakuVideoPlayerState extends State<DanmakuVideoPlayer> {
           ),
         );
       },
-    );
-  }
-
-  Widget errorBuilder(BuildContext context, String? errorMessage) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            '无法播放直播',
-            style: TextStyle(color: Colors.white),
-          ),
-          TextButton(
-            onPressed: resumePlayer,
-            child: const Text('重试'),
-          ),
-        ],
-      ),
     );
   }
 

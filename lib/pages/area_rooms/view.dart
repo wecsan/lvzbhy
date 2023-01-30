@@ -12,8 +12,8 @@ class AreasRoomPage extends StatefulWidget {
 }
 
 class _AreasRoomPageState extends State<AreasRoomPage> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final refreshController = RefreshController(initialRefresh: false);
+  final scrollController = ScrollController();
   List<RoomInfo> roomsList = [];
   int pageIndex = 1;
 
@@ -21,17 +21,23 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
   void initState() {
     super.initState();
     _onRefresh();
+    scrollController.addListener(() {
+      final pos = scrollController.position;
+      if (pos.maxScrollExtent - pos.pixels < 100) {
+        _onLoading();
+      }
+    });
   }
 
   void _onRefresh() async {
     pageIndex = 0;
     final items = await LiveApi.getAreaRooms(widget.area, page: pageIndex);
     if (items.isEmpty) {
-      _refreshController.refreshFailed();
+      refreshController.refreshFailed();
     } else {
       roomsList.clear();
       roomsList.addAll(items);
-      _refreshController.refreshCompleted();
+      refreshController.refreshCompleted();
     }
     setState(() {});
   }
@@ -40,7 +46,7 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
     pageIndex++;
     final items = await LiveApi.getAreaRooms(widget.area, page: pageIndex);
     if (items.isEmpty) {
-      _refreshController.loadFailed();
+      refreshController.loadFailed();
     } else {
       for (var item in items) {
         if (roomsList.indexWhere((e) => e.roomId == item.roomId) != -1) {
@@ -48,7 +54,7 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
         }
         roomsList.add(item);
       }
-      _refreshController.loadComplete();
+      refreshController.loadComplete();
     }
     setState(() {});
   }
@@ -67,13 +73,13 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
         enablePullUp: true,
         header: const WaterDropHeader(),
         footer: const OnLoadingFooter(),
-        controller: _refreshController,
+        controller: refreshController,
         onRefresh: _onRefresh,
         onLoading: _onLoading,
         child: roomsList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
-                controller: ScrollController(),
+                controller: scrollController,
                 crossAxisCount: crossAxisCount,
                 itemCount: roomsList.length,
                 itemBuilder: (context, index) =>

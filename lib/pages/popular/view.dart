@@ -11,9 +11,20 @@ class PopularPage extends StatefulWidget {
 }
 
 class _PopularPageState extends State<PopularPage> {
-  late PopularProvider provider = Provider.of<PopularProvider>(context);
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+  late final provider = Provider.of<PopularProvider>(context);
+  final refreshController = RefreshController(initialRefresh: false);
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      final pos = scrollController.position;
+      if (pos.maxScrollExtent - pos.pixels < 100) {
+        _onLoading();
+      }
+    });
+  }
 
   void showSwitchPlatformDialog() {
     showDialog(
@@ -40,6 +51,22 @@ class _PopularPageState extends State<PopularPage> {
         );
       },
     );
+  }
+
+  void _onRefresh() {
+    provider.onRefresh().then(
+          (value) => value
+              ? refreshController.refreshCompleted()
+              : refreshController.refreshFailed(),
+        );
+  }
+
+  void _onLoading() {
+    provider.onLoading().then(
+          (value) => value
+              ? refreshController.loadComplete()
+              : refreshController.loadFailed(),
+        );
   }
 
   @override
@@ -74,20 +101,12 @@ class _PopularPageState extends State<PopularPage> {
         header: const WaterDropHeader(),
         footer: const OnLoadingFooter(),
         controller: refreshController,
-        onRefresh: () => provider.onRefresh().then(
-              (value) => value
-                  ? refreshController.refreshCompleted()
-                  : refreshController.refreshFailed(),
-            ),
-        onLoading: () => provider.onLoading().then(
-              (value) => value
-                  ? refreshController.loadComplete()
-                  : refreshController.loadFailed(),
-            ),
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
         child: provider.roomList.isNotEmpty
             ? MasonryGridView.count(
                 padding: const EdgeInsets.all(5),
-                controller: ScrollController(),
+                controller: scrollController,
                 crossAxisCount: crossAxisCount,
                 itemCount: provider.roomList.length,
                 itemBuilder: (context, index) =>
