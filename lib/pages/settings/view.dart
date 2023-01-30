@@ -269,7 +269,9 @@ class _SettingsPageState extends State<SettingsPage> {
         width: 60,
         child: Center(child: Image.asset('assets/icon.png')),
       ),
+      applicationLegalese: S.of(context).app_legalese,
       children: [
+        const SizedBox(height: 12),
         ListTile(
           title: const Text('Github'),
           leading: const Icon(CustomIcons.github_circled, size: 30),
@@ -331,6 +333,9 @@ class CupertinoSwitchListTile extends StatelessWidget {
       leading: leading,
       title: title,
       subtitle: subtitle,
+      onTap: () {
+        if (onChanged != null) onChanged!(!value);
+      },
       trailing: CupertinoSwitch(
         value: value,
         activeColor: activeColor,

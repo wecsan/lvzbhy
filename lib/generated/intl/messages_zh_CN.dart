@@ -32,6 +32,8 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("关于"),
+        "app_legalese": MessageLookupByLibrary.simpleMessage(
+            "本项目是一个纯本地直播转码应用，不会收集任何用户隐私，应用程序直接请求直播官方接口，所有操作生成的数据由用户本地保留。"),
         "app_name": MessageLookupByLibrary.simpleMessage("HotLive"),
         "areas_title": MessageLookupByLibrary.simpleMessage("分区"),
         "bilibili_cookie":
