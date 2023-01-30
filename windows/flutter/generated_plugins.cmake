@@ -5,8 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   battery_plus
   dart_vlc
-  flutter_meedu_videoplayer
-  fullscreen_window
+  flutter_native_view
   screen_brightness_windows
   screen_retriever
   url_launcher_windows

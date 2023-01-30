@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -16,6 +19,8 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
   final scrollController = ScrollController();
   List<RoomInfo> roomsList = [];
   int pageIndex = 1;
+
+  bool loading = false;
 
   @override
   void initState() {
@@ -43,6 +48,9 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
   }
 
   void _onLoading() async {
+    if (loading) return;
+
+    loading = true;
     pageIndex++;
     final items = await LiveApi.getAreaRooms(widget.area, page: pageIndex);
     if (items.isEmpty) {
@@ -56,6 +64,7 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
       }
       refreshController.loadComplete();
     }
+    loading = false;
     setState(() {});
   }
 
@@ -68,28 +77,40 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.area.areaName)),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: const WaterDropHeader(),
-        footer: const OnLoadingFooter(),
-        controller: refreshController,
-        onRefresh: _onRefresh,
-        onLoading: _onLoading,
-        child: roomsList.isNotEmpty
-            ? MasonryGridView.count(
-                padding: const EdgeInsets.all(5),
-                controller: scrollController,
-                crossAxisCount: crossAxisCount,
-                itemCount: roomsList.length,
-                itemBuilder: (context, index) =>
-                    RoomCard(room: roomsList[index], dense: true),
-              )
-            : EmptyView(
-                icon: Icons.live_tv_rounded,
-                title: S.of(context).empty_areas_room_title,
-                subtitle: S.of(context).empty_areas_room_subtitle,
-              ),
+      body: Listener(
+        onPointerSignal: (event) {
+          if (event is PointerScrollEvent &&
+              event.scrollDelta.direction >= 0 &&
+              event.scrollDelta.direction <= pi) {
+            final pos = scrollController.position;
+            if (pos.maxScrollExtent - pos.pixels < 40) {
+              _onLoading();
+            }
+          }
+        },
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: const WaterDropHeader(),
+          footer: const OnLoadingFooter(),
+          controller: refreshController,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+          child: roomsList.isNotEmpty
+              ? MasonryGridView.count(
+                  padding: const EdgeInsets.all(5),
+                  controller: scrollController,
+                  crossAxisCount: crossAxisCount,
+                  itemCount: roomsList.length,
+                  itemBuilder: (context, index) =>
+                      RoomCard(room: roomsList[index], dense: true),
+                )
+              : EmptyView(
+                  icon: Icons.live_tv_rounded,
+                  title: S.of(context).empty_areas_room_title,
+                  subtitle: S.of(context).empty_areas_room_subtitle,
+                ),
+        ),
       ),
     );
   }

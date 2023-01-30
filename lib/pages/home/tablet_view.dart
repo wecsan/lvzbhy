@@ -25,7 +25,9 @@ class _HomePageRouterState extends State<HomePageRouter> {
   Widget get body => [
         const FavoritePage(),
         const PopularPage(),
-        const AreasPage()
+        const AreasPage(),
+        const SettingsPage(),
+        const SearchPage(),
       ][_selectedIndex];
 
   @override
@@ -35,8 +37,21 @@ class _HomePageRouterState extends State<HomePageRouter> {
         child: Row(
           children: [
             NavigationRail(
-              groupAlignment: -0.9,
+              groupAlignment: 0.95,
               labelType: NavigationRailLabelType.all,
+              leading: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 8),
+                  FloatingActionButton(
+                    heroTag: 'search',
+                    onPressed: () {
+                      setState(() => _selectedIndex = 4);
+                    },
+                    child: const Icon(CustomIcons.search),
+                  ),
+                ],
+              ),
               destinations: [
                 NavigationRailDestination(
                   icon: const Icon(Icons.favorite_rounded),
@@ -50,12 +65,14 @@ class _HomePageRouterState extends State<HomePageRouter> {
                   icon: const Icon(Icons.area_chart_rounded),
                   label: Text(S.of(context).areas_title),
                 ),
+                NavigationRailDestination(
+                  icon: const Icon(Icons.settings_rounded),
+                  label: Text(S.of(context).settings_title),
+                ),
               ],
-              selectedIndex: _selectedIndex,
+              selectedIndex: _selectedIndex > 3 ? 0 : _selectedIndex,
               onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
+                setState(() => _selectedIndex = index);
               },
             ),
             const VerticalDivider(thickness: 1, width: 1),

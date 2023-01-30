@@ -1,5 +1,8 @@
-import 'package:flutter_meedu_videoplayer/meedu_player.dart';
+import 'dart:async';
+
+import 'package:dart_vlc/dart_vlc.dart';
 import 'package:hot_live/common/index.dart';
+import 'package:window_manager/window_manager.dart';
 
 import './danmaku_video_controller.dart';
 
@@ -11,6 +14,7 @@ class DesktopDanmakuVideoPlayer extends StatefulWidget {
   final bool allowBackgroundPlay;
   final bool allowedScreenSleep;
   final double? width;
+  final double? height;
 
   const DesktopDanmakuVideoPlayer({
     Key? key,
@@ -21,6 +25,7 @@ class DesktopDanmakuVideoPlayer extends StatefulWidget {
     this.allowBackgroundPlay = false,
     this.allowedScreenSleep = false,
     this.width,
+    this.height,
   }) : super(key: key);
 
   @override
@@ -29,12 +34,9 @@ class DesktopDanmakuVideoPlayer extends StatefulWidget {
 }
 
 class DesktopDanmakuVideoPlayerState extends State<DesktopDanmakuVideoPlayer> {
-  late MeeduPlayerController controller;
-  final screenManager = const ScreenManager();
+  final Player controller = Player(id: 0, registerTexture: true);
   final _playerKey = GlobalKey();
   final _danmakuNormal = GlobalKey();
-
-  bool _hasError = false;
 
   @override
   void initState() {
@@ -49,67 +51,81 @@ class DesktopDanmakuVideoPlayerState extends State<DesktopDanmakuVideoPlayer> {
   }
 
   void resumePlayer() {
-    controller = MeeduPlayerController(
-      screenManager: screenManager,
-      controlsEnabled: false,
-    );
-    controller.onVideoFitChange(BoxFit.contain);
     setDataSource(widget.datasource);
-    controller.onDataStatusChanged.listen(((event) {
-      setState(() => _hasError = event == DataStatus.error);
-    }));
     setState(() {});
   }
 
   void setDataSource(String datasource) {
-    controller.setDataSource(
-      DataSource(type: DataSourceType.network, source: datasource),
-      autoplay: true,
+    controller.pause();
+    controller.open(
+      Media.directShow(rawUrl: widget.datasource),
+      autoStart: true,
     );
   }
 
-  Widget errorBuilder() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            '无法播放直播',
-            style: TextStyle(color: Colors.white),
+  void fullScreenBuilder(BuildContext context, bool isFullScreen) {
+    if (!isFullScreen) {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(
+          builder: (context) => Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Container(
+              alignment: Alignment.center,
+              color: Colors.black,
+              child: Hero(
+                tag: widget.datasource,
+                child: Stack(children: [
+                  Video(
+                    player: controller,
+                    scale: 1.0, // default
+                    showControls: false, // default
+                  ),
+                  DanmakuVideoController(
+                    controller: controller,
+                    danmakuStream: widget.danmakuStream,
+                    fullScreenBuilder: fullScreenBuilder,
+                    title: widget.room.title,
+                    isFullScreen: true,
+                  ),
+                ]),
+              ),
+            ),
           ),
-          TextButton(
-            onPressed: resumePlayer,
-            child: const Text('重试'),
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+      Timer(const Duration(seconds: 1), () {
+        WindowManager.instance.setFullScreen(true);
+      });
+    } else {
+      WindowManager.instance.setFullScreen(false);
+      Navigator.pop(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_hasError) {
-      return errorBuilder();
-    }
-
-    return Stack(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: MeeduVideoPlayer(
+    return Hero(
+      tag: widget.datasource,
+      child: Stack(
+        children: [
+          Video(
             key: _playerKey,
-            controller: controller,
+            player: controller,
+            scale: 1.0, // default
+            showControls: false, // default
           ),
-        ),
-        DanmakuVideoController(
-          key: _danmakuNormal,
-          controller: controller,
-          danmakuStream: widget.danmakuStream,
-          title: widget.room.title,
-          width: widget.width,
-        ),
-      ],
+          DanmakuVideoController(
+            key: _danmakuNormal,
+            controller: controller,
+            danmakuStream: widget.danmakuStream,
+            fullScreenBuilder: fullScreenBuilder,
+            title: widget.room.title,
+            width: widget.width,
+            height: widget.height,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,13 +1,19 @@
+import 'dart:io';
+
+import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_meedu_videoplayer/init_meedu_player.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PrefUtil.prefs = await SharedPreferences.getInstance();
-  initMeeduPlayer();
+  if (Platform.isWindows) {
+    await DartVLC.initialize();
+    await windowManager.ensureInitialized();
+  }
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(

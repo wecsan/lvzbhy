@@ -190,6 +190,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                 allowBackgroundPlay: settings.enableBackgroundPlay,
                 allowedScreenSleep: !settings.enableScreenKeepOn,
                 width: width,
+                height: width == null ? null : width / 16.0 * 9.0,
               ),
       ),
     );

@@ -48,8 +48,11 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: screenWidth > 640 ? 0 : null,
         centerTitle: true,
         title: TextField(
           controller: controller,

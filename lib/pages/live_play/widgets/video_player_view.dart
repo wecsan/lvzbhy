@@ -12,6 +12,7 @@ class VideoPlayerView extends StatefulWidget {
   final bool allowBackgroundPlay;
   final bool allowedScreenSleep;
   final double? width;
+  final double? height;
 
   const VideoPlayerView({
     Key? key,
@@ -22,6 +23,7 @@ class VideoPlayerView extends StatefulWidget {
     required this.allowBackgroundPlay,
     required this.allowedScreenSleep,
     this.width,
+    this.height,
   }) : super(key: key);
 
   @override
@@ -53,6 +55,7 @@ class VideoPlayerViewState extends State<VideoPlayerView> {
         allowBackgroundPlay: widget.allowBackgroundPlay,
         allowedScreenSleep: widget.allowedScreenSleep,
         width: widget.width,
+        height: widget.height,
       );
     } else if (Platform.isAndroid || Platform.isIOS) {
       return MobileDanmakuVideoPlayer(

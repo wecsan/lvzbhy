@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/pages/index.dart';
 import 'package:hot_live/common/index.dart';
@@ -15,43 +18,7 @@ class _PopularPageState extends State<PopularPage> {
   final refreshController = RefreshController(initialRefresh: false);
   final scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    scrollController.addListener(() {
-      final pos = scrollController.position;
-      if (pos.maxScrollExtent - pos.pixels < 100) {
-        _onLoading();
-      }
-    });
-  }
-
-  void showSwitchPlatformDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: provider.platforms
-                .map<Widget>(
-                  (e) => ListTile(
-                    title: Text(e.toUpperCase()),
-                    trailing: provider.platform == e
-                        ? const Icon(Icons.check_circle_rounded)
-                        : const SizedBox(height: 0),
-                    onTap: () {
-                      provider.setPlatform(e);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                )
-                .toList(),
-          ),
-        );
-      },
-    );
-  }
+  bool loading = false;
 
   void _onRefresh() {
     provider.onRefresh().then(
@@ -62,11 +29,13 @@ class _PopularPageState extends State<PopularPage> {
   }
 
   void _onLoading() {
-    provider.onLoading().then(
-          (value) => value
-              ? refreshController.loadComplete()
-              : refreshController.loadFailed(),
-        );
+    if (loading) return;
+
+    loading = true;
+    provider.onLoading().then((value) {
+      loading = false;
+      value ? refreshController.loadComplete() : refreshController.loadFailed();
+    });
   }
 
   @override
@@ -79,49 +48,58 @@ class _PopularPageState extends State<PopularPage> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: screenWidth > 640 ? 0 : null,
-        title: Text(
-          S.of(context).popular_title.toUpperCase(),
-          style: const TextStyle(fontWeight: FontWeight.w600),
+        title: DropdownButton(
+          underline: Container(),
+          borderRadius: BorderRadius.circular(15),
+          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.w600),
+          value: provider.platform,
+          items: provider.platforms
+              .map((e) =>
+                  DropdownMenuItem(value: e, child: Text(e.toUpperCase())))
+              .toList(),
+          onChanged: (String? value) {
+            provider.setPlatform(value ?? 'bilibili');
+          },
         ),
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                provider.platform.toUpperCase(),
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ),
-          ),
-        ],
       ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: const WaterDropHeader(),
-        footer: const OnLoadingFooter(),
-        controller: refreshController,
-        onRefresh: _onRefresh,
-        onLoading: _onLoading,
-        child: provider.roomList.isNotEmpty
-            ? MasonryGridView.count(
-                padding: const EdgeInsets.all(5),
-                controller: scrollController,
-                crossAxisCount: crossAxisCount,
-                itemCount: provider.roomList.length,
-                itemBuilder: (context, index) =>
-                    RoomCard(room: provider.roomList[index], dense: true),
-              )
-            : EmptyView(
-                icon: Icons.live_tv_rounded,
-                title: S.of(context).empty_live_title,
-                subtitle: S.of(context).empty_live_subtitle,
-              ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: S.of(context).switch_platform,
-        onPressed: showSwitchPlatformDialog,
-        child: const Icon(Icons.video_collection_rounded),
+      body: Listener(
+        onPointerSignal: (event) {
+          if (event is PointerScrollEvent &&
+              event.scrollDelta.direction >= 0 &&
+              event.scrollDelta.direction <= pi) {
+            final pos = scrollController.position;
+            if (pos.maxScrollExtent - pos.pixels < 40) {
+              _onLoading();
+            }
+          }
+        },
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: const WaterDropHeader(),
+          footer: const OnLoadingFooter(),
+          controller: refreshController,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+          child: provider.roomList.isNotEmpty
+              ? MasonryGridView.count(
+                  padding: const EdgeInsets.all(5),
+                  controller: scrollController,
+                  crossAxisCount: crossAxisCount,
+                  itemCount: provider.roomList.length,
+                  itemBuilder: (context, index) =>
+                      RoomCard(room: provider.roomList[index], dense: true),
+                )
+              : EmptyView(
+                  icon: Icons.live_tv_rounded,
+                  title: S.of(context).empty_live_title,
+                  subtitle: S.of(context).empty_live_subtitle,
+                ),
+        ),
       ),
     );
   }

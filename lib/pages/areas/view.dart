@@ -15,54 +15,29 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   late AreasProvider provider = Provider.of<AreasProvider>(context);
   late TabController tabController;
 
-  void showSwitchPlatformDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: provider.platforms
-                .map<Widget>(
-                  (e) => ListTile(
-                    title: Text(e.toUpperCase()),
-                    trailing: provider.platform == e
-                        ? const Icon(Icons.check_circle_rounded)
-                        : const SizedBox(height: 0),
-                    onTap: () {
-                      provider.setPlatform(e);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                )
-                .toList(),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     tabController =
         TabController(length: provider.areaList.length, vsync: this);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          S.of(context).areas_title.toUpperCase(),
-          style: const TextStyle(fontWeight: FontWeight.w600),
+        title: DropdownButton(
+          underline: Container(),
+          borderRadius: BorderRadius.circular(15),
+          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.w600),
+          value: provider.platform,
+          items: provider.platforms
+              .map((e) =>
+                  DropdownMenuItem(value: e, child: Text(e.toUpperCase())))
+              .toList(),
+          onChanged: (String? value) {
+            provider.setPlatform(value ?? 'bilibili');
+          },
         ),
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                provider.platform.toUpperCase(),
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ),
-          ),
-        ],
         bottom: provider.labelList.isEmpty
             ? const PreferredSize(
                 child: SizedBox(height: 0),
@@ -71,14 +46,12 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
             : TabBar(
                 controller: tabController,
                 isScrollable: true,
-                labelPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 labelColor: Theme.of(context).textTheme.bodyText1!.color,
                 unselectedLabelColor: Theme.of(context).disabledColor,
-                labelStyle: Theme.of(context).textTheme.labelLarge,
-                indicatorColor: Theme.of(context).primaryColor,
                 indicatorSize: TabBarIndicatorSize.label,
-                tabs: provider.labelList.map<Widget>((e) => Text(e)).toList(),
+                tabs: provider.labelList
+                    .map<Widget>((e) => Tab(text: e))
+                    .toList(),
               ),
       ),
       body: TabBarView(
@@ -86,11 +59,6 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
         children: provider.areaList
             .map<Widget>((e) => AreaGridView(areaList: e))
             .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: S.of(context).switch_platform,
-        onPressed: showSwitchPlatformDialog,
-        child: const Icon(Icons.video_collection_rounded),
       ),
     );
   }

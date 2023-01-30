@@ -62,6 +62,30 @@ class _FavoritePageState extends State<FavoritePage> {
           : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2));
     }
 
+    List<Widget> actions = [];
+    if (screenWidth < 640) {
+      actions = [
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SearchPage()),
+            );
+          },
+          icon: const Icon(CustomIcons.search),
+        ),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsPage()),
+            );
+          },
+          icon: const Icon(Icons.settings),
+        ),
+      ];
+    }
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: screenWidth > 640 ? 0 : null,
@@ -69,26 +93,7 @@ class _FavoritePageState extends State<FavoritePage> {
           S.of(context).favorites_title.toUpperCase(),
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SearchPage()),
-              );
-            },
-            icon: const Icon(CustomIcons.search),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
-            },
-            icon: const Icon(Icons.settings),
-          ),
-        ],
+        actions: actions,
       ),
       body: SmartRefresher(
         enablePullDown: true,
