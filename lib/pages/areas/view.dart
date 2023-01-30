@@ -83,8 +83,8 @@ class _AreaGridViewState extends State<AreaGridView> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     int crossAxisCount = screenWidth > 1280
-        ? 12
-        : (screenWidth > 960 ? 9 : (screenWidth > 640 ? 6 : 3));
+        ? 9
+        : (screenWidth > 960 ? 7 : (screenWidth > 640 ? 5 : 3));
 
     return widget.areaList.isNotEmpty
         ? MasonryGridView.count(

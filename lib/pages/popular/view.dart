@@ -48,8 +48,8 @@ class _PopularPageState extends State<PopularPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     int crossAxisCount = screenWidth > 1280
-        ? 8
-        : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2));
+        ? 5
+        : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
 
     return Scaffold(
       appBar: AppBar(

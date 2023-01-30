@@ -58,8 +58,8 @@ class _FavoritePageState extends State<FavoritePage> {
         : (screenWidth > 960 ? 3 : (screenWidth > 640 ? 2 : 1));
     if (settings.enableDenseFavorites) {
       crossAxisCount = screenWidth > 1280
-          ? 8
-          : (screenWidth > 960 ? 6 : (screenWidth > 640 ? 4 : 2));
+          ? 5
+          : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
     }
 
     List<Widget> actions = [];
