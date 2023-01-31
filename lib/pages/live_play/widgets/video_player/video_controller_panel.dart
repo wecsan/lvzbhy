@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter_barrage/flutter_barrage.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/live_play/widgets/video_player/video_controller.dart';
 
@@ -43,7 +43,6 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
   double _updateDargVarVal = 1;
 
   // Video controllers
-  late final settings = Provider.of<SettingsProvider>(context);
   VideoController get controller => widget.controller;
 
   @override
@@ -85,7 +84,7 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
     }
 
     List<Widget> ws = [];
-    if (!settings.hideDanmaku) {
+    if (!controller.hideDanmaku.value) {
       ws.add(_buildDanmakuView());
     }
     if (_settingStuff) {
@@ -113,24 +112,26 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
     return Positioned(
       top: 0,
       width: videoWidth,
-      height: videoHeight * settings.danmakuArea,
-      child: AnimatedOpacity(
-        opacity: !settings.hideDanmaku ? settings.danmakuOpacity : 0.0,
-        duration: const Duration(milliseconds: 300),
-        child: ClipRect(
-          clipBehavior: Clip.hardEdge,
-          child: BarrageWall(
-            width: videoWidth,
-            height: videoHeight * settings.danmakuArea,
-            speed: settings.danmakuSpeed.toInt(),
-            controller: controller.barrageWallController,
-            massiveMode: true,
-            maxBulletHeight: settings.danmakuFontSize * 1.25,
-            safeBottomHeight: settings.danmakuFontSize.toInt(),
-            child: Container(),
-          ),
-        ),
-      ),
+      height: videoHeight * controller.danmakuArea.value,
+      child: Obx(() => AnimatedOpacity(
+            opacity: !controller.hideDanmaku.value
+                ? controller.danmakuOpacity.value
+                : 0.0,
+            duration: const Duration(milliseconds: 300),
+            child: ClipRect(
+              clipBehavior: Clip.hardEdge,
+              child: BarrageWall(
+                width: videoWidth,
+                height: videoHeight * controller.danmakuArea.value,
+                speed: controller.danmakuSpeed.value.toInt(),
+                controller: controller.barrageWallController,
+                massiveMode: true,
+                maxBulletHeight: controller.danmakuFontSize.value * 1.25,
+                safeBottomHeight: controller.danmakuFontSize.value.toInt(),
+                child: Container(),
+              ),
+            ),
+          )),
     );
   }
 
@@ -244,10 +245,6 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
   }
 
   Widget _buildSettingView() {
-    SettingsProvider settings = Provider.of<SettingsProvider>(context);
-    final isSelected = [false, false, false];
-    isSelected[settings.playerFitMode] = true;
-
     const TextStyle label = TextStyle(color: Colors.white);
     const TextStyle digit = TextStyle(color: Colors.white);
     final Color color = Theme.of(context).colorScheme.primary.withOpacity(0.8);
@@ -256,166 +253,199 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
       onTap: () => setState(() => _settingStuff = !_settingStuff),
       child: Container(
         color: Colors.transparent,
-        child: Container(
-          alignment: Alignment.centerRight,
-          child: AnimatedOpacity(
-            opacity: _settingStuff ? 0.8 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: GestureDetector(
-                onTap: () {},
-                child: Card(
-                  color: Colors.black,
-                  child: SizedBox(
-                    width: 380,
-                    child: ListView(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Text(
-                            '比例设置',
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                ?.copyWith(color: Colors.white),
-                          ),
-                        ),
-                        ToggleButtons(
-                          borderRadius: BorderRadius.circular(10),
-                          selectedBorderColor: color,
-                          borderColor: color,
-                          fillColor: color,
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Text('默认比例', style: label),
+        child: Obx(() {
+          final isSelected = [false, false, false];
+          isSelected[controller.fitModeIndex.value] = true;
+
+          return Container(
+            alignment: Alignment.centerRight,
+            child: AnimatedOpacity(
+              opacity: _settingStuff ? 0.8 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Card(
+                    color: Colors.black,
+                    child: SizedBox(
+                      width: 380,
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              '比例设置',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption
+                                  ?.copyWith(color: Colors.white),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Text('填充屏幕', style: label),
+                          ),
+                          ToggleButtons(
+                            borderRadius: BorderRadius.circular(10),
+                            selectedBorderColor: color,
+                            borderColor: color,
+                            fillColor: color,
+                            children: VideoController.fitModes.keys
+                                .map<Widget>((e) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
+                                      child: Text(e, style: label),
+                                    ))
+                                .toList(),
+                            isSelected: isSelected,
+                            onPressed: controller.setVideoFit,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              '弹幕设置',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption
+                                  ?.copyWith(color: Colors.white),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Text('居中裁剪', style: label),
+                          ),
+                          ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Text(
+                              S.of(context).settings_danmaku_area,
+                              style: label,
                             ),
-                          ],
-                          isSelected: isSelected,
-                          onPressed: _onVideoFitChange,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Text(
-                            '弹幕设置',
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                ?.copyWith(color: Colors.white),
+                            title: Slider(
+                              divisions: 5,
+                              value: controller.danmakuArea.value,
+                              min: 0.0,
+                              max: 1.0,
+                              onChanged: (val) =>
+                                  controller.danmakuArea.value = val,
+                            ),
+                            trailing: Text(
+                              (controller.danmakuArea.value * 100)
+                                      .toInt()
+                                      .toString() +
+                                  '%',
+                              style: digit,
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Text(
-                            S.of(context).settings_danmaku_area,
-                            style: label,
+                          ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Text(
+                              S.of(context).settings_danmaku_opacity,
+                              style: label,
+                            ),
+                            title: Slider(
+                              divisions: 10,
+                              value: controller.danmakuOpacity.value,
+                              min: 0.0,
+                              max: 1.0,
+                              onChanged: (val) =>
+                                  controller.danmakuOpacity.value = val,
+                            ),
+                            trailing: Text(
+                              (controller.danmakuOpacity.value * 100)
+                                      .toInt()
+                                      .toString() +
+                                  '%',
+                              style: digit,
+                            ),
                           ),
-                          title: Slider(
-                            value: settings.danmakuArea,
-                            min: 0.0,
-                            max: 1.0,
-                            onChanged: (val) => settings.danmakuArea = val,
+                          ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Text(
+                              S.of(context).settings_danmaku_speed,
+                              style: label,
+                            ),
+                            title: Slider(
+                              divisions: 15,
+                              value: controller.danmakuSpeed.value,
+                              min: 5.0,
+                              max: 20.0,
+                              onChanged: (val) =>
+                                  controller.danmakuSpeed.value = val,
+                            ),
+                            trailing: Text(
+                              controller.danmakuSpeed.value.toInt().toString(),
+                              style: digit,
+                            ),
                           ),
-                          trailing: Text(
-                            (settings.danmakuArea * 100).toInt().toString() +
-                                '%',
-                            style: digit,
+                          ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Text(
+                              S.of(context).settings_danmaku_fontsize,
+                              style: label,
+                            ),
+                            title: Slider(
+                              divisions: 20,
+                              value: controller.danmakuFontSize.value,
+                              min: 10.0,
+                              max: 30.0,
+                              onChanged: (val) =>
+                                  controller.danmakuFontSize.value = val,
+                            ),
+                            trailing: Text(
+                              controller.danmakuFontSize.value
+                                  .toInt()
+                                  .toString(),
+                              style: digit,
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Text(
-                            S.of(context).settings_danmaku_opacity,
-                            style: label,
+                          ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Text(
+                              S.of(context).settings_danmaku_fontBorder,
+                              style: label,
+                            ),
+                            title: Slider(
+                              value: controller.danmakuFontBorder.value,
+                              min: 0.0,
+                              max: 2.5,
+                              onChanged: (val) =>
+                                  controller.danmakuFontBorder.value = val,
+                            ),
+                            trailing: Text(
+                              controller.danmakuFontBorder.value
+                                  .toStringAsFixed(2),
+                              style: digit,
+                            ),
                           ),
-                          title: Slider(
-                            value: settings.danmakuOpacity,
-                            min: 0.0,
-                            max: 1.0,
-                            onChanged: (val) => settings.danmakuOpacity = val,
+                          ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Text(
+                              S.of(context).settings_danmaku_amount,
+                              style: label,
+                            ),
+                            title: Slider(
+                              divisions: 90,
+                              value: controller.danmakuAmount.value.toDouble(),
+                              min: 10,
+                              max: 100,
+                              onChanged: (val) =>
+                                  controller.danmakuAmount.value = val.toInt(),
+                            ),
+                            trailing: Text(
+                              controller.danmakuAmount.value.toString(),
+                              style: digit,
+                            ),
                           ),
-                          trailing: Text(
-                            (settings.danmakuOpacity * 100).toInt().toString() +
-                                '%',
-                            style: digit,
-                          ),
-                        ),
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Text(
-                            S.of(context).settings_danmaku_speed,
-                            style: label,
-                          ),
-                          title: Slider(
-                            value: settings.danmakuSpeed,
-                            min: 1.0,
-                            max: 20.0,
-                            onChanged: (val) => settings.danmakuSpeed = val,
-                          ),
-                          trailing: Text(
-                            settings.danmakuSpeed.toInt().toString(),
-                            style: digit,
-                          ),
-                        ),
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Text(
-                            S.of(context).settings_danmaku_fontsize,
-                            style: label,
-                          ),
-                          title: Slider(
-                            value: settings.danmakuFontSize,
-                            min: 10.0,
-                            max: 30.0,
-                            onChanged: (val) => settings.danmakuFontSize = val,
-                          ),
-                          trailing: Text(
-                            settings.danmakuFontSize.toInt().toString(),
-                            style: digit,
-                          ),
-                        ),
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Text(
-                            S.of(context).settings_danmaku_fontBorder,
-                            style: label,
-                          ),
-                          title: Slider(
-                            value: settings.danmakuFontBorder,
-                            min: 0.0,
-                            max: 2.5,
-                            onChanged: (val) =>
-                                settings.danmakuFontBorder = val,
-                          ),
-                          trailing: Text(
-                            settings.danmakuFontBorder.toStringAsFixed(2),
-                            style: digit,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
@@ -507,7 +537,7 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
   }
 
   Widget _buildBatteryInfo() {
-    final batteryLevel = settings.batteryLevel;
+    final batteryLevel = controller.batteryLevel.value;
     return Container(
       height: barHeight,
       alignment: Alignment.center,
@@ -625,19 +655,19 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
 
   Widget _buildDanmakuHideButton() {
     return GestureDetector(
-      onTap: () => settings.hideDanmaku = !settings.hideDanmaku,
-      child: Container(
-        height: barHeight,
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(right: 12.0),
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Icon(
-          settings.hideDanmaku
-              ? CustomIcons.danmaku_close
-              : CustomIcons.danmaku_open,
-          color: Colors.white,
-        ),
-      ),
+      onTap: () => controller.hideDanmaku.value = !controller.hideDanmaku.value,
+      child: Obx(() => Container(
+            height: barHeight,
+            alignment: Alignment.center,
+            margin: const EdgeInsets.only(right: 12.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Icon(
+              controller.hideDanmaku.value
+                  ? CustomIcons.danmaku_close
+                  : CustomIcons.danmaku_open,
+              color: Colors.white,
+            ),
+          )),
     );
   }
 
@@ -703,16 +733,6 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
       _lockStuff = false;
     });
     controller.toggleFullScreen(context);
-  }
-
-  void _onVideoFitChange(int index) {
-    settings.playerFitMode = index;
-    final boxFit = index == 0
-        ? BoxFit.contain
-        : index == 1
-            ? BoxFit.fill
-            : BoxFit.fitWidth;
-    controller.setVideoFit(boxFit);
   }
 
   // Gesture functions

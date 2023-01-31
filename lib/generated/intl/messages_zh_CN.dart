@@ -130,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "remove": MessageLookupByLibrary.simpleMessage("删除"),
         "room_info_content": m3,
         "search_input_hint": MessageLookupByLibrary.simpleMessage("输入直播关键字"),
+        "settings_danmaku_amount": MessageLookupByLibrary.simpleMessage("弹幕数量"),
         "settings_danmaku_area": MessageLookupByLibrary.simpleMessage("弹幕区域"),
         "settings_danmaku_fontBorder":
             MessageLookupByLibrary.simpleMessage("描边宽度"),

@@ -1,42 +1,10 @@
 import 'dart:convert';
 
-import 'package:battery_plus/battery_plus.dart';
 import 'package:hot_live/common/index.dart';
 
 class SettingsProvider with ChangeNotifier {
   SettingsProvider() {
-    // 设置电量监听
-    initBattery();
     _loadFromPref();
-  }
-
-  // 电量状态监听
-  final Battery _battery = Battery();
-  int batteryLevel = 100;
-  void initBattery() {
-    _battery.batteryLevel.then((value) => batteryLevel = value);
-    _battery.onBatteryStateChanged.listen((state) async {
-      batteryLevel = await _battery.batteryLevel;
-      notifyListeners();
-    });
-  }
-
-  // 播放器比例监听
-  int _playerFitMode = 0;
-  int get playerFitMode => _playerFitMode;
-  BoxFit get playerBoxFit => _playerFitMode == 0
-      ? BoxFit.contain
-      : _playerFitMode == 1
-          ? BoxFit.fill
-          : BoxFit.fitWidth;
-  set playerFitMode(int value) {
-    if (value < 0 || value > 2) return;
-    _playerFitMode = value;
-    notifyListeners();
-  }
-
-  void resetPlayerFitMode() {
-    _playerFitMode = 0;
   }
 
   void _loadFromPref() async {
@@ -52,12 +20,6 @@ class SettingsProvider with ChangeNotifier {
         PrefUtil.getBool('enableFullScreenDefault') ?? false;
     _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     _hideOfflineRoom = PrefUtil.getBool('hideOfflineRoom') ?? false;
-    _hideDanmaku = PrefUtil.getBool('hideDanmaku') ?? false;
-    _danmakuArea = PrefUtil.getDouble('danmakuArea') ?? 0.5;
-    _danmakuSpeed = PrefUtil.getDouble('danmakuSpeed') ?? 8;
-    _danmakuFontBorder = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
-    _danmakuFontSize = PrefUtil.getDouble('danmakuFontSize') ?? 16;
-    _danmakuOpacity = PrefUtil.getDouble('danmakuOpcity') ?? 1.0;
     _preferResolution =
         PrefUtil.getString('preferResolution') ?? resolutions[0];
     _preferPlatform = PrefUtil.getString('preferPlatform') ?? platforms[0];
@@ -75,12 +37,6 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableFullScreenDefault', _enableFullScreenDefault);
     PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
     PrefUtil.setBool('hideOfflineRoom', _hideOfflineRoom);
-    PrefUtil.setBool('hideDanmaku', _hideDanmaku);
-    PrefUtil.setDouble('danmakuArea', _danmakuArea);
-    PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
-    PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
-    PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
-    PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
     PrefUtil.setString('preferResolution', _preferResolution);
     PrefUtil.setString('preferPlatform', _preferPlatform);
   }
@@ -202,60 +158,6 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool("hideOfflineRoom", _hideOfflineRoom);
   }
 
-  // Danmaku settings
-  bool _hideDanmaku = false;
-  bool get hideDanmaku => _hideDanmaku;
-  set hideDanmaku(bool value) {
-    _hideDanmaku = value;
-    notifyListeners();
-    PrefUtil.setBool("hideDanmaku", _hideDanmaku);
-  }
-
-  double _danmakuArea = 0.5;
-  double get danmakuArea => _danmakuArea;
-  set danmakuArea(value) {
-    if (value < 0 || value > 1) return;
-    _danmakuArea = value;
-    notifyListeners();
-    PrefUtil.setDouble('danmakuArea', _danmakuArea);
-  }
-
-  double _danmakuSpeed = 8;
-  double get danmakuSpeed => _danmakuSpeed;
-  set danmakuSpeed(value) {
-    if (value < 1 || value > 20) return;
-    _danmakuSpeed = value;
-    notifyListeners();
-    PrefUtil.setDouble('danmakuSpeed', _danmakuSpeed);
-  }
-
-  double _danmakuFontBorder = 0.5;
-  double get danmakuFontBorder => _danmakuFontBorder;
-  set danmakuFontBorder(value) {
-    if (value < 0 || value > 2.5) return;
-    _danmakuFontBorder = value;
-    notifyListeners();
-    PrefUtil.setDouble('danmakuFontBorder', _danmakuFontBorder);
-  }
-
-  double _danmakuFontSize = 16;
-  double get danmakuFontSize => _danmakuFontSize;
-  set danmakuFontSize(value) {
-    if (value < 10 || value > 30) return;
-    _danmakuFontSize = value;
-    notifyListeners();
-    PrefUtil.setDouble('danmakuFontSize', _danmakuFontSize);
-  }
-
-  double _danmakuOpacity = 1;
-  double get danmakuOpacity => _danmakuOpacity;
-  set danmakuOpacity(value) {
-    if (value < 0 || value > 1) return;
-    _danmakuOpacity = value;
-    notifyListeners();
-    PrefUtil.setDouble('danmakuOpcity', _danmakuOpacity);
-  }
-
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
   String _preferResolution = resolutions[0];
   String get preferResolution => _preferResolution;
@@ -293,13 +195,7 @@ class SettingsProvider with ChangeNotifier {
     _enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
     _enableFullScreenDefault = json['enableFullScreenDefault'] ?? false;
     _hideOfflineRoom = json['hideOfflineRoom'] ?? false;
-    _hideDanmaku = json['hideDanmaku'] ?? false;
     _bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
-    _danmakuArea = json['danmakuArea'] ?? 0.5;
-    _danmakuSpeed = json['danmakuSpeed'] ?? 8;
-    _danmakuFontBorder = json['danmakuFontBorder'] ?? 0.8;
-    _danmakuFontSize = json['danmakuFontSize'] ?? 16;
-    _danmakuOpacity = json['danmakuOpcity'] ?? 1.0;
     _preferResolution = json['preferResolution'] ?? resolutions[0];
     _preferPlatform = json['preferPlatform'] ?? platforms[0];
     _saveToPref();
@@ -317,13 +213,7 @@ class SettingsProvider with ChangeNotifier {
     json['enableAutoCheckUpdate'] = _enableAutoCheckUpdate;
     json['enableFullScreenDefault'] = _enableFullScreenDefault;
     json['hideOfflineRoom'] = _hideOfflineRoom;
-    json['hideDanmaku'] = _hideDanmaku;
     json['bilibiliCustomCookie'] = _bilibiliCustomCookie;
-    json['danmakuArea'] = _danmakuArea;
-    json['danmakuSpeed'] = _danmakuSpeed;
-    json['danmakuFontBorder'] = _danmakuFontBorder;
-    json['danmakuFontSize'] = _danmakuFontSize;
-    json['danmakuOpcity'] = _danmakuOpacity;
     json['preferResolution'] = _preferResolution;
     json['preferPlatform'] = _preferPlatform;
     return json;

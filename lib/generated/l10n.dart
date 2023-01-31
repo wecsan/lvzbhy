@@ -791,6 +791,16 @@ class S {
     );
   }
 
+  /// `Danmaku amount`
+  String get settings_danmaku_amount {
+    return Intl.message(
+      'Danmaku amount',
+      name: 'settings_danmaku_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Follow`
   String get follow {
     return Intl.message(

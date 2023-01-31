@@ -48,7 +48,7 @@ dependencies:
   
   # video player mobile
   better_player: ^0.0.83
-  flutter_barrage: ^0.5.2
+  bordered_text: ^2.0.0
   screen_brightness: ^0.2.2
   volume_controller: ^2.0.6
 
@@ -63,6 +63,7 @@ dependencies:
   # utils
   get: ^4.6.5
   provider: ^6.0.3
+  quiver: ^3.1.0
   shared_preferences: ^2.0.15
   flutter_cache_manager: ^3.3.0
   # dpad_container: ^1.0.1

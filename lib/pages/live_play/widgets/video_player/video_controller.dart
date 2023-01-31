@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:battery_plus/battery_plus.dart';
 import 'package:better_player/better_player.dart';
+import 'package:bordered_text/bordered_text.dart';
 import 'package:dart_vlc/dart_vlc.dart';
-import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
@@ -21,12 +23,18 @@ class VideoController with ChangeNotifier {
   final bool allowFullScreen;
   final bool fullScreenByDefault;
   final bool autoPlay;
-  BoxFit fitMode;
 
+  final fitModeIndex = 0.obs;
+  BoxFit fitMode;
+  static const fitModes = {
+    '默认比例': BoxFit.contain,
+    '填充屏幕': BoxFit.fill,
+    '居中裁剪': BoxFit.fitWidth,
+  };
+
+  // Video player
   Player? desktopController;
   BetterPlayerController? mobileController;
-  BarrageWallController barrageWallController = BarrageWallController();
-
   VolumeController volumeController = VolumeController()..showSystemUI = false;
   ScreenBrightness brightnessController = ScreenBrightness();
 
@@ -35,8 +43,27 @@ class VideoController with ChangeNotifier {
   final isBuffering = false.obs;
   final isFullscreen = false.obs;
   final isPipMode = false.obs;
-
   bool get supportPip => Platform.isAndroid;
+
+  // 电量状态监听
+  final Battery _battery = Battery();
+  final batteryLevel = 100.obs;
+  void initBattery() {
+    _battery.batteryLevel.then((value) => batteryLevel.value = value);
+    _battery.onBatteryStateChanged.listen((state) async {
+      batteryLevel.value = await _battery.batteryLevel;
+    });
+  }
+
+  // Danmaku player
+  BarrageWallController barrageWallController = BarrageWallController();
+  final Rx<bool> hideDanmaku = false.obs;
+  final danmakuArea = 0.5.obs;
+  final danmakuSpeed = 8.0.obs;
+  final danmakuFontSize = 16.0.obs;
+  final danmakuFontBorder = 0.5.obs;
+  final danmakuOpacity = 1.0.obs;
+  final danmakuAmount = 100.obs;
 
   VideoController({
     required this.room,
@@ -55,10 +82,7 @@ class VideoController with ChangeNotifier {
     }
     initController();
     initStatusListener();
-    danmakuStream.listen((info) {
-      barrageWallController
-          .send([Bullet(child: DanmakuText(message: info.msg))]);
-    });
+    initDanmaku();
   }
 
   @override
@@ -126,6 +150,50 @@ class VideoController with ChangeNotifier {
     }
   }
 
+  void initDanmaku() {
+    hideDanmaku.value = PrefUtil.getBool('hideDanmaku') ?? false;
+    hideDanmaku.listen((data) {
+      PrefUtil.setBool('hideDanmaku', data);
+    });
+    danmakuArea.value = PrefUtil.getDouble('danmakuArea') ?? 0.5;
+    danmakuArea.listen((data) {
+      PrefUtil.setDouble('danmakuArea', data);
+    });
+    danmakuSpeed.value = PrefUtil.getDouble('danmakuSpeed') ?? 8;
+    danmakuSpeed.listen((data) {
+      PrefUtil.setDouble('danmakuSpeed', data);
+    });
+    danmakuFontSize.value = PrefUtil.getDouble('danmakuFontSize') ?? 16;
+    danmakuFontSize.listen((data) {
+      PrefUtil.setDouble('danmakuFontSize', data);
+    });
+    danmakuFontBorder.value = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
+    danmakuFontBorder.listen((data) {
+      PrefUtil.setDouble('danmakuFontBorder', data);
+    });
+    danmakuOpacity.value = PrefUtil.getDouble('danmakuOpacity') ?? 1.0;
+    danmakuOpacity.listen((data) {
+      PrefUtil.setDouble('danmakuOpacity', data);
+    });
+    danmakuAmount.value = PrefUtil.getInt('danmakuAmount') ?? 100;
+    barrageWallController.setMaxBarrageSize(danmakuAmount.value);
+    danmakuAmount.listen((data) {
+      barrageWallController.setMaxBarrageSize(data);
+      PrefUtil.setInt('danmakuAmount', data);
+    });
+    danmakuStream.listen((info) {
+      barrageWallController.send([
+        Bullet(
+          child: DanmakuText(
+            message: info.msg,
+            danmakuFontSize: danmakuFontSize,
+            danmakuFontBorder: danmakuFontBorder,
+          ),
+        ),
+      ]);
+    });
+  }
+
   void retryDataSource() {
     if (Platform.isWindows || Platform.isLinux) {
       setDataSource(datasource);
@@ -162,8 +230,9 @@ class VideoController with ChangeNotifier {
     }
   }
 
-  void setVideoFit(BoxFit fit) {
-    fitMode = fit;
+  void setVideoFit(int index) {
+    fitModeIndex.value = index;
+    fitMode = fitModes.values.toList()[index];
     if (Platform.isWindows || Platform.isLinux) {
     } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController?.setOverriddenFit(fitMode);
@@ -303,46 +372,32 @@ class VideoController with ChangeNotifier {
 }
 
 class DanmakuText extends StatelessWidget {
-  const DanmakuText({Key? key, required this.message}) : super(key: key);
+  const DanmakuText({
+    Key? key,
+    required this.message,
+    required this.danmakuFontSize,
+    required this.danmakuFontBorder,
+  }) : super(key: key);
 
   final String message;
-  static const Color borderColor = Colors.black;
+  final RxDouble danmakuFontSize;
+  final RxDouble danmakuFontBorder;
 
   @override
   Widget build(BuildContext context) {
-    SettingsProvider settings = Provider.of<SettingsProvider>(context);
-
-    Widget cur = Text(
-      message,
-      maxLines: 1,
-      style: TextStyle(
-        fontSize: settings.danmakuFontSize,
-        fontWeight: FontWeight.w400,
-        color: Colors.white,
+    return Obx(
+      () => BorderedText(
+        strokeWidth: danmakuFontBorder.value,
+        child: Text(
+          message,
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: danmakuFontSize.value,
+            fontWeight: FontWeight.w400,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
-
-    // setting text border
-    if (settings.danmakuFontBorder > 0) {
-      cur = Stack(
-        children: [
-          Text(
-            message,
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: settings.danmakuFontSize,
-              fontWeight: FontWeight.w400,
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = settings.danmakuFontBorder
-                ..color = borderColor,
-            ),
-          ),
-          cur,
-        ],
-      );
-    }
-
-    return cur;
   }
 }

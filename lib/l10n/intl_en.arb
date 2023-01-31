@@ -96,6 +96,7 @@
     "settings_danmaku_speed": "Danmaku speed",
     "settings_danmaku_fontsize": "Danmaku fontsize",
     "settings_danmaku_fontBorder": "Border width",
+    "settings_danmaku_amount": "Danmaku amount",
     
     "follow": "Follow",
     "unfollow": "Unfollow",
