@@ -61,6 +61,7 @@ dependencies:
   battery_plus: ^3.0.2
   
   # utils
+  get: ^4.6.5
   provider: ^6.0.3
   shared_preferences: ^2.0.15
   flutter_cache_manager: ^3.3.0

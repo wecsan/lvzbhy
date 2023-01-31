@@ -45,6 +45,7 @@ class _HomePageRouterState extends State<HomePageRouter> {
                   const SizedBox(height: 8),
                   FloatingActionButton(
                     heroTag: 'search',
+                    elevation: 0,
                     onPressed: () {
                       setState(() => _selectedIndex = 4);
                     },

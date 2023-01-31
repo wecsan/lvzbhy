@@ -1,6 +1,5 @@
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/index.dart';
-import 'package:screen_brightness/screen_brightness.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'widgets/index.dart';
@@ -25,13 +24,13 @@ class _LivePlayPageState extends State<LivePlayPage> {
   late SettingsProvider settings;
   late DanmakuStream danmakuStream;
 
-  bool _loading = true;
   Map<String, Map<String, String>> _streamList = {};
   String _selectedResolution = '';
   String _datasource = '';
 
   // 控制唯一子组件
-  final GlobalKey<VideoPlayerViewState> _playerKey = GlobalKey();
+  VideoController? controller;
+  final _playerKey = GlobalKey();
   final _danmakuViewKey = GlobalKey();
 
   @override
@@ -41,16 +40,23 @@ class _LivePlayPageState extends State<LivePlayPage> {
     LiveApi.getRoomStreamLink(widget.room).then((value) {
       _streamList = value;
       setPreferResolution();
-      setState(() => _loading = false);
+      controller = VideoController(
+        room: widget.room,
+        danmakuStream: danmakuStream,
+        datasourceType: 'network',
+        datasource: _datasource,
+        allowBackgroundPlay: settings.enableBackgroundPlay,
+        allowScreenKeepOn: settings.enableScreenKeepOn,
+        fullScreenByDefault: settings.enableFullScreenDefault,
+        autoPlay: true,
+      );
+      setState(() {});
     });
-    Wakelock.enable();
   }
 
   @override
   void dispose() {
-    Wakelock.disable();
-    settings.resetPlayerFitMode();
-    ScreenBrightness().resetScreenBrightness();
+    controller?.dispose();
     danmakuStream.dispose();
     super.dispose();
   }
@@ -83,7 +89,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
   void setResolution(String name, String url) {
     setState(() => _selectedResolution = name);
     _datasource = url;
-    _playerKey.currentState?.setDataSource(_datasource);
+    controller?.setDataSource(_datasource);
   }
 
   @override
@@ -179,16 +185,11 @@ class _LivePlayPageState extends State<LivePlayPage> {
       aspectRatio: 16 / 9,
       child: Container(
         color: Colors.black,
-        child: _loading
+        child: controller == null
             ? Container()
-            : VideoPlayerView(
+            : VideoPlayer(
                 key: _playerKey,
-                room: widget.room,
-                datasource: _datasource,
-                danmakuStream: danmakuStream,
-                fullScreenByDefault: settings.enableFullScreenDefault,
-                allowBackgroundPlay: settings.enableBackgroundPlay,
-                allowedScreenSleep: !settings.enableScreenKeepOn,
+                controller: controller!,
                 width: width,
                 height: width == null ? null : width / 16.0 * 9.0,
               ),
