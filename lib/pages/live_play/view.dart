@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/index.dart';
 import 'package:wakelock/wakelock.dart';
@@ -181,18 +182,35 @@ class _LivePlayPageState extends State<LivePlayPage> {
   }
 
   Widget _buildVideoPlayer({double? width}) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Container(
-        color: Colors.black,
-        child: controller == null
-            ? Container()
-            : VideoPlayer(
-                key: _playerKey,
-                controller: controller!,
-                width: width,
-                height: width == null ? null : width / 16.0 * 9.0,
-              ),
+    return Hero(
+      tag: widget.room.roomId,
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Container(
+          color: Colors.black,
+          child: controller == null
+              ? Card(
+                  elevation: 0,
+                  margin: const EdgeInsets.all(0),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero),
+                  clipBehavior: Clip.antiAlias,
+                  color: Theme.of(context).focusColor,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.room.cover,
+                    fit: BoxFit.fill,
+                    errorWidget: (context, error, stackTrace) => const Center(
+                      child: Icon(Icons.live_tv_rounded, size: 48),
+                    ),
+                  ),
+                )
+              : VideoPlayer(
+                  key: _playerKey,
+                  controller: controller!,
+                  width: width,
+                  height: width == null ? null : width / 16.0 * 9.0,
+                ),
+        ),
       ),
     );
   }

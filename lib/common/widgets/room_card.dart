@@ -61,45 +61,49 @@ class RoomCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Card(
-                    margin: const EdgeInsets.all(0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    color: Theme.of(context).focusColor,
-                    elevation: 0,
-                    child: room.liveStatus.name == 'live'
-                        ? CachedNetworkImage(
-                            imageUrl: room.cover,
-                            fit: BoxFit.fill,
-                            errorWidget: (context, error, stackTrace) => Center(
-                              child: Icon(
-                                Icons.live_tv_rounded,
-                                size: dense ? 30 : 48,
+                Hero(
+                  tag: room.roomId,
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Card(
+                      margin: const EdgeInsets.all(0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      color: Theme.of(context).focusColor,
+                      elevation: 0,
+                      child: room.liveStatus.name == 'live'
+                          ? CachedNetworkImage(
+                              imageUrl: room.cover,
+                              fit: BoxFit.fill,
+                              errorWidget: (context, error, stackTrace) =>
+                                  Center(
+                                child: Icon(
+                                  Icons.live_tv_rounded,
+                                  size: dense ? 30 : 48,
+                                ),
+                              ),
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.tv_off_rounded,
+                                    size: dense ? 38 : 48,
+                                  ),
+                                  Text(
+                                    S.of(context).offline,
+                                    style: TextStyle(
+                                      fontSize: dense ? 18 : 26,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                          )
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.tv_off_rounded,
-                                  size: dense ? 38 : 48,
-                                ),
-                                Text(
-                                  S.of(context).offline,
-                                  style: TextStyle(
-                                    fontSize: dense ? 18 : 26,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
+                    ),
                   ),
                 ),
                 if (room.liveStatus == LiveStatus.live &&
