@@ -104,6 +104,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 Text(S.of(context).enable_bilibili_search_cookie_subtitle),
             onTap: showBilibliCookieSetDialog,
           ),
+          ListTile(
+            title: Text(S.of(context).auto_refresh_time),
+            subtitle: Text(S.of(context).auto_refresh_time_subtitle),
+            trailing: Text('${settings.autoRefreshTime}s'),
+            onTap: showAutoRefreshTimeSetDialog,
+          ),
           SectionTitle(title: S.of(context).about),
           const CheckUpdateListTile(),
           ListTile(
@@ -234,6 +240,29 @@ class _SettingsPageState extends State<SettingsPage> {
           }).toList(),
         );
       },
+    );
+  }
+
+  void showAutoRefreshTimeSetDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        // title: Text(S.of(context).auto_refresh_time),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Slider(
+              min: 10,
+              max: 120,
+              label: S.of(context).auto_refresh_time,
+              value: settings.autoRefreshTime.toDouble(),
+              onChanged: (value) => settings.autoRefreshTime = value.toInt(),
+            ),
+            Text('${S.of(context).auto_refresh_time}:'
+                ' ${settings.autoRefreshTime}s'),
+          ],
+        ),
+      ),
     );
   }
 

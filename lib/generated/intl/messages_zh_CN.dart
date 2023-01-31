@@ -36,6 +36,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "本项目是一个纯本地直播转码应用，不会收集任何用户隐私，应用程序直接请求直播官方接口，所有操作生成的数据由用户本地保留。"),
         "app_name": MessageLookupByLibrary.simpleMessage("HotLive"),
         "areas_title": MessageLookupByLibrary.simpleMessage("分区"),
+        "auto_refresh_time": MessageLookupByLibrary.simpleMessage("定时刷新时间"),
+        "auto_refresh_time_subtitle":
+            MessageLookupByLibrary.simpleMessage("定时刷新关注直播间状态"),
         "bilibili_cookie":
             MessageLookupByLibrary.simpleMessage("Bilibili Cookie"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),

@@ -3,43 +3,7 @@ import 'dart:convert';
 import 'package:hot_live/common/index.dart';
 
 class SettingsProvider with ChangeNotifier {
-  SettingsProvider() {
-    _loadFromPref();
-  }
-
-  void _loadFromPref() async {
-    _themeModeName = PrefUtil.getString('themeMode') ?? "System";
-    _themeColorName = PrefUtil.getString('themeColor') ?? "Crimson";
-    _languageName = PrefUtil.getString('language') ?? "简体中文";
-    _enableDynamicTheme = PrefUtil.getBool('enableDynamicTheme') ?? false;
-    _enableAutoCheckUpdate = PrefUtil.getBool('enableAutoCheckUpdate') ?? true;
-    _enableDenseFavorites = PrefUtil.getBool('enableDenseFavorites') ?? false;
-    _enableBackgroundPlay = PrefUtil.getBool('enableBackgroundPlay') ?? false;
-    _enableScreenKeepOn = PrefUtil.getBool('enableScreenKeepOn') ?? false;
-    _enableFullScreenDefault =
-        PrefUtil.getBool('enableFullScreenDefault') ?? false;
-    _bilibiliCustomCookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
-    _hideOfflineRoom = PrefUtil.getBool('hideOfflineRoom') ?? false;
-    _preferResolution =
-        PrefUtil.getString('preferResolution') ?? resolutions[0];
-    _preferPlatform = PrefUtil.getString('preferPlatform') ?? platforms[0];
-  }
-
-  void _saveToPref() {
-    PrefUtil.setString('themeMode', _themeModeName);
-    PrefUtil.setString('themeColor', _themeColorName);
-    PrefUtil.setString('language', _languageName);
-    PrefUtil.setBool('enableDynamicTheme', _enableDynamicTheme);
-    PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
-    PrefUtil.setBool('enableBackgroundPlay', _enableBackgroundPlay);
-    PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
-    PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
-    PrefUtil.setBool('enableFullScreenDefault', _enableFullScreenDefault);
-    PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
-    PrefUtil.setBool('hideOfflineRoom', _hideOfflineRoom);
-    PrefUtil.setString('preferResolution', _preferResolution);
-    PrefUtil.setString('preferPlatform', _preferPlatform);
-  }
+  SettingsProvider();
 
   // Theme settings
   static Map<String, ThemeMode> themeModes = {
@@ -47,8 +11,7 @@ class SettingsProvider with ChangeNotifier {
     "Dark": ThemeMode.dark,
     "Light": ThemeMode.light,
   };
-
-  String _themeModeName = "System";
+  String _themeModeName = PrefUtil.getString('themeMode') ?? "System";
   get themeMode => SettingsProvider.themeModes[_themeModeName]!;
   get themeModeName => _themeModeName;
   void changeThemeMode(String mode) {
@@ -70,8 +33,7 @@ class SettingsProvider with ChangeNotifier {
     "Violet": Colors.deepPurple,
     "Orchid": const Color.fromARGB(255, 218, 112, 214),
   };
-
-  String _themeColorName = "Blue";
+  String _themeColorName = PrefUtil.getString('themeColor') ?? "Blue";
   get themeColor => SettingsProvider.themeColors[_themeColorName]!;
   get themeColorName => _themeColorName;
   void changeThemeColor(String color) {
@@ -80,7 +42,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setString('themeColor', _themeColorName);
   }
 
-  bool _enableDynamicTheme = false;
+  bool _enableDynamicTheme = PrefUtil.getBool('enableDynamicTheme') ?? false;
   bool get enableDynamicTheme => _enableDynamicTheme;
   set enableDynamicTheme(bool value) {
     _enableDynamicTheme = value;
@@ -92,7 +54,7 @@ class SettingsProvider with ChangeNotifier {
     "English": const Locale.fromSubtags(languageCode: 'en'),
     "简体中文": const Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
   };
-  String _languageName = "English";
+  String _languageName = PrefUtil.getString('language') ?? "简体中文";
   get language => SettingsProvider.languages[_languageName]!;
   get languageName => _languageName;
   void changeLanguage(String value) {
@@ -102,7 +64,16 @@ class SettingsProvider with ChangeNotifier {
   }
 
   // Custom settings
-  bool _enableDenseFavorites = false;
+  int _autoRefreshTime = PrefUtil.getInt('autoRefreshTime') ?? 60;
+  int get autoRefreshTime => _autoRefreshTime;
+  set autoRefreshTime(value) {
+    _autoRefreshTime = value;
+    notifyListeners();
+    PrefUtil.setInt('autoRefreshTime', _autoRefreshTime);
+  }
+
+  bool _enableDenseFavorites =
+      PrefUtil.getBool('enableDenseFavorites') ?? false;
   bool get enableDenseFavorites => _enableDenseFavorites;
   set enableDenseFavorites(bool value) {
     _enableDenseFavorites = value;
@@ -110,7 +81,8 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
   }
 
-  bool _enableBackgroundPlay = false;
+  bool _enableBackgroundPlay =
+      PrefUtil.getBool('enableBackgroundPlay') ?? false;
   bool get enableBackgroundPlay => _enableBackgroundPlay;
   set enableBackgroundPlay(bool value) {
     _enableBackgroundPlay = value;
@@ -118,7 +90,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableBackgroundPlay', _enableBackgroundPlay);
   }
 
-  bool _enableScreenKeepOn = false;
+  bool _enableScreenKeepOn = PrefUtil.getBool('enableScreenKeepOn') ?? false;
   bool get enableScreenKeepOn => _enableScreenKeepOn;
   set enableScreenKeepOn(bool value) {
     _enableScreenKeepOn = value;
@@ -126,7 +98,8 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
   }
 
-  bool _enableAutoCheckUpdate = true;
+  bool _enableAutoCheckUpdate =
+      PrefUtil.getBool('enableAutoCheckUpdate') ?? true;
   bool get enableAutoCheckUpdate => _enableAutoCheckUpdate;
   set enableAutoCheckUpdate(bool value) {
     _enableAutoCheckUpdate = value;
@@ -134,7 +107,8 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
   }
 
-  bool _enableFullScreenDefault = true;
+  bool _enableFullScreenDefault =
+      PrefUtil.getBool('enableFullScreenDefault') ?? true;
   bool get enableFullScreenDefault => _enableFullScreenDefault;
   set enableFullScreenDefault(bool value) {
     _enableFullScreenDefault = value;
@@ -142,7 +116,8 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setBool('enableFullScreenDefault', _enableFullScreenDefault);
   }
 
-  String _bilibiliCustomCookie = '';
+  String _bilibiliCustomCookie =
+      PrefUtil.getString('bilibiliCustomCookie') ?? '';
   String get bilibiliCustomCookie => _bilibiliCustomCookie;
   set bilibiliCustomCookie(String value) {
     _bilibiliCustomCookie = value;
@@ -150,7 +125,7 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool _hideOfflineRoom = false;
+  bool _hideOfflineRoom = PrefUtil.getBool('hideOfflineRoom') ?? false;
   bool get hideOfflineRoom => _hideOfflineRoom;
   set hideOfflineRoom(bool value) {
     _hideOfflineRoom = value;
@@ -159,7 +134,8 @@ class SettingsProvider with ChangeNotifier {
   }
 
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
-  String _preferResolution = resolutions[0];
+  String _preferResolution =
+      PrefUtil.getString('preferResolution') ?? resolutions[0];
   String get preferResolution => _preferResolution;
   void changePreferResolution(String name) {
     if (resolutions.indexWhere((e) => e == name) != -1) {
@@ -170,7 +146,7 @@ class SettingsProvider with ChangeNotifier {
   }
 
   static const List<String> platforms = ['bilibili', 'douyu', 'huya'];
-  String _preferPlatform = platforms[0];
+  String _preferPlatform = PrefUtil.getString('preferPlatform') ?? platforms[0];
   String get preferPlatform => _preferPlatform;
   void changePreferPlatform(String name) {
     if (platforms.indexWhere((e) => e == name) != -1) {
@@ -187,18 +163,17 @@ class SettingsProvider with ChangeNotifier {
     List<String> prefs = (json['favorites'] ?? []) as List<String>;
     _favorites =
         prefs.map<RoomInfo>((e) => RoomInfo.fromJson(jsonDecode(e))).toList();
-    _themeModeName = json['themeMode'] ?? "System";
-    _themeColorName = json['themeColor'] ?? "Crimson";
-    _enableDenseFavorites = json['enableDenseFavorites'] ?? false;
-    _enableBackgroundPlay = json['enableBackgroundPlay'] ?? false;
-    _enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
-    _enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
-    _enableFullScreenDefault = json['enableFullScreenDefault'] ?? false;
-    _hideOfflineRoom = json['hideOfflineRoom'] ?? false;
-    _bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
-    _preferResolution = json['preferResolution'] ?? resolutions[0];
-    _preferPlatform = json['preferPlatform'] ?? platforms[0];
-    _saveToPref();
+    changeThemeMode(json['themeMode'] ?? "System");
+    changeThemeColor(json['themeColor'] ?? "Crimson");
+    enableDenseFavorites = json['enableDenseFavorites'] ?? false;
+    enableBackgroundPlay = json['enableBackgroundPlay'] ?? false;
+    enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
+    enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
+    enableFullScreenDefault = json['enableFullScreenDefault'] ?? false;
+    hideOfflineRoom = json['hideOfflineRoom'] ?? false;
+    bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
+    changePreferResolution(json['preferResolution'] ?? resolutions[0]);
+    changePreferPlatform(json['preferPlatform'] ?? platforms[0]);
   }
 
   Map<String, dynamic> toJson() {

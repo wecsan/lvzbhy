@@ -671,6 +671,26 @@ class S {
     );
   }
 
+  /// `Auto Refresh Time`
+  String get auto_refresh_time {
+    return Intl.message(
+      'Auto Refresh Time',
+      name: 'auto_refresh_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto refresh favorites rooms status`
+  String get auto_refresh_time_subtitle {
+    return Intl.message(
+      'Auto refresh favorites rooms status',
+      name: 'auto_refresh_time_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Bilibili Cookie`
   String get bilibili_cookie {
     return Intl.message(

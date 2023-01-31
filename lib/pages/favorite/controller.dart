@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:hot_live/common/index.dart';
@@ -9,6 +10,9 @@ class FavoriteProvider with ChangeNotifier {
   FavoriteProvider(this.context) {
     settings = Provider.of<SettingsProvider>(context, listen: false);
     onRefresh();
+    Timer.periodic(Duration(seconds: settings.autoRefreshTime), (timer) {
+      onRefresh();
+    });
   }
 
   final List<RoomInfo> _roomsList = [];
