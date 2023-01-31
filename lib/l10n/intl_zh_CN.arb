@@ -54,6 +54,9 @@
     "change_language": "切换语言",
     "change_language_subtitle": "切换软件的显示语言",
 
+    "enable_dynamic_color": "动态取色",
+    "enable_dynamic_color_subtitle": "启用Monet壁纸动态取色",
+
     "enable_dense_favorites_mode": "紧凑模式",
     "enable_dense_favorites_mode_subtitle": "关注页面可显示更多直播间",
 

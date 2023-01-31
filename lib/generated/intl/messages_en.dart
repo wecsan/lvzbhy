@@ -100,6 +100,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_dense_favorites_mode_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Display more favorite rooms at once"),
+        "enable_dynamic_color":
+            MessageLookupByLibrary.simpleMessage("Dynamic Color"),
+        "enable_dynamic_color_subtitle":
+            MessageLookupByLibrary.simpleMessage("Enable Monet dynamic color"),
         "enable_fullscreen_default":
             MessageLookupByLibrary.simpleMessage("Auto Full Screen"),
         "enable_fullscreen_default_subtitle":

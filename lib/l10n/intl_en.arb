@@ -54,6 +54,9 @@
     "change_language": "Language",
     "change_language_subtitle": "Change the display language of the app",
 
+    "enable_dynamic_color": "Dynamic Color",
+    "enable_dynamic_color_subtitle": "Enable Monet dynamic color",
+
     "enable_dense_favorites_mode": "Dense Mode",
     "enable_dense_favorites_mode_subtitle": "Display more favorite rooms at once",
 

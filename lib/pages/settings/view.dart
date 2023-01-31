@@ -73,6 +73,13 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           SectionTitle(title: S.of(context).custom),
           CupertinoSwitchListTile(
+            title: Text(S.of(context).enable_dynamic_color),
+            subtitle: Text(S.of(context).enable_dynamic_color_subtitle),
+            value: settings.enableDynamicTheme,
+            activeColor: Theme.of(context).colorScheme.primary,
+            onChanged: (bool value) => settings.enableDynamicTheme = value,
+          ),
+          CupertinoSwitchListTile(
             title: Text(S.of(context).enable_dense_favorites_mode),
             subtitle: Text(S.of(context).enable_dense_favorites_mode_subtitle),
             value: settings.enableDenseFavorites,

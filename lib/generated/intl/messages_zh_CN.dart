@@ -89,6 +89,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("紧凑模式"),
         "enable_dense_favorites_mode_subtitle":
             MessageLookupByLibrary.simpleMessage("关注页面可显示更多直播间"),
+        "enable_dynamic_color": MessageLookupByLibrary.simpleMessage("动态取色"),
+        "enable_dynamic_color_subtitle":
+            MessageLookupByLibrary.simpleMessage("启用Monet壁纸动态取色"),
         "enable_fullscreen_default":
             MessageLookupByLibrary.simpleMessage("自动全屏"),
         "enable_fullscreen_default_subtitle":

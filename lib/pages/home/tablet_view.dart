@@ -76,7 +76,7 @@ class _HomePageRouterState extends State<HomePageRouter> {
                 setState(() => _selectedIndex = index);
               },
             ),
-            const VerticalDivider(thickness: 1, width: 1),
+            const VerticalDivider(width: 1),
             Expanded(child: body),
           ],
         ),

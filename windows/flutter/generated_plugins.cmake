@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   battery_plus
   dart_vlc
+  dynamic_color
   flutter_native_view
   screen_brightness_windows
   screen_retriever

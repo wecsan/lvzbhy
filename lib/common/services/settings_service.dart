@@ -43,6 +43,7 @@ class SettingsProvider with ChangeNotifier {
     _themeModeName = PrefUtil.getString('themeMode') ?? "System";
     _themeColorName = PrefUtil.getString('themeColor') ?? "Crimson";
     _languageName = PrefUtil.getString('language') ?? "简体中文";
+    _enableDynamicTheme = PrefUtil.getBool('enableDynamicTheme') ?? false;
     _enableAutoCheckUpdate = PrefUtil.getBool('enableAutoCheckUpdate') ?? true;
     _enableDenseFavorites = PrefUtil.getBool('enableDenseFavorites') ?? false;
     _enableBackgroundPlay = PrefUtil.getBool('enableBackgroundPlay') ?? false;
@@ -66,6 +67,7 @@ class SettingsProvider with ChangeNotifier {
     PrefUtil.setString('themeMode', _themeModeName);
     PrefUtil.setString('themeColor', _themeColorName);
     PrefUtil.setString('language', _languageName);
+    PrefUtil.setBool('enableDynamicTheme', _enableDynamicTheme);
     PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
     PrefUtil.setBool('enableBackgroundPlay', _enableBackgroundPlay);
     PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
@@ -120,6 +122,14 @@ class SettingsProvider with ChangeNotifier {
     _themeColorName = color;
     notifyListeners();
     PrefUtil.setString('themeColor', _themeColorName);
+  }
+
+  bool _enableDynamicTheme = false;
+  bool get enableDynamicTheme => _enableDynamicTheme;
+  set enableDynamicTheme(bool value) {
+    _enableDynamicTheme = value;
+    notifyListeners();
+    PrefUtil.setBool('enableDynamicTheme', _enableDynamicTheme);
   }
 
   static Map<String, Locale> languages = {

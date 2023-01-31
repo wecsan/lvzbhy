@@ -491,6 +491,26 @@ class S {
     );
   }
 
+  /// `Dynamic Color`
+  String get enable_dynamic_color {
+    return Intl.message(
+      'Dynamic Color',
+      name: 'enable_dynamic_color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Monet dynamic color`
+  String get enable_dynamic_color_subtitle {
+    return Intl.message(
+      'Enable Monet dynamic color',
+      name: 'enable_dynamic_color_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Dense Mode`
   String get enable_dense_favorites_mode {
     return Intl.message(

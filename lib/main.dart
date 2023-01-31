@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/index.dart';
@@ -40,21 +41,35 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = Provider.of<SettingsProvider>(context);
-    return MaterialApp(
-      title: 'HotLive',
-      themeMode: settings.themeMode,
-      theme: MyTheme(settings.themeColor).lightThemeData,
-      darkTheme: MyTheme(settings.themeColor).darkThemeData,
-      locale: settings.language,
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: S.delegate.supportedLocales,
-      home: const HomePage(),
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        // 主题颜色设定/Monet取色
+        final settings = Provider.of<SettingsProvider>(context);
+        var lightTheme =
+            MyTheme(primaryColor: settings.themeColor).lightThemeData;
+        var darkTheme =
+            MyTheme(primaryColor: settings.themeColor).darkThemeData;
+        if (settings.enableDynamicTheme) {
+          lightTheme = MyTheme(colorScheme: lightDynamic).lightThemeData;
+          darkTheme = MyTheme(colorScheme: darkDynamic).darkThemeData;
+        }
+
+        return MaterialApp(
+          title: 'HotLive',
+          themeMode: settings.themeMode,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          locale: settings.language,
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: const HomePage(),
+        );
+      },
     );
   }
 }
