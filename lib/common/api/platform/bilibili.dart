@@ -159,7 +159,7 @@ class BilibiliApi {
   static Future<List<RoomInfo>> getRecommend(int page, int size) async {
     List<RoomInfo> list = [];
     String url = 'https://api.live.bilibili.com/room/v1/room/get_user_recommend'
-        '?page=$page&page_size=$size';
+        '?page=${page + 1}&page_size=$size';
 
     try {
       dynamic response = await _getJson(url);
