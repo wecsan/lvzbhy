@@ -20,12 +20,6 @@ class _PopularPageState extends State<PopularPage> {
 
   bool loading = false;
 
-  static const Map<String, String> names = {
-    'bilibili': '哔哩',
-    'douyu': '斗鱼',
-    'huya': '虎牙',
-  };
-
   void _onRefresh() {
     provider.onRefresh().then(
           (value) => value
@@ -53,23 +47,52 @@ class _PopularPageState extends State<PopularPage> {
 
     return Scaffold(
       appBar: AppBar(
-        scrolledUnderElevation: screenWidth > 640 ? 0 : null,
-        title: DropdownButton(
-          underline: Container(),
-          borderRadius: BorderRadius.circular(15),
-          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-          style: Theme.of(context)
-              .textTheme
-              .headline6
-              ?.copyWith(fontWeight: FontWeight.w600),
-          value: provider.platform,
-          items: provider.platforms
-              .map((e) => DropdownMenuItem(value: e, child: Text(names[e]!)))
-              .toList(),
-          onChanged: (String? value) {
-            provider.setPlatform(value ?? 'bilibili');
-          },
+        centerTitle: true,
+        scrolledUnderElevation: 0,
+        title: DefaultTabController(
+          length: provider.platformRooms.length,
+          child: TabBar(
+            isScrollable: true,
+            labelColor: Theme.of(context).colorScheme.onBackground,
+            labelStyle:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            unselectedLabelColor: Theme.of(context).disabledColor,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorColor: Theme.of(context).colorScheme.primary,
+            tabs: provider.platformRooms.values
+                .map((value) => Tab(text: value.name))
+                .toList(),
+            onTap: (index) => provider
+                .changePlatform(provider.platformRooms.keys.toList()[index]),
+          ),
         ),
+        leading: screenWidth > 640
+            ? null
+            : IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
+                  );
+                },
+                icon: const Icon(CustomIcons.search),
+              ),
+        actions: screenWidth > 640
+            ? null
+            : [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()),
+                    );
+                  },
+                  icon: const Icon(Icons.settings),
+                ),
+                const SizedBox(width: 4),
+              ],
       ),
       body: Listener(
         onPointerSignal: (event) {
@@ -90,14 +113,16 @@ class _PopularPageState extends State<PopularPage> {
           controller: refreshController,
           onRefresh: _onRefresh,
           onLoading: _onLoading,
-          child: provider.roomList.isNotEmpty
+          child: provider.rooms.isNotEmpty
               ? MasonryGridView.count(
                   padding: const EdgeInsets.all(5),
                   controller: scrollController,
                   crossAxisCount: crossAxisCount,
-                  itemCount: provider.roomList.length,
-                  itemBuilder: (context, index) =>
-                      RoomCard(room: provider.roomList[index], dense: true),
+                  itemCount: provider.rooms.length,
+                  itemBuilder: (context, index) => RoomCard(
+                    room: provider.rooms[index],
+                    dense: true,
+                  ),
                 )
               : EmptyView(
                   icon: Icons.live_tv_rounded,

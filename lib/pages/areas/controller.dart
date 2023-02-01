@@ -1,42 +1,50 @@
 import 'package:hot_live/common/index.dart';
 
+class PlatformAreas {
+  String tag = 'bilibili';
+  String name = '哔哩';
+  List<String> labels = [];
+  List<List<AreaInfo>> areas = [];
+
+  PlatformAreas({
+    this.tag = '',
+    this.name = '',
+  });
+}
+
 class AreasProvider with ChangeNotifier {
   final BuildContext context;
   late SettingsProvider settings;
 
   AreasProvider(this.context) {
-    settings = Provider.of<SettingsProvider>(context, listen: false);
-    platform = settings.preferPlatform;
+    platform = Provider.of<SettingsProvider>(
+      context,
+      listen: false,
+    ).preferPlatform;
     onLoading();
   }
 
-  final List<String> platforms = SettingsProvider.platforms;
   String platform = 'bilibili';
-  Map<String, List<List<AreaInfo>>> areaMap = {
-    'bilibili': [],
-    'douyu': [],
-    'huya': [],
-  };
-  Map<String, List<String>> labelMap = {
-    'bilibili': [],
-    'douyu': [],
-    'huya': [],
+  Map<String, PlatformAreas> platformAreas = {
+    'bilibili': PlatformAreas(tag: 'bilibili', name: '哔哩'),
+    'douyu': PlatformAreas(tag: 'douyu', name: '斗鱼'),
+    'huya': PlatformAreas(tag: 'huya', name: '虎牙'),
   };
 
-  List<String> get labelList => labelMap[platform] ?? [];
-  List<List<AreaInfo>> get areaList => areaMap[platform] ?? [];
+  List<String> get labels => platformAreas[platform]?.labels ?? [];
+  List<List<AreaInfo>> get areas => platformAreas[platform]?.areas ?? [];
 
   void onLoading() async {
-    for (var plat in platforms) {
-      areaMap[plat] = await LiveApi.getAreaList(plat);
-      for (var list in areaMap[plat]!) {
-        labelMap[plat]!.add(list[0].typeName);
+    for (final plat in platformAreas.keys) {
+      platformAreas[plat]?.areas = await LiveApi.getAreaList(plat);
+      for (final list in platformAreas[platform]!.areas) {
+        platformAreas[plat]?.labels.add(list[0].typeName);
       }
     }
     notifyListeners();
   }
 
-  void setPlatform(String name) {
+  void changePlatform(String name) {
     platform = name;
     notifyListeners();
   }

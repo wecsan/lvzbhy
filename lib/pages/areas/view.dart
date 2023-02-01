@@ -1,7 +1,7 @@
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hot_live/common/index.dart';
+import 'package:hot_live/pages/index.dart';
 
-import 'controller.dart';
 import 'widgets/area_card.dart';
 
 class AreasPage extends StatefulWidget {
@@ -15,35 +15,60 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   late AreasProvider provider = Provider.of<AreasProvider>(context);
   late TabController tabController;
 
-  static const Map<String, String> names = {
-    'bilibili': '哔哩',
-    'douyu': '斗鱼',
-    'huya': '虎牙',
-  };
-
   @override
   Widget build(BuildContext context) {
-    tabController =
-        TabController(length: provider.areaList.length, vsync: this);
+    double screenWidth = MediaQuery.of(context).size.width;
+    tabController = TabController(length: provider.areas.length, vsync: this);
+
     return Scaffold(
       appBar: AppBar(
-        title: DropdownButton(
-          underline: Container(),
-          borderRadius: BorderRadius.circular(15),
-          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-          style: Theme.of(context)
-              .textTheme
-              .headline6
-              ?.copyWith(fontWeight: FontWeight.w600),
-          value: provider.platform,
-          items: provider.platforms
-              .map((e) => DropdownMenuItem(value: e, child: Text(names[e]!)))
-              .toList(),
-          onChanged: (String? value) {
-            provider.setPlatform(value ?? 'bilibili');
-          },
+        centerTitle: true,
+        scrolledUnderElevation: 0,
+        title: DefaultTabController(
+          length: provider.platformAreas.length,
+          child: TabBar(
+            isScrollable: true,
+            labelColor: Theme.of(context).colorScheme.onBackground,
+            labelStyle:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            unselectedLabelColor: Theme.of(context).disabledColor,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorColor: Theme.of(context).colorScheme.primary,
+            tabs: provider.platformAreas.values
+                .map((value) => Tab(text: value.name))
+                .toList(),
+            onTap: (index) => provider
+                .changePlatform(provider.platformAreas.keys.toList()[index]),
+          ),
         ),
-        bottom: provider.labelList.isEmpty
+        leading: screenWidth > 640
+            ? null
+            : IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
+                  );
+                },
+                icon: const Icon(CustomIcons.search),
+              ),
+        actions: screenWidth > 640
+            ? null
+            : [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()),
+                    );
+                  },
+                  icon: const Icon(Icons.settings),
+                ),
+                const SizedBox(width: 4),
+              ],
+        bottom: provider.labels.isEmpty
             ? const PreferredSize(
                 child: SizedBox(height: 0),
                 preferredSize: Size.fromHeight(0),
@@ -55,14 +80,12 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                 unselectedLabelColor: Theme.of(context).disabledColor,
                 indicatorSize: TabBarIndicatorSize.label,
                 indicatorColor: Theme.of(context).colorScheme.primary,
-                tabs: provider.labelList
-                    .map<Widget>((e) => Tab(text: e))
-                    .toList(),
+                tabs: provider.labels.map<Widget>((e) => Tab(text: e)).toList(),
               ),
       ),
       body: TabBarView(
         controller: tabController,
-        children: provider.areaList
+        children: provider.areas
             .map<Widget>((e) => AreaGridView(areaList: e))
             .toList(),
       ),

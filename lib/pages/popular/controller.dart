@@ -1,46 +1,54 @@
 import 'package:hot_live/common/index.dart';
 
+class PlatformRooms {
+  String tag = 'bilibili';
+  String name = '哔哩';
+  int page = 0;
+  List<RoomInfo> rooms = [];
+
+  PlatformRooms({
+    this.tag = '',
+    this.name = '',
+    this.page = 0,
+  });
+}
+
 class PopularProvider with ChangeNotifier {
   final BuildContext context;
-  late SettingsProvider settings;
+
+  String platform = 'bilibili';
+  Map<String, PlatformRooms> platformRooms = {
+    'bilibili': PlatformRooms(tag: 'bilibili', name: '哔哩'),
+    'douyu': PlatformRooms(tag: 'douyu', name: '斗鱼'),
+    'huya': PlatformRooms(tag: 'huya', name: '虎牙'),
+  };
+
+  int get page => platformRooms[platform]?.page ?? 0;
+  set page(int _page) => platformRooms[platform]?.page = _page;
+
+  List<RoomInfo> get rooms => platformRooms[platform]?.rooms ?? [];
+  set rooms(List<RoomInfo> _rooms) => platformRooms[platform]?.rooms = _rooms;
 
   PopularProvider(this.context) {
-    settings = Provider.of<SettingsProvider>(context, listen: false);
-    platform = settings.preferPlatform;
+    platform = Provider.of<SettingsProvider>(
+      context,
+      listen: false,
+    ).preferPlatform;
     initRefresh();
   }
 
-  final List<String> platforms = SettingsProvider.platforms;
-  String platform = 'bilibili';
-  Map<String, List<RoomInfo>> roomsMap = {
-    'bilibili': [],
-    'douyu': [],
-    'huya': [],
-  };
-  Map<String, int> pageMap = {
-    'bilibili': 0,
-    'douyu': 0,
-    'huya': 0,
-  };
-
-  int get page => pageMap[platform] ?? 0;
-  set page(int _page) => pageMap[platform] = _page;
-
-  List<RoomInfo> get roomList => roomsMap[platform] ?? [];
-  set roomList(List<RoomInfo> _rooms) => roomsMap[platform] = _rooms;
-
   void initRefresh() async {
-    for (var plat in platforms) {
-      roomsMap[plat] = await LiveApi.getRecommend(plat, page: 0);
+    for (final p in platformRooms.keys) {
+      platformRooms[p]?.rooms = await LiveApi.getRecommend(p, page: 0);
     }
     notifyListeners();
   }
 
   Future<bool> onRefresh() async {
     page = 0;
-    roomList = await LiveApi.getRecommend(platform, page: page);
+    rooms = await LiveApi.getRecommend(platform, page: page);
     notifyListeners();
-    return roomList.isNotEmpty;
+    return rooms.isNotEmpty;
   }
 
   Future<bool> onLoading() async {
@@ -48,17 +56,16 @@ class PopularProvider with ChangeNotifier {
     final items = await LiveApi.getRecommend(platform, page: page);
     if (items.isNotEmpty) {
       for (var item in items) {
-        if (roomList.indexWhere((e) => e.roomId == item.roomId) != -1) continue;
-        roomList.add(item);
+        if (rooms.indexWhere((e) => e.roomId == item.roomId) != -1) continue;
+        rooms.add(item);
       }
     }
     notifyListeners();
     return items.isNotEmpty;
   }
 
-  void setPlatform(String name) {
-    platform = name;
-    onRefresh();
+  void changePlatform(String plat) {
+    platform = plat;
     notifyListeners();
   }
 }
