@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/services.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/home/mobile_view.dart';
 import 'package:hot_live/pages/home/tablet_view.dart';
@@ -50,16 +47,6 @@ class _HomePageRouterState extends State<HomePageRouter> {
 
   @override
   Widget build(BuildContext context) {
-    // Android statusbar and navigationbar
-    if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor:
-            Theme.of(context).navigationBarTheme.backgroundColor,
-      ));
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    }
-
     return ScreenTypeLayout.builder(
       mobile: (context) => OrientationLayoutBuilder(
         portrait: (context) => const HomeMobileView(),
