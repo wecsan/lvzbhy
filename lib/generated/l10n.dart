@@ -190,6 +190,26 @@ class S {
     );
   }
 
+  /// `No Offline Room`
+  String get empty_favorite_offline_title {
+    return Intl.message(
+      'No Offline Room',
+      name: 'empty_favorite_offline_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please follow live rooms first`
+  String get empty_favorite_offline_subtitle {
+    return Intl.message(
+      'Please follow live rooms first',
+      name: 'empty_favorite_offline_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No Online Room`
   String get empty_favorite_online_title {
     return Intl.message(

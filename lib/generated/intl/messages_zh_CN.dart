@@ -64,10 +64,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "empty_areas_subtitle":
             MessageLookupByLibrary.simpleMessage("请点击下方按钮切换平台"),
         "empty_areas_title": MessageLookupByLibrary.simpleMessage("未发现分区"),
+        "empty_favorite_offline_subtitle":
+            MessageLookupByLibrary.simpleMessage("请先关注其他直播间"),
+        "empty_favorite_offline_title":
+            MessageLookupByLibrary.simpleMessage("无未开播直播间"),
         "empty_favorite_online_subtitle":
             MessageLookupByLibrary.simpleMessage("请先关注其他直播间"),
         "empty_favorite_online_title":
-            MessageLookupByLibrary.simpleMessage("无在线直播"),
+            MessageLookupByLibrary.simpleMessage("无已开播直播间"),
         "empty_favorite_subtitle":
             MessageLookupByLibrary.simpleMessage("请先关注其他直播间"),
         "empty_favorite_title": MessageLookupByLibrary.simpleMessage("无关注直播"),

@@ -45,4 +45,11 @@ class RoomInfo {
         'platform': platform,
         'liveStatus': liveStatus.index
       };
+
+  @override
+  bool operator ==(covariant RoomInfo other) =>
+      platform == other.platform && roomId == other.roomId;
+
+  @override
+  int get hashCode => int.parse(roomId);
 }

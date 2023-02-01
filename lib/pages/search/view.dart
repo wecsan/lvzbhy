@@ -163,7 +163,7 @@ class OwnerCard extends StatelessWidget {
           maxLines: 1,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
-        trailing: favoritePod.isFavorite(room.roomId)
+        trailing: favoritePod.isFavorite(room)
             ? ElevatedButton(
                 onPressed: () => favoritePod.removeRoom(room),
                 child: Text(S.of(context).followed, style: followedStyle),

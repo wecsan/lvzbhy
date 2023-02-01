@@ -16,6 +16,8 @@
     "favorites_title": "Favorites",
     "empty_favorite_title": "No Favorites",
     "empty_favorite_subtitle": "Please follow live rooms first",
+    "empty_favorite_offline_title": "No Offline Room",
+    "empty_favorite_offline_subtitle": "Please follow live rooms first",
     "empty_favorite_online_title": "No Online Room",
     "empty_favorite_online_subtitle": "Please follow live rooms first",
     "show_offline_rooms": "Show Offline Rooms",

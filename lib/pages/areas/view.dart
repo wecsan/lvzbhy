@@ -51,9 +51,10 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
             : TabBar(
                 controller: tabController,
                 isScrollable: true,
-                labelColor: Theme.of(context).textTheme.bodyText1!.color,
+                labelColor: Theme.of(context).colorScheme.onBackground,
                 unselectedLabelColor: Theme.of(context).disabledColor,
                 indicatorSize: TabBarIndicatorSize.label,
+                indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: provider.labelList
                     .map<Widget>((e) => Tab(text: e))
                     .toList(),

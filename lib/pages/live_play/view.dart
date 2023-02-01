@@ -296,7 +296,7 @@ class FavoriteFloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final favorite = Provider.of<FavoriteProvider>(context);
-    return favorite.isFavorite(room.roomId)
+    return favorite.isFavorite(room)
         ? FloatingActionButton(
             elevation: 2,
             backgroundColor: Theme.of(context).cardColor,

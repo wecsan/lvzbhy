@@ -125,14 +125,6 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool _hideOfflineRoom = PrefUtil.getBool('hideOfflineRoom') ?? false;
-  bool get hideOfflineRoom => _hideOfflineRoom;
-  set hideOfflineRoom(bool value) {
-    _hideOfflineRoom = value;
-    notifyListeners();
-    PrefUtil.setBool("hideOfflineRoom", _hideOfflineRoom);
-  }
-
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
   String _preferResolution =
       PrefUtil.getString('preferResolution') ?? resolutions[0];
@@ -170,7 +162,6 @@ class SettingsProvider with ChangeNotifier {
     enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
     enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
     enableFullScreenDefault = json['enableFullScreenDefault'] ?? false;
-    hideOfflineRoom = json['hideOfflineRoom'] ?? false;
     bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
     changePreferResolution(json['preferResolution'] ?? resolutions[0]);
     changePreferPlatform(json['preferPlatform'] ?? platforms[0]);
@@ -187,7 +178,6 @@ class SettingsProvider with ChangeNotifier {
     json['enableScreenKeepOn'] = _enableScreenKeepOn;
     json['enableAutoCheckUpdate'] = _enableAutoCheckUpdate;
     json['enableFullScreenDefault'] = _enableFullScreenDefault;
-    json['hideOfflineRoom'] = _hideOfflineRoom;
     json['bilibiliCustomCookie'] = _bilibiliCustomCookie;
     json['preferResolution'] = _preferResolution;
     json['preferPlatform'] = _preferPlatform;

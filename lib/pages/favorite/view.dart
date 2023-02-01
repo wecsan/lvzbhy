@@ -10,11 +10,11 @@ class FavoritePage extends StatefulWidget {
   State<FavoritePage> createState() => _FavoritePageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
-  late FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
-  late SettingsProvider settings = Provider.of<SettingsProvider>(context);
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+class _FavoritePageState extends State<FavoritePage>
+    with TickerProviderStateMixin {
+  late final favorite = Provider.of<FavoriteProvider>(context);
+  late final settings = Provider.of<SettingsProvider>(context);
+  late final tabController = TabController(length: 2, vsync: this);
 
   void onLongPress(BuildContext context, RoomInfo room) {
     showDialog(
@@ -38,13 +38,6 @@ class _FavoritePageState extends State<FavoritePage> {
             },
             child: Text(S.of(context).remove),
           ),
-          TextButton(
-            onPressed: () {
-              favorite.moveToTop(room);
-              Navigator.of(context).pop();
-            },
-            child: Text(S.of(context).move_to_top),
-          ),
         ],
       ),
     );
@@ -62,79 +55,92 @@ class _FavoritePageState extends State<FavoritePage> {
           : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
     }
 
-    List<Widget> actions = [];
-    if (screenWidth < 640) {
-      actions = [
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SearchPage()),
-            );
-          },
-          icon: const Icon(CustomIcons.search),
-        ),
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsPage()),
-            );
-          },
-          icon: const Icon(Icons.settings),
-        ),
-      ];
-    }
-
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: screenWidth > 640 ? 0 : null,
-        title: Text(
-          S.of(context).favorites_title.toUpperCase(),
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        actions: actions,
-      ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        header: const WaterDropHeader(),
-        controller: refreshController,
-        onRefresh: () => favorite.onRefresh().then((value) {
-          refreshController.refreshCompleted();
-        }),
-        child: favorite.roomList.isNotEmpty
-            ? MasonryGridView.count(
-                padding: const EdgeInsets.all(5),
-                controller: ScrollController(),
-                crossAxisCount: crossAxisCount,
-                itemCount: favorite.roomList.length,
-                itemBuilder: (context, index) => RoomCard(
-                  room: favorite.roomList[index],
-                  dense: settings.enableDenseFavorites,
-                  onLongPress: () =>
-                      onLongPress(context, favorite.roomList[index]),
-                ),
-              )
-            : EmptyView(
-                icon: Icons.favorite_rounded,
-                title: favorite.hideOffline
-                    ? S.of(context).empty_favorite_online_title
-                    : S.of(context).empty_favorite_title,
-                subtitle: favorite.hideOffline
-                    ? S.of(context).empty_favorite_online_subtitle
-                    : S.of(context).empty_favorite_subtitle,
+        centerTitle: true,
+        leading: screenWidth > 640
+            ? null
+            : IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
+                  );
+                },
+                icon: const Icon(CustomIcons.search),
               ),
+        title: TabBar(
+          controller: tabController,
+          isScrollable: true,
+          labelColor: Theme.of(context).colorScheme.onBackground,
+          unselectedLabelColor: Theme.of(context).disabledColor,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+          indicatorSize: TabBarIndicatorSize.label,
+          indicatorColor: Theme.of(context).colorScheme.primary,
+          tabs: const [
+            Tab(text: '已开播'),
+            Tab(text: '未开播'),
+          ],
+        ),
+        actions: screenWidth > 640
+            ? null
+            : [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()),
+                    );
+                  },
+                  icon: const Icon(Icons.settings),
+                ),
+              ],
       ),
-      floatingActionButton: favorite.hideOffline
-          ? FloatingActionButton(
-              tooltip: S.of(context).show_offline_rooms,
-              onPressed: favorite.toggleHideOffline,
-              child: const Icon(Icons.add_circle_outline_rounded),
+      body: TabBarView(
+        controller: tabController,
+        children: [
+          _buildRoomsView(favorite.onlineRoomList, crossAxisCount, true),
+          _buildRoomsView(favorite.offlineRoomList, crossAxisCount, false),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoomsView(
+    List<RoomInfo> rooms,
+    int crossAxisCount,
+    bool online,
+  ) {
+    final refreshController = RefreshController();
+    return SmartRefresher(
+      enablePullDown: true,
+      header: const WaterDropHeader(),
+      controller: refreshController,
+      onRefresh: () => favorite.onRefresh().then((value) {
+        refreshController.refreshCompleted();
+      }),
+      child: rooms.isNotEmpty
+          ? MasonryGridView.count(
+              padding: const EdgeInsets.all(5),
+              controller: ScrollController(),
+              crossAxisCount: crossAxisCount,
+              itemCount: rooms.length,
+              itemBuilder: (context, index) => RoomCard(
+                room: rooms[index],
+                dense: settings.enableDenseFavorites,
+                onLongPress: () => onLongPress(context, rooms[index]),
+              ),
             )
-          : FloatingActionButton(
-              tooltip: S.of(context).hide_offline_rooms,
-              onPressed: favorite.toggleHideOffline,
-              child: const Icon(Icons.remove_circle_outline_rounded),
+          : EmptyView(
+              icon: Icons.favorite_rounded,
+              title: online
+                  ? S.of(context).empty_favorite_online_title
+                  : S.of(context).empty_favorite_offline_title,
+              subtitle: online
+                  ? S.of(context).empty_favorite_online_subtitle
+                  : S.of(context).empty_favorite_offline_subtitle,
             ),
     );
   }
