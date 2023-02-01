@@ -39,9 +39,9 @@ class AreasProvider with ChangeNotifier {
   void onLoading() async {
     for (final plat in platformAreas.keys) {
       platformAreas[plat]?.areas = await LiveApi.getAreaList(plat);
-      for (final list in platformAreas[platform]!.areas) {
-        platformAreas[plat]?.labels.add(list[0].typeName);
-      }
+      platformAreas[plat]?.labels.addAll(
+          platformAreas[plat]?.areas.map<String>((e) => e.first.typeName) ??
+              []);
     }
     notifyListeners();
   }

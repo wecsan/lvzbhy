@@ -19,7 +19,7 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    tabController = TabController(length: provider.areas.length, vsync: this);
+    tabController = TabController(length: provider.labels.length, vsync: this);
 
     return Scaffold(
       appBar: AppBar(
