@@ -292,6 +292,7 @@ class VideoController with ChangeNotifier {
   }
 
   void toggleFullScreen(BuildContext context) {
+    showLocked.value = false;
     // fix danmaku overlap bug
     barrageWallController.disable();
 
