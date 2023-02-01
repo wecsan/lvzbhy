@@ -801,7 +801,7 @@ class ShutdownTimerSetting extends StatelessWidget {
                     controller.setShutdownTimer(value.toInt()),
               ),
               trailing: Text(
-                controller.shutdownMinute.value.toInt().toString(),
+                '${controller.shutdownMinute.value.toInt()} 分钟',
                 style: const TextStyle(color: Colors.white),
               ),
             )),
