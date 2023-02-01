@@ -975,24 +975,24 @@ class DanmakuSetting extends StatelessWidget {
                 style: digit,
               ),
             ),
-            ListTile(
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              leading:
-                  Text(S.of(context).settings_danmaku_amount, style: label),
-              title: Slider(
-                divisions: 90,
-                min: 10,
-                max: 100,
-                value: controller.danmakuAmount.value.toDouble(),
-                onChanged: (val) =>
-                    controller.danmakuAmount.value = val.toInt(),
-              ),
-              trailing: Text(
-                controller.danmakuAmount.value.toString(),
-                style: digit,
-              ),
-            ),
+            // ListTile(
+            //   dense: true,
+            //   contentPadding: EdgeInsets.zero,
+            //   leading:
+            //       Text(S.of(context).settings_danmaku_amount, style: label),
+            //   title: Slider(
+            //     divisions: 90,
+            //     min: 10,
+            //     max: 100,
+            //     value: controller.danmakuAmount.value.toDouble(),
+            //     onChanged: (val) =>
+            //         controller.danmakuAmount.value = val.toInt(),
+            //   ),
+            //   trailing: Text(
+            //     controller.danmakuAmount.value.toString(),
+            //     style: digit,
+            //   ),
+            // ),
           ],
         ));
   }
