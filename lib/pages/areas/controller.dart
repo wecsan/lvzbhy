@@ -24,6 +24,8 @@ class AreasProvider with ChangeNotifier {
     onLoading();
   }
 
+  int get platformIndex =>
+      platformAreas.keys.toList().indexWhere((e) => e == platform);
   String platform = 'bilibili';
   Map<String, PlatformAreas> platformAreas = {
     'bilibili': PlatformAreas(tag: 'bilibili', name: '哔哩'),

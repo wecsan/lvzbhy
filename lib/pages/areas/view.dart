@@ -25,6 +25,7 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
         centerTitle: true,
         scrolledUnderElevation: 0,
         title: DefaultTabController(
+          initialIndex: provider.platformIndex,
           length: provider.platformAreas.length,
           child: TabBar(
             isScrollable: true,

@@ -16,6 +16,8 @@ class PlatformRooms {
 class PopularProvider with ChangeNotifier {
   final BuildContext context;
 
+  int get platformIndex =>
+      platformRooms.keys.toList().indexWhere((e) => e == platform);
   String platform = 'bilibili';
   Map<String, PlatformRooms> platformRooms = {
     'bilibili': PlatformRooms(tag: 'bilibili', name: '哔哩'),
@@ -64,8 +66,8 @@ class PopularProvider with ChangeNotifier {
     return items.isNotEmpty;
   }
 
-  void changePlatform(String plat) {
-    platform = plat;
+  void changePlatform(int index) {
+    platform = platformRooms.keys.toList()[index];
     notifyListeners();
   }
 }

@@ -50,6 +50,7 @@ class _PopularPageState extends State<PopularPage> {
         centerTitle: true,
         scrolledUnderElevation: 0,
         title: DefaultTabController(
+          initialIndex: provider.platformIndex,
           length: provider.platformRooms.length,
           child: TabBar(
             isScrollable: true,
@@ -63,8 +64,7 @@ class _PopularPageState extends State<PopularPage> {
             tabs: provider.platformRooms.values
                 .map((value) => Tab(text: value.name))
                 .toList(),
-            onTap: (index) => provider
-                .changePlatform(provider.platformRooms.keys.toList()[index]),
+            onTap: (index) => provider.changePlatform(index),
           ),
         ),
         leading: screenWidth > 640
