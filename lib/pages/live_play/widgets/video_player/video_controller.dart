@@ -292,12 +292,21 @@ class VideoController with ChangeNotifier {
   }
 
   void toggleFullScreen(BuildContext context) {
+    // disable locked
     showLocked.value = false;
     // fix danmaku overlap bug
-    barrageWallController.disable();
-
+    if (!hideDanmaku.value) {
+      hideDanmaku.value = true;
+      Timer(const Duration(milliseconds: 500), () {
+        hideDanmaku.value = false;
+      });
+    }
     // fix obx setstate when build
     showControllerTimer?.cancel();
+    Timer(const Duration(milliseconds: 500), () {
+      enableController();
+    });
+
     if (Platform.isWindows || Platform.isLinux) {
       if (!isFullscreen.value) {
         WindowManager.instance.setFullScreen(true);
@@ -308,15 +317,11 @@ class VideoController with ChangeNotifier {
           ),
         );
       } else {
-        if (!isWindowFullscreen.value) {
-          Navigator.pop(context);
-        }
-        Timer(const Duration(milliseconds: 500), () async {
-          WindowManager.instance.setFullScreen(false);
-          // TODO: 重设大小，修复窗口大小BUG
-          final size = await WindowManager.instance.getSize();
-          WindowManager.instance.setSize(Size(size.width + 1, size.height + 1));
-        });
+        WindowManager.instance.setFullScreen(false);
+        Navigator.pop(context);
+        // TODO: 重设大小，修复窗口大小BUG
+        WindowManager.instance.getSize().then((value) => WindowManager.instance
+            .setSize(Size(value.width + 1, value.height + 1)));
       }
       isFullscreen.toggle();
     } else if (Platform.isAndroid || Platform.isIOS) {
@@ -325,12 +330,24 @@ class VideoController with ChangeNotifier {
     } else {
       throw UnimplementedError('Unsupported Platform');
     }
-    barrageWallController.enable();
-    enableController();
   }
 
   void toggleWindowFullScreen(BuildContext context) {
+    // disable locked
+    showLocked.value = false;
+    // fix danmaku overlap bug
+    if (!hideDanmaku.value) {
+      hideDanmaku.value = true;
+      Timer(const Duration(milliseconds: 500), () {
+        hideDanmaku.value = false;
+      });
+    }
+    // fix obx setstate when build
     showControllerTimer?.cancel();
+    Timer(const Duration(milliseconds: 500), () {
+      enableController();
+    });
+
     if (Platform.isWindows || Platform.isLinux) {
       if (!isWindowFullscreen.value) {
         Navigator.push(
