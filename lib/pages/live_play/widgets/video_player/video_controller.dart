@@ -291,6 +291,9 @@ class VideoController with ChangeNotifier {
   }
 
   void toggleFullScreen(BuildContext context) {
+    // fix danmaku overlap bug
+    barrageWallController.disable();
+
     // fix obx setstate when build
     showControllerTimer?.cancel();
     if (Platform.isWindows || Platform.isLinux) {
@@ -320,6 +323,7 @@ class VideoController with ChangeNotifier {
     } else {
       throw UnimplementedError('Unsupported Platform');
     }
+    barrageWallController.enable();
     enableController();
   }
 

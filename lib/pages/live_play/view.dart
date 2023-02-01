@@ -144,9 +144,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
             ? Row(children: <Widget>[
                 Flexible(
                   flex: 5,
-                  child: _buildVideoPlayer(
-                    width: MediaQuery.of(context).size.width / 8.0 * 5.0,
-                  ),
+                  child: _buildVideoPlayer(width: screenWidth / 8.0 * 5.0),
                 ),
                 Flexible(
                   flex: 3,
@@ -165,7 +163,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
               ])
             : Column(
                 children: <Widget>[
-                  _buildVideoPlayer(),
+                  _buildVideoPlayer(width: screenWidth),
                   _buildResolutions(),
                   const Divider(height: 1),
                   Expanded(
@@ -182,7 +180,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     );
   }
 
-  Widget _buildVideoPlayer({double? width}) {
+  Widget _buildVideoPlayer({required double width}) {
     return Hero(
       tag: widget.room.roomId,
       child: AspectRatio(
@@ -209,7 +207,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
                   key: _playerKey,
                   controller: controller!,
                   width: width,
-                  height: width == null ? null : width / 16.0 * 9.0,
+                  height: width / 16.0 * 9.0,
                 ),
         ),
       ),
