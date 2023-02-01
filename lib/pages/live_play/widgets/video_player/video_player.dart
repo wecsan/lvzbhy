@@ -19,74 +19,17 @@ class VideoPlayer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<VideoPlayer> createState() => VideoPlayerState();
+  State<VideoPlayer> createState() => _VideoPlayerState();
 }
 
-class VideoPlayerState extends State<VideoPlayer> {
+class _VideoPlayerState extends State<VideoPlayer> {
   final _playerKey = GlobalKey();
   final _danmakuNormal = GlobalKey();
-  final _danmakuFullScreen = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    if (Platform.isWindows || Platform.isLinux) {
-      widget.controller.setDesktopFullscreenBuilder(((context) {
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-            builder: (context) => Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: Container(
-                alignment: Alignment.center,
-                color: Colors.black,
-                child: Hero(
-                  tag: widget.controller.datasource,
-                  child: Stack(children: [
-                    videoFrame,
-                    VideoControllerPanel(
-                      key: _danmakuFullScreen,
-                      playerKey: _playerKey,
-                      controller: widget.controller,
-                    ),
-                  ]),
-                ),
-              ),
-            ),
-          ),
-        );
-      }));
-    } else {
-      widget.controller.setMobileFullscreenBuilder(
-        (context, animation, second, controllerProvider) {
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Container(
-                  alignment: Alignment.center,
-                  color: Colors.black,
-                  child: Stack(children: [
-                    controllerProvider,
-                    VideoControllerPanel(
-                      key: _danmakuFullScreen,
-                      playerKey: _playerKey,
-                      controller: widget.controller,
-                    ),
-                  ]),
-                ),
-              );
-            },
-          );
-        },
-      );
-    }
-  }
 
   Widget get videoFrame {
     if (Platform.isWindows || Platform.isLinux) {
       return Video(
+        key: _playerKey,
         player: widget.controller.desktopController,
         scale: 1.0, // default
         showControls: false, // default
@@ -106,7 +49,6 @@ class VideoPlayerState extends State<VideoPlayer> {
         videoFrame,
         VideoControllerPanel(
           key: _danmakuNormal,
-          playerKey: _playerKey,
           controller: widget.controller,
           width: widget.width,
           height: widget.height,

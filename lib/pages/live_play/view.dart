@@ -42,6 +42,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
       _streamList = value;
       setPreferResolution();
       controller = VideoController(
+        playerKey: _playerKey,
         room: widget.room,
         danmakuStream: danmakuStream,
         datasourceType: 'network',
