@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/home/mobile_view.dart';
 import 'package:hot_live/pages/home/tablet_view.dart';
+import 'package:hot_live/pages/index.dart';
 import 'package:hot_live/pages/settings/widgets/check_update.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -20,8 +24,16 @@ class HomePageRouter extends StatefulWidget {
   State<HomePageRouter> createState() => _HomePageRouterState();
 }
 
-class _HomePageRouterState extends State<HomePageRouter> {
-  late final settings = Provider.of<SettingsProvider>(context, listen: false);
+class _HomePageRouterState extends State<HomePageRouter>
+    with AutomaticKeepAliveClientMixin {
+  int _selectedIndex = 0;
+  final bodys = const [
+    FavoritePage(),
+    PopularPage(),
+    AreasPage(),
+    SettingsPage(),
+    SearchPage(),
+  ];
 
   @override
   void initState() {
@@ -30,7 +42,9 @@ class _HomePageRouterState extends State<HomePageRouter> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) async {
         await VersionUtil.checkUpdate();
-        if (settings.enableAutoCheckUpdate && VersionUtil.hasNewVersion()) {
+        if (Provider.of<SettingsProvider>(context, listen: false)
+                .enableAutoCheckUpdate &&
+            VersionUtil.hasNewVersion()) {
           late OverlayEntry entry;
           entry = OverlayEntry(
             builder: (context) => Container(
@@ -45,18 +59,42 @@ class _HomePageRouterState extends State<HomePageRouter> {
     );
   }
 
+  void onDestinationSelected(int index) {
+    setState(() => _selectedIndex = index);
+  }
+
+  Widget get homeMobile => HomeMobileView(
+        body: bodys[_selectedIndex],
+        index: _selectedIndex,
+        onDestinationSelected: onDestinationSelected,
+      );
+
+  Widget get homeTablet => HomeTabletView(
+        body: bodys[_selectedIndex],
+        index: _selectedIndex,
+        onDestinationSelected: onDestinationSelected,
+      );
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    // Android statusbar and navigationbar
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor:
+            Theme.of(context).navigationBarTheme.backgroundColor,
+      ));
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    }
+
     return ScreenTypeLayout.builder(
-      mobile: (context) => OrientationLayoutBuilder(
-        portrait: (context) => const HomeMobileView(),
-        landscape: (context) => const HomeTabletView(),
-      ),
-      tablet: (context) => OrientationLayoutBuilder(
-        portrait: (context) => const HomeMobileView(),
-        landscape: (context) => const HomeTabletView(),
-      ),
-      desktop: (context) => const HomeTabletView(),
+      mobile: (context) => homeMobile,
+      tablet: (context) => homeTablet,
+      desktop: (context) => homeTablet,
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

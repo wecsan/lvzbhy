@@ -11,13 +11,12 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final favorite = Provider.of<FavoriteProvider>(context);
   late final settings = Provider.of<SettingsProvider>(context);
   late final tabController = TabController(length: 2, vsync: this);
 
-  @override
-  Widget build(BuildContext context) {
+  int get crossAxisCount {
     double screenWidth = MediaQuery.of(context).size.width;
     int crossAxisCount = screenWidth > 1280
         ? 4
@@ -27,7 +26,14 @@ class _FavoritePageState extends State<FavoritePage>
           ? 5
           : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
     }
+    return crossAxisCount;
+  }
 
+  bool get showAction => MediaQuery.of(context).size.width > 640;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -47,7 +53,7 @@ class _FavoritePageState extends State<FavoritePage>
             Tab(text: '未开播'),
           ],
         ),
-        leading: screenWidth > 640
+        leading: showAction
             ? null
             : IconButton(
                 onPressed: () {
@@ -58,7 +64,7 @@ class _FavoritePageState extends State<FavoritePage>
                 },
                 icon: const Icon(CustomIcons.search),
               ),
-        actions: screenWidth > 640
+        actions: showAction
             ? null
             : [
                 IconButton(
@@ -93,6 +99,9 @@ class _FavoritePageState extends State<FavoritePage>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class RoomGridView extends StatelessWidget {

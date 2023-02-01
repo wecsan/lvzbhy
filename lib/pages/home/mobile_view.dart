@@ -1,48 +1,19 @@
-import 'dart:io';
-
-import 'package:flutter/services.dart';
 import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/index.dart';
 
 class HomeMobileView extends StatelessWidget {
-  const HomeMobileView({Key? key}) : super(key: key);
-  //homepage
-  @override
-  Widget build(BuildContext context) {
-    return const HomePageRouter();
-  }
-}
+  final Widget body;
+  final int index;
+  final void Function(int) onDestinationSelected;
 
-class HomePageRouter extends StatefulWidget {
-  const HomePageRouter({Key? key}) : super(key: key);
-
-  @override
-  State<HomePageRouter> createState() => _HomePageRouterState();
-}
-
-class _HomePageRouterState extends State<HomePageRouter> {
-  int _selectedIndex = 0;
-  late SettingsProvider settings =
-      Provider.of<SettingsProvider>(context, listen: false);
-
-  Widget get body => [
-        const FavoritePage(),
-        const PopularPage(),
-        const AreasPage()
-      ][_selectedIndex];
+  const HomeMobileView({
+    Key? key,
+    required this.body,
+    required this.index,
+    required this.onDestinationSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Android statusbar and navigationbar
-    if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor:
-            Theme.of(context).navigationBarTheme.backgroundColor,
-      ));
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    }
-
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         destinations: [
@@ -59,12 +30,8 @@ class _HomePageRouterState extends State<HomePageRouter> {
             label: S.of(context).areas_title,
           ),
         ],
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        selectedIndex: index,
+        onDestinationSelected: onDestinationSelected,
       ),
       body: body,
     );

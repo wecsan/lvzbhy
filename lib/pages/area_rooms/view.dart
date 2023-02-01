@@ -20,6 +20,14 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
   List<RoomInfo> roomsList = [];
   int pageIndex = 1;
 
+  int get crossAxisCount {
+    double screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = screenWidth > 1280
+        ? 5
+        : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
+    return crossAxisCount;
+  }
+
   bool loading = false;
 
   @override
@@ -70,11 +78,6 @@ class _AreasRoomPageState extends State<AreasRoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    int crossAxisCount = screenWidth > 1280
-        ? 5
-        : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
-
     return Scaffold(
       appBar: AppBar(title: Text(widget.area.areaName)),
       body: Listener(

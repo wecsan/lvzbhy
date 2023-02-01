@@ -13,10 +13,21 @@ class PopularPage extends StatefulWidget {
   State<PopularPage> createState() => _PopularPageState();
 }
 
-class _PopularPageState extends State<PopularPage> {
+class _PopularPageState extends State<PopularPage>
+    with AutomaticKeepAliveClientMixin {
   late final provider = Provider.of<PopularProvider>(context);
   final refreshController = RefreshController(initialRefresh: false);
   final scrollController = ScrollController();
+
+  int get crossAxisCount {
+    double screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = screenWidth > 1280
+        ? 5
+        : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
+    return crossAxisCount;
+  }
+
+  bool get showAction => MediaQuery.of(context).size.width > 640;
 
   bool loading = false;
 
@@ -40,11 +51,7 @@ class _PopularPageState extends State<PopularPage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    int crossAxisCount = screenWidth > 1280
-        ? 5
-        : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
-
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -67,7 +74,7 @@ class _PopularPageState extends State<PopularPage> {
             onTap: (index) => provider.changePlatform(index),
           ),
         ),
-        leading: screenWidth > 640
+        leading: showAction
             ? null
             : IconButton(
                 onPressed: () {
@@ -78,7 +85,7 @@ class _PopularPageState extends State<PopularPage> {
                 },
                 icon: const Icon(CustomIcons.search),
               ),
-        actions: screenWidth > 640
+        actions: showAction
             ? null
             : [
                 IconButton(
@@ -133,4 +140,7 @@ class _PopularPageState extends State<PopularPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

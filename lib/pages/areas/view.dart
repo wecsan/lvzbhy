@@ -15,9 +15,10 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   late AreasProvider provider = Provider.of<AreasProvider>(context);
   late TabController tabController;
 
+  bool get showAction => MediaQuery.of(context).size.width > 640;
+
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     tabController = TabController(length: provider.areas.length, vsync: this);
 
     return Scaffold(
@@ -43,7 +44,7 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                 .changePlatform(provider.platformAreas.keys.toList()[index]),
           ),
         ),
-        leading: screenWidth > 640
+        leading: showAction
             ? null
             : IconButton(
                 onPressed: () {
@@ -54,7 +55,7 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                 },
                 icon: const Icon(CustomIcons.search),
               ),
-        actions: screenWidth > 640
+        actions: showAction
             ? null
             : [
                 IconButton(
@@ -104,20 +105,22 @@ class AreaGridView extends StatefulWidget {
 }
 
 class _AreaGridViewState extends State<AreaGridView> {
-  @override
-  Widget build(BuildContext context) {
+  int get crossAxisCount {
     double screenWidth = MediaQuery.of(context).size.width;
     int crossAxisCount = screenWidth > 1280
         ? 9
         : (screenWidth > 960 ? 7 : (screenWidth > 640 ? 5 : 3));
+    return crossAxisCount;
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return widget.areaList.isNotEmpty
         ? MasonryGridView.count(
             padding: const EdgeInsets.all(5),
             controller: ScrollController(),
             crossAxisCount: crossAxisCount,
             itemCount: widget.areaList.length,
-            // physics: (const BouncingScrollPhysics()),
             itemBuilder: (context, index) =>
                 AreaCard(area: widget.areaList[index]),
           )
