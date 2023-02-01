@@ -118,6 +118,7 @@ class VideoController with ChangeNotifier {
     initController();
     initStateListener();
     initDanmakuListener();
+    initBattery();
   }
 
   void initController() {
