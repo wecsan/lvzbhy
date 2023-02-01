@@ -29,7 +29,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
   Widget get videoFrame {
     if (Platform.isWindows || Platform.isLinux) {
       return Video(
-        key: _playerKey,
         player: widget.controller.desktopController,
         scale: 1.0, // default
         showControls: false, // default

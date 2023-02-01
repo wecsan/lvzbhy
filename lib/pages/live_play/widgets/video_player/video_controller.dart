@@ -44,14 +44,27 @@ class VideoController with ChangeNotifier {
   final hasError = false.obs;
   final isPlaying = false.obs;
   final isBuffering = false.obs;
-  final isFullscreen = false.obs;
   final isPipMode = false.obs;
+  final isFullscreen = false.obs;
+  final isWindowFullscreen = false.obs;
   bool get supportPip => Platform.isAndroid;
+  bool get supportWindowFull => Platform.isWindows || Platform.isLinux;
+
+  bool get fullscreenUI => isFullscreen.value || isWindowFullscreen.value;
 
   // Controller ui status
+  Timer? showControllerTimer;
   final showController = true.obs;
   final showSettting = false.obs;
   final showLocked = false.obs;
+
+  void enableController() {
+    showControllerTimer?.cancel();
+    showControllerTimer = Timer(const Duration(seconds: 2), () {
+      showController.value = false;
+    });
+    showController.value = true;
+  }
 
   // Battery level control
   final Battery _battery = Battery();
@@ -67,6 +80,7 @@ class VideoController with ChangeNotifier {
   final shutdownMinute = 0.obs;
   Timer? _shutdownTimer;
   void setShutdownTimer(int minutes) {
+    showControllerTimer?.cancel();
     _shutdownTimer?.cancel();
     shutdownMinute.value = minutes;
     if (minutes == 0) return;
@@ -257,7 +271,8 @@ class VideoController with ChangeNotifier {
   void setVideoFit(int index) {
     fitModeIndex.value = index;
     fitMode.value = fitModes.values.toList()[index];
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (Platform.isWindows || Platform.isLinux) {
+    } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController?.setOverriddenFit(fitMode.value);
     } else {
       throw UnimplementedError('Unsupported Platform');
@@ -276,24 +291,26 @@ class VideoController with ChangeNotifier {
   }
 
   void toggleFullScreen(BuildContext context) {
+    // fix obx setstate when build
+    showControllerTimer?.cancel();
     if (Platform.isWindows || Platform.isLinux) {
       if (!isFullscreen.value) {
         WindowManager.instance.setFullScreen(true);
-        Timer(
-          const Duration(milliseconds: 500),
-          () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DesktopFullscreen(controller: this),
-              ),
-            );
-          },
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DesktopFullscreen(controller: this),
+          ),
         );
       } else {
-        Navigator.pop(context);
-        Timer(const Duration(milliseconds: 500), () {
+        if (!isWindowFullscreen.value) {
+          Navigator.pop(context);
+        }
+        Timer(const Duration(milliseconds: 500), () async {
           WindowManager.instance.setFullScreen(false);
+          // TODO: 重设大小，修复窗口大小BUG
+          final size = await WindowManager.instance.getSize();
+          WindowManager.instance.setSize(Size(size.width + 1, size.height + 1));
         });
       }
       isFullscreen.toggle();
@@ -303,6 +320,27 @@ class VideoController with ChangeNotifier {
     } else {
       throw UnimplementedError('Unsupported Platform');
     }
+    enableController();
+  }
+
+  void toggleWindowFullScreen(BuildContext context) {
+    showControllerTimer?.cancel();
+    if (Platform.isWindows || Platform.isLinux) {
+      if (!isWindowFullscreen.value) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DesktopFullscreen(controller: this),
+          ),
+        );
+      } else {
+        Navigator.pop(context);
+      }
+      isWindowFullscreen.toggle();
+    } else {
+      throw UnimplementedError('Unsupported Platform');
+    }
+    enableController();
   }
 
   void enterPipMode(BuildContext context) async {

@@ -30,30 +30,18 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
   double get videoWidth => widget.width ?? MediaQuery.of(context).size.width;
   double get videoHeight => widget.height ?? MediaQuery.of(context).size.height;
 
-  Timer? _hideStuffTimer;
-
   // Video controllers
   VideoController get controller => widget.controller;
 
   @override
   void initState() {
     super.initState();
-    _cancelAndRestartHideTimer();
+    controller.enableController();
   }
 
   @override
   void dispose() {
-    _hideStuffTimer?.cancel();
     super.dispose();
-  }
-
-  // Callback functions
-  void _cancelAndRestartHideTimer() {
-    _hideStuffTimer?.cancel();
-    _hideStuffTimer = Timer(const Duration(seconds: 2), () {
-      controller.showController.value = false;
-    });
-    controller.showController.value = true;
   }
 
   @override
@@ -79,57 +67,49 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
         return Container();
       }
 
-      List<Widget> ws = [];
-      if (!controller.hideDanmaku.value) {
-        ws.add(DanmakuView(
-          controller: controller,
-          videoWidth: videoWidth,
-          videoHeight: videoHeight,
-        ));
-      }
-      if (controller.showSettting.value) {
-        ws.add(SettingsPanel(controller: controller));
-      } else {
-        ws.add(_buildHitArea());
-        if (controller.isFullscreen.value) {
-          ws.add(LockButton(controller: controller));
-        }
-        if (!controller.showLocked.value) {
-          ws.add(TopActionBar(
-            controller: controller,
-            barHeight: barHeight,
-            barWidth: videoWidth,
-          ));
-          ws.add(BottomActionBar(
-            controller: controller,
-            barHeight: barHeight,
-            barWidth: videoWidth,
-          ));
-        }
-      }
       return MouseRegion(
-        onHover: (event) => _cancelAndRestartHideTimer(),
+        onHover: (event) => controller.enableController(),
         onExit: (event) {
-          _hideStuffTimer?.cancel();
+          controller.showControllerTimer?.cancel();
           controller.showController.toggle();
         },
-        child: Stack(children: ws),
+        child: Stack(children: [
+          if (!controller.hideDanmaku.value)
+            DanmakuView(
+              controller: controller,
+              videoWidth: videoWidth,
+              videoHeight: videoHeight,
+            ),
+          if (controller.showSettting.value)
+            SettingsPanel(controller: controller)
+          else ...[
+            GestureDetector(
+              onTap: () => controller.isPlaying.value
+                  ? controller.enableController()
+                  : controller.togglePlayPause(),
+              onDoubleTap: () => controller.isWindowFullscreen.value
+                  ? controller.toggleWindowFullScreen(context)
+                  : controller.toggleFullScreen(context),
+              child: BrightnessVolumnDargArea(
+                controller: controller,
+                videoWith: videoWidth,
+              ),
+            ),
+            LockButton(controller: controller),
+            TopActionBar(
+              controller: controller,
+              barHeight: barHeight,
+              barWidth: videoWidth,
+            ),
+            BottomActionBar(
+              controller: controller,
+              barHeight: barHeight,
+              barWidth: videoWidth,
+            ),
+          ],
+        ]),
       );
     });
-  }
-
-  // Center hit area
-  Widget _buildHitArea() {
-    return GestureDetector(
-      onTap: () => controller.isPlaying.value
-          ? _cancelAndRestartHideTimer()
-          : controller.togglePlayPause(),
-      onDoubleTap: () => controller.toggleFullScreen(context),
-      child: BrightnessVolumnDargArea(
-        controller: controller,
-        videoWith: videoWidth,
-      ),
-    );
   }
 }
 
@@ -152,9 +132,14 @@ class TopActionBar extends StatelessWidget {
       top: 0,
       height: barHeight,
       width: barWidth,
-      child: Obx(() => AnimatedOpacity(
-            opacity: controller.showController.value ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
+      child: Obx(() {
+        final show =
+            controller.showController.value && !controller.showLocked.value;
+        return AnimatedOpacity(
+          opacity: show ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 300),
+          child: AbsorbPointer(
+            absorbing: !show,
             child: Container(
               height: barHeight,
               alignment: Alignment.centerLeft,
@@ -167,8 +152,7 @@ class TopActionBar extends StatelessWidget {
                 ),
               ),
               child: Row(children: [
-                if (controller.isFullscreen.value)
-                  BackButton(controller: controller),
+                if (controller.fullscreenUI) BackButton(controller: controller),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
@@ -177,15 +161,17 @@ class TopActionBar extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                if (controller.isFullscreen.value) ...[
+                if (controller.fullscreenUI) ...[
                   BatteryInfo(controller: controller),
                   const DatetimeInfo(),
                 ],
-                if (!controller.isFullscreen.value && controller.supportPip)
+                if (!controller.fullscreenUI && controller.supportPip)
                   PIPButton(controller: controller),
               ]),
             ),
-          )),
+          ),
+        );
+      }),
     );
   }
 }
@@ -271,7 +257,9 @@ class BackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.toggleFullScreen(context),
+      onTap: () => controller.isWindowFullscreen.value
+          ? controller.toggleWindowFullScreen(context)
+          : controller.toggleFullScreen(context),
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -501,25 +489,30 @@ class LockButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => AnimatedOpacity(
-          opacity: controller.showController.value ? 0.9 : 0.0,
+          opacity: controller.fullscreenUI && controller.showController.value
+              ? 0.9
+              : 0.0,
           duration: const Duration(milliseconds: 300),
           child: Align(
             alignment: Alignment.centerRight,
-            child: Container(
-              margin: const EdgeInsets.only(right: 20.0),
-              child: IconButton(
-                onPressed: () => controller.showLocked.toggle(),
-                icon: Icon(
-                  controller.showLocked.value
-                      ? Icons.lock_rounded
-                      : Icons.lock_open_rounded,
-                  size: 28,
-                ),
-                color: Colors.white,
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.black38,
-                  shape: const StadiumBorder(),
-                  minimumSize: const Size(50, 50),
+            child: AbsorbPointer(
+              absorbing: !controller.showController.value,
+              child: Container(
+                margin: const EdgeInsets.only(right: 20.0),
+                child: IconButton(
+                  onPressed: () => controller.showLocked.toggle(),
+                  icon: Icon(
+                    controller.showLocked.value
+                        ? Icons.lock_rounded
+                        : Icons.lock_open_rounded,
+                    size: 28,
+                  ),
+                  color: Colors.white,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black38,
+                    shape: const StadiumBorder(),
+                    minimumSize: const Size(50, 50),
+                  ),
                 ),
               ),
             ),
@@ -547,9 +540,14 @@ class BottomActionBar extends StatelessWidget {
       bottom: 0,
       height: barHeight,
       width: barWidth,
-      child: Obx(() => AnimatedOpacity(
-            opacity: controller.showController.value ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
+      child: Obx(() {
+        final show =
+            controller.showController.value && !controller.showLocked.value;
+        return AnimatedOpacity(
+          opacity: show ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 300),
+          child: AbsorbPointer(
+            absorbing: !show,
             child: Container(
               height: barHeight,
               alignment: Alignment.centerLeft,
@@ -566,14 +564,20 @@ class BottomActionBar extends StatelessWidget {
                   PlayPauseButton(controller: controller),
                   RefreshButton(controller: controller),
                   DanmakuButton(controller: controller),
-                  if (barWidth > 640 || controller.isFullscreen.value)
+                  if (barWidth > 640 || controller.fullscreenUI)
                     SettingsButton(controller: controller),
                   const Spacer(),
-                  ExpandButton(controller: controller),
+                  if (controller.supportWindowFull &&
+                      !controller.isFullscreen.value)
+                    ExpandWindowButton(controller: controller),
+                  if (!controller.isWindowFullscreen.value)
+                    ExpandButton(controller: controller),
                 ],
               ),
             ),
-          )),
+          ),
+        );
+      }),
     );
   }
 }
@@ -663,6 +667,34 @@ class SettingsButton extends StatelessWidget {
         child: const Icon(
           CustomIcons.danmaku_setting,
           color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class ExpandWindowButton extends StatelessWidget {
+  const ExpandWindowButton({Key? key, required this.controller})
+      : super(key: key);
+
+  final VideoController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => controller.toggleWindowFullScreen(context),
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: RotatedBox(
+          quarterTurns: 1,
+          child: Obx(() => Icon(
+                controller.isWindowFullscreen.value
+                    ? Icons.unfold_less_rounded
+                    : Icons.unfold_more_rounded,
+                color: Colors.white,
+                size: 26,
+              )),
         ),
       ),
     );
