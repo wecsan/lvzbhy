@@ -2,8 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hot_live/common/index.dart';
 import 'package:hot_live/pages/live_play/view.dart';
 
+// ignore: must_be_immutable
 class RoomCard extends StatelessWidget {
-  const RoomCard({
+  RoomCard({
     Key? key,
     required this.room,
     this.onLongPress,
@@ -14,8 +15,15 @@ class RoomCard extends StatelessWidget {
   final Function()? onLongPress;
   final bool dense;
 
+  bool loading = false;
+
   void onTap(BuildContext context) async {
+    // set loading tag avoid double click
+    if (loading) return;
+    loading = true;
     final fullRoom = await LiveApi.getRoomInfo(room);
+    loading = false;
+
     if (fullRoom.liveStatus == LiveStatus.live) {
       Navigator.push(
         context,
