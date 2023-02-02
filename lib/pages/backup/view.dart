@@ -54,27 +54,14 @@ class _BackupPageState extends State<BackupPage> {
     );
     final file = File('$selectedDirectory/purelive_$dateStr.txt');
     if (settings.backup(file)) {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-        duration: const Duration(seconds: 2),
-        content: Text(S.of(context).create_backup_success),
-      ));
-
+      SnackBarUtil.success(context, S.of(context).create_backup_success);
       // 首次同步备份目录
       if (settings.backupDirectory.isEmpty) {
         settings.backupDirectory = selectedDirectory;
         setState(() => backupDirectory = selectedDirectory);
       }
     } else {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-        duration: const Duration(seconds: 2),
-        backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        content: Text(
-          S.of(context).create_backup_failed,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onErrorContainer,
-          ),
-        ),
-      ));
+      SnackBarUtil.error(context, S.of(context).create_backup_failed);
     }
   }
 
@@ -88,27 +75,9 @@ class _BackupPageState extends State<BackupPage> {
 
     final file = File(result.files.single.path!);
     if (settings.recover(file)) {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-        duration: const Duration(seconds: 2),
-        backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-        content: Text(
-          S.of(context).recover_backup_success,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ));
+      SnackBarUtil.success(context, S.of(context).recover_backup_success);
     } else {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-        duration: const Duration(seconds: 2),
-        backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        content: Text(
-          S.of(context).recover_backup_failed,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onErrorContainer,
-          ),
-        ),
-      ));
+      SnackBarUtil.error(context, S.of(context).recover_backup_failed);
     }
   }
 

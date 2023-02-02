@@ -221,6 +221,7 @@ class SettingsProvider with ChangeNotifier {
     saveRooms();
     changeThemeMode(json['themeMode'] ?? "System");
     changeThemeColor(json['themeColor'] ?? "Crimson");
+    enableDynamicTheme = json['enableDynamicTheme'] ?? false;
     enableDenseFavorites = json['enableDenseFavorites'] ?? false;
     enableBackgroundPlay = json['enableBackgroundPlay'] ?? false;
     enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
@@ -237,6 +238,7 @@ class SettingsProvider with ChangeNotifier {
         favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList();
     json['themeMode'] = themeModeName;
     json['themeColor'] = themeColorName;
+    json['enableDynamicTheme'] = _enableDynamicTheme;
     json['enableDenseFavorites'] = enableDenseFavorites;
     json['enableBackgroundPlay'] = enableBackgroundPlay;
     json['enableScreenKeepOn'] = enableScreenKeepOn;
