@@ -26,14 +26,7 @@ class VideoController with ChangeNotifier {
   final bool allowFullScreen;
   final bool fullScreenByDefault;
   final bool autoPlay;
-
-  final fitModeIndex = 0.obs;
-  final fitMode = BoxFit.contain.obs;
-  static const fitModes = {
-    '默认比例': BoxFit.contain,
-    '填充屏幕': BoxFit.fill,
-    '居中裁剪': BoxFit.fitWidth,
-  };
+  final videoFit = BoxFit.contain.obs;
 
   // Video player status
   Player? desktopController;
@@ -113,7 +106,7 @@ class VideoController with ChangeNotifier {
     this.autoPlay = true,
     BoxFit fitMode = BoxFit.contain,
   }) {
-    this.fitMode.value = fitMode;
+    videoFit.value = fitMode;
     if (allowScreenKeepOn) Wakelock.enable();
     initController();
     initStateListener();
@@ -129,7 +122,7 @@ class VideoController with ChangeNotifier {
       mobileController = BetterPlayerController(
         BetterPlayerConfiguration(
           autoPlay: true,
-          fit: fitMode.value,
+          fit: videoFit.value,
           fullScreenByDefault: fullScreenByDefault,
           allowedScreenSleep: !allowScreenKeepOn,
           autoDetectFullscreenDeviceOrientation: true,
@@ -269,12 +262,11 @@ class VideoController with ChangeNotifier {
     }
   }
 
-  void setVideoFit(int index) {
-    fitModeIndex.value = index;
-    fitMode.value = fitModes.values.toList()[index];
+  void setVideoFit(BoxFit fit) {
+    videoFit.value = fit;
     if (Platform.isWindows || Platform.isLinux) {
     } else if (Platform.isAndroid || Platform.isIOS) {
-      mobileController?.setOverriddenFit(fitMode.value);
+      mobileController?.setOverriddenFit(videoFit.value);
       mobileController?.retryDataSource();
     } else {
       throw UnimplementedError('Unsupported Platform');
@@ -477,7 +469,7 @@ class DesktopFullscreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 child: Obx(() => Video(
                       player: controller.desktopController,
-                      fit: controller.fitMode.value,
+                      fit: controller.videoFit.value,
                     )),
               ),
             ),

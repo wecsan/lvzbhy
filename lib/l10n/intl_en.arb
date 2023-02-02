@@ -23,6 +23,8 @@
     "show_offline_rooms": "Show Offline Rooms",
     "hide_offline_rooms": "Hide Offline Rooms",
     "room_info_content": "RoomId: {roomid}\nPlatform: {platform}\nName: {nickname}\nTitle: {title}\nLiveStatus: {livestatus}",
+    "online_room_title": "Online",
+    "offline_room_title": "Offline",
 
     "popular_title": "Popular",
     "empty_live_title": "No Live Found",
@@ -110,6 +112,18 @@
     "github": "Github",
 
     "help": "Help",
+
+    "settings_timedclose_title": "Timed Close",
+    "timedclose_time": "{time} Min",
+    
+    "settings_videofit_title": "Video Fit",
+    "videofit_contain": "Default",
+    "videofit_fill": "Fill",
+    "videofit_cover": "Cover",
+    "videofit_fitwidth": "AdaptWidth",
+    "videofit_fitheight": "AdaptHeight",
+
+    "settings_danmaku_title": "Danmaku Setting",
 
     "settings_danmaku_area": "Danmaku area",
     "settings_danmaku_opacity": "Danmaku opacity",

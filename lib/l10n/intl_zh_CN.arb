@@ -23,6 +23,8 @@
     "show_offline_rooms": "显示未直播的直播间",
     "hide_offline_rooms": "隐藏未直播的直播间",
     "room_info_content": "房间号: {roomid}\n平台: {platform}\n昵称: {nickname}\n标题: {title}\n状态: {livestatus}",
+    "online_room_title": "已开播",
+    "offline_room_title": "未开播",
 
     "popular_title": "热门",
     "empty_live_title": "未发现直播",
@@ -111,6 +113,17 @@
 
     "help": "帮助",
 
+    "settings_timedclose_title": "定时关闭",
+    "timedclose_time": "{time} 分钟",
+
+    "settings_videofit_title": "比例设置",
+    "videofit_contain": "默认比例",
+    "videofit_fill": "填充屏幕",
+    "videofit_cover": "居中裁剪",
+    "videofit_fitwidth": "适应宽度",
+    "videofit_fitheight": "适应高度",
+
+    "settings_danmaku_title": "弹幕设置",
     "settings_danmaku_area": "弹幕区域",
     "settings_danmaku_opacity": "不透明度",
     "settings_danmaku_speed": "弹幕速度",

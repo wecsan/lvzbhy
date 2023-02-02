@@ -31,6 +31,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(roomid, platform, nickname, title, livestatus) =>
       "房间号: ${roomid}\n平台: ${platform}\n昵称: ${nickname}\n标题: ${title}\n状态: ${livestatus}";
 
+  static String m5(time) => "${time} 分钟";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("关于"),
@@ -135,6 +137,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "new_version_info": m2,
         "no_new_version_info": MessageLookupByLibrary.simpleMessage("已在使用最新版本"),
         "offline": MessageLookupByLibrary.simpleMessage("未直播"),
+        "offline_room_title": MessageLookupByLibrary.simpleMessage("未开播"),
+        "online_room_title": MessageLookupByLibrary.simpleMessage("已开播"),
         "only_living": MessageLookupByLibrary.simpleMessage("只搜索直播中"),
         "popular_title": MessageLookupByLibrary.simpleMessage("热门"),
         "prefer_platform": MessageLookupByLibrary.simpleMessage("首选直播平台"),
@@ -160,15 +164,25 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_danmaku_opacity":
             MessageLookupByLibrary.simpleMessage("不透明度"),
         "settings_danmaku_speed": MessageLookupByLibrary.simpleMessage("弹幕速度"),
+        "settings_danmaku_title": MessageLookupByLibrary.simpleMessage("弹幕设置"),
+        "settings_timedclose_title":
+            MessageLookupByLibrary.simpleMessage("定时关闭"),
         "settings_title": MessageLookupByLibrary.simpleMessage("设置"),
+        "settings_videofit_title": MessageLookupByLibrary.simpleMessage("比例设置"),
         "show_offline_rooms": MessageLookupByLibrary.simpleMessage("显示未直播的直播间"),
         "support_donate": MessageLookupByLibrary.simpleMessage("捐赠支持"),
         "switch_platform": MessageLookupByLibrary.simpleMessage("切换直播平台"),
         "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
+        "timedclose_time": m5,
         "unfollow": MessageLookupByLibrary.simpleMessage("取消关注"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "video": MessageLookupByLibrary.simpleMessage("视频"),
+        "videofit_contain": MessageLookupByLibrary.simpleMessage("默认比例"),
+        "videofit_cover": MessageLookupByLibrary.simpleMessage("居中裁剪"),
+        "videofit_fill": MessageLookupByLibrary.simpleMessage("填充屏幕"),
+        "videofit_fitheight": MessageLookupByLibrary.simpleMessage("适应高度"),
+        "videofit_fitwidth": MessageLookupByLibrary.simpleMessage("适应宽度"),
         "what_is_new": MessageLookupByLibrary.simpleMessage("最新特性")
       };
 }

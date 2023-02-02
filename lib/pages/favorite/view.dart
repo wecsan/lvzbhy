@@ -50,9 +50,9 @@ class _FavoritePageState extends State<FavoritePage>
           labelPadding: const EdgeInsets.symmetric(horizontal: 12),
           indicatorSize: TabBarIndicatorSize.label,
           indicatorColor: Theme.of(context).colorScheme.primary,
-          tabs: const [
-            Tab(text: '已开播'),
-            Tab(text: '未开播'),
+          tabs: [
+            Tab(text: S.of(context).online_room_title),
+            Tab(text: S.of(context).offline_room_title),
           ],
         ),
       ),

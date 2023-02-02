@@ -783,7 +783,7 @@ class ShutdownTimerSetting extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Text(
-            '定时关闭',
+            S.of(context).settings_timedclose_title,
             style: Theme.of(context)
                 .textTheme
                 .caption
@@ -801,7 +801,8 @@ class ShutdownTimerSetting extends StatelessWidget {
                     controller.setShutdownTimer(value.toInt()),
               ),
               trailing: Text(
-                '${controller.shutdownMinute.value.toInt()} 分钟',
+                S.of(context).timedclose_time(
+                    controller.shutdownMinute.value.toInt().toString()),
                 style: const TextStyle(color: Colors.white),
               ),
             )),
@@ -810,7 +811,7 @@ class ShutdownTimerSetting extends StatelessWidget {
   }
 }
 
-class VideoFitSetting extends StatelessWidget {
+class VideoFitSetting extends StatefulWidget {
   const VideoFitSetting({
     Key? key,
     required this.controller,
@@ -819,48 +820,67 @@ class VideoFitSetting extends StatelessWidget {
   final VideoController controller;
 
   @override
+  State<VideoFitSetting> createState() => _VideoFitSettingState();
+}
+
+class _VideoFitSettingState extends State<VideoFitSetting> {
+  late final fitmodes = {
+    S.of(context).videofit_contain: BoxFit.contain,
+    S.of(context).videofit_fill: BoxFit.fill,
+    S.of(context).videofit_cover: BoxFit.cover,
+    S.of(context).videofit_fitwidth: BoxFit.fitWidth,
+    S.of(context).videofit_fitheight: BoxFit.fitHeight,
+  };
+  late int fitIndex = fitmodes.values
+      .toList()
+      .indexWhere((e) => e == widget.controller.videoFit.value);
+
+  @override
   Widget build(BuildContext context) {
     final Color color = Theme.of(context).colorScheme.primary.withOpacity(0.8);
-
-    return Obx(() {
-      final isSelected = [false, false, false];
-      isSelected[controller.fitModeIndex.value] = true;
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              '比例设置',
-              style: Theme.of(context)
-                  .textTheme
-                  .caption
-                  ?.copyWith(color: Colors.white),
-            ),
+    final isSelected = [false, false, false, false, false];
+    isSelected[fitIndex] = true;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text(
+            S.of(context).settings_videofit_title,
+            style: Theme.of(context)
+                .textTheme
+                .caption
+                ?.copyWith(color: Colors.white),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: ToggleButtons(
-              borderRadius: BorderRadius.circular(10),
-              selectedBorderColor: color,
-              borderColor: color,
-              fillColor: color,
-              children: VideoController.fitModes.keys
-                  .map<Widget>((e) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(e,
-                            style: const TextStyle(color: Colors.white)),
-                      ))
-                  .toList(),
-              isSelected: isSelected,
-              onPressed: controller.setVideoFit,
-            ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: ToggleButtons(
+            borderRadius: BorderRadius.circular(10),
+            // selectedBorderColor: color,
+            // borderColor: color,
+            selectedColor: Theme.of(context).colorScheme.primary,
+            fillColor: color,
+            children: fitmodes.keys
+                .map<Widget>((e) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(e,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          )),
+                    ))
+                .toList(),
+            isSelected: isSelected,
+            onPressed: (index) {
+              setState(() => fitIndex = index);
+              widget.controller.setVideoFit(fitmodes.values.toList()[index]);
+            },
           ),
-        ],
-      );
-    });
+        ),
+      ],
+    );
   }
 }
 
@@ -884,7 +904,7 @@ class DanmakuSetting extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(
-                '弹幕设置',
+                S.of(context).settings_danmaku_title,
                 style: Theme.of(context)
                     .textTheme
                     .caption

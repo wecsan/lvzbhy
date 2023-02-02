@@ -261,6 +261,26 @@ class S {
     );
   }
 
+  /// `Online`
+  String get online_room_title {
+    return Intl.message(
+      'Online',
+      name: 'online_room_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offline`
+  String get offline_room_title {
+    return Intl.message(
+      'Offline',
+      name: 'offline_room_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Popular`
   String get popular_title {
     return Intl.message(
@@ -926,6 +946,96 @@ class S {
     return Intl.message(
       'Help',
       name: 'help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timed Close`
+  String get settings_timedclose_title {
+    return Intl.message(
+      'Timed Close',
+      name: 'settings_timedclose_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{time} Min`
+  String timedclose_time(Object time) {
+    return Intl.message(
+      '$time Min',
+      name: 'timedclose_time',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Video Fit`
+  String get settings_videofit_title {
+    return Intl.message(
+      'Video Fit',
+      name: 'settings_videofit_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default`
+  String get videofit_contain {
+    return Intl.message(
+      'Default',
+      name: 'videofit_contain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill`
+  String get videofit_fill {
+    return Intl.message(
+      'Fill',
+      name: 'videofit_fill',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cover`
+  String get videofit_cover {
+    return Intl.message(
+      'Cover',
+      name: 'videofit_cover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AdaptWidth`
+  String get videofit_fitwidth {
+    return Intl.message(
+      'AdaptWidth',
+      name: 'videofit_fitwidth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AdaptHeight`
+  String get videofit_fitheight {
+    return Intl.message(
+      'AdaptHeight',
+      name: 'videofit_fitheight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Danmaku Setting`
+  String get settings_danmaku_title {
+    return Intl.message(
+      'Danmaku Setting',
+      name: 'settings_danmaku_title',
       desc: '',
       args: [],
     );

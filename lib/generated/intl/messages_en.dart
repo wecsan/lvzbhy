@@ -31,6 +31,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(roomid, platform, nickname, title, livestatus) =>
       "RoomId: ${roomid}\nPlatform: ${platform}\nName: ${nickname}\nTitle: ${title}\nLiveStatus: ${livestatus}";
 
+  static String m5(time) => "${time} Min";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("About"),
@@ -157,6 +159,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "no_new_version_info": MessageLookupByLibrary.simpleMessage(
             "You are using the latest version."),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
+        "offline_room_title": MessageLookupByLibrary.simpleMessage("Offline"),
+        "online_room_title": MessageLookupByLibrary.simpleMessage("Online"),
         "only_living": MessageLookupByLibrary.simpleMessage("Only Living"),
         "popular_title": MessageLookupByLibrary.simpleMessage("Popular"),
         "prefer_platform":
@@ -189,7 +193,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Danmaku opacity"),
         "settings_danmaku_speed":
             MessageLookupByLibrary.simpleMessage("Danmaku speed"),
+        "settings_danmaku_title":
+            MessageLookupByLibrary.simpleMessage("Danmaku Setting"),
+        "settings_timedclose_title":
+            MessageLookupByLibrary.simpleMessage("Timed Close"),
         "settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
+        "settings_videofit_title":
+            MessageLookupByLibrary.simpleMessage("Video Fit"),
         "show_offline_rooms":
             MessageLookupByLibrary.simpleMessage("Show Offline Rooms"),
         "support_donate":
@@ -197,10 +207,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "switch_platform":
             MessageLookupByLibrary.simpleMessage("Switch platform"),
         "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
+        "timedclose_time": m5,
         "unfollow": MessageLookupByLibrary.simpleMessage("Unfollow"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "video": MessageLookupByLibrary.simpleMessage("Video"),
+        "videofit_contain": MessageLookupByLibrary.simpleMessage("Default"),
+        "videofit_cover": MessageLookupByLibrary.simpleMessage("Cover"),
+        "videofit_fill": MessageLookupByLibrary.simpleMessage("Fill"),
+        "videofit_fitheight":
+            MessageLookupByLibrary.simpleMessage("AdaptHeight"),
+        "videofit_fitwidth": MessageLookupByLibrary.simpleMessage("AdaptWidth"),
         "what_is_new": MessageLookupByLibrary.simpleMessage("New Features")
       };
 }

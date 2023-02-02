@@ -1,27 +1,6 @@
 import 'package:pure_live/common/index.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CheckUpdateListTile extends StatelessWidget {
-  const CheckUpdateListTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(S.of(context).check_update),
-      subtitle: const Text('v${VersionUtil.version}'),
-      leading: const Icon(Icons.file_upload_outlined, size: 32),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => VersionUtil.hasNewVersion()
-              ? const NewVersionDialog()
-              : const NoNewVersionDialog(),
-        );
-      },
-    );
-  }
-}
-
 class NoNewVersionDialog extends StatelessWidget {
   const NoNewVersionDialog({
     Key? key,
