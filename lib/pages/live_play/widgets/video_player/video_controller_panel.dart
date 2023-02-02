@@ -392,6 +392,7 @@ class _BrightnessVolumnDargAreaState extends State<BrightnessVolumnDargArea> {
 
   void _onVerticalDragUpdate(Offset postion, Offset delta) async {
     if (controller.showLocked.value) return;
+    if (delta.distance < 0.2) return;
 
     if (_hideBVStuff) {
       _isDargLeft = (postion.dx > (widget.videoWith / 2)) ? false : true;
