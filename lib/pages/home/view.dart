@@ -31,7 +31,6 @@ class _HomePageRouterState extends State<HomePageRouter>
     FavoritePage(),
     PopularPage(),
     AreasPage(),
-    SettingsPage(),
     SearchPage(),
   ];
 

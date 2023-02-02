@@ -19,16 +19,19 @@ class HomeTabletView extends StatelessWidget {
         child: Row(
           children: [
             NavigationRail(
-              groupAlignment: 0.95,
+              groupAlignment: 0.9,
               labelType: NavigationRailLabelType.all,
               leading: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(height: 8),
+                  const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: MenuButton(),
+                  ),
                   FloatingActionButton(
                     heroTag: 'search',
                     elevation: 0,
-                    onPressed: () => onDestinationSelected(4),
+                    onPressed: () => onDestinationSelected(3),
                     child: const Icon(CustomIcons.search),
                   ),
                 ],
@@ -46,12 +49,8 @@ class HomeTabletView extends StatelessWidget {
                   icon: const Icon(Icons.area_chart_rounded),
                   label: Text(S.of(context).areas_title),
                 ),
-                NavigationRailDestination(
-                  icon: const Icon(Icons.settings_rounded),
-                  label: Text(S.of(context).settings_title),
-                ),
               ],
-              selectedIndex: index > 3 ? 0 : index,
+              selectedIndex: index > 2 ? 0 : index,
               onDestinationSelected: onDestinationSelected,
             ),
             const VerticalDivider(width: 1),
