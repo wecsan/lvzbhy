@@ -7,7 +7,7 @@ class MenuButton extends StatelessWidget {
   final menuRoutes = const [
     SettingsPage(),
     AboutPage(),
-    AboutPage(),
+    ContactPage(),
   ];
 
   @override
@@ -46,8 +46,8 @@ class MenuButton extends StatelessWidget {
           value: 2,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: MenuListTile(
-            leading: const Icon(Icons.help_outline_rounded),
-            text: S.of(context).help,
+            leading: const Icon(Icons.contact_support),
+            text: S.of(context).contact,
           ),
         ),
       ],

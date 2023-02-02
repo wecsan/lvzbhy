@@ -82,44 +82,6 @@ class _AboutPageState extends State<AboutPage> {
               child: Text(S.of(context).app_legalese),
             ),
           ),
-          SectionTitle(title: S.of(context).contact),
-          ListTile(
-            leading: const Icon(CustomIcons.telegram, size: 32),
-            title: Text(S.of(context).telegram),
-            subtitle: const Text(VersionUtil.telegramGroup),
-            onLongPress: () => Clipboard.setData(
-                const ClipboardData(text: VersionUtil.telegramGroup)),
-            onTap: () {
-              launchUrl(
-                Uri.parse(VersionUtil.telegramGroupUrl),
-                mode: LaunchMode.externalApplication,
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(CustomIcons.mail_squared, size: 34),
-            title: Text(S.of(context).email),
-            subtitle: const Text(VersionUtil.email),
-            onLongPress: () =>
-                Clipboard.setData(const ClipboardData(text: VersionUtil.email)),
-            onTap: () {
-              launchUrl(
-                Uri.parse(VersionUtil.emailUrl),
-                mode: LaunchMode.externalApplication,
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(CustomIcons.github_circled, size: 32),
-            title: Text(S.of(context).github),
-            subtitle: const Text(VersionUtil.githubUrl),
-            onTap: () {
-              launchUrl(
-                Uri.parse(VersionUtil.githubUrl),
-                mode: LaunchMode.externalApplication,
-              );
-            },
-          ),
         ],
       ),
     );
