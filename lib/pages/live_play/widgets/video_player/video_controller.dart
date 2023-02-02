@@ -7,7 +7,7 @@ import 'package:bordered_text/bordered_text.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock/wakelock.dart';

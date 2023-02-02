@@ -5,8 +5,8 @@ import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/live_play/widgets/video_player/video_controller.dart';
+import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/live_play/widgets/video_player/video_controller.dart';
 
 class VideoControllerPanel extends StatefulWidget {
   final VideoController controller;

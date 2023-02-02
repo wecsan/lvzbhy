@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 import 'package:web_socket_channel/io.dart';
 
 class HuyaDanmaku {

@@ -1,5 +1,5 @@
 import 'package:flutter/rendering.dart';
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 
 class DanmakuListView extends StatefulWidget {
   final RoomInfo room;

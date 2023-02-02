@@ -1,5 +1,5 @@
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 
 class DonatePage extends StatelessWidget {
   const DonatePage({Key? key}) : super(key: key);

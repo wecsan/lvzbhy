@@ -1,5 +1,5 @@
-import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/index.dart';
+import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/index.dart';
 
 class MenuButton extends StatelessWidget {
   const MenuButton({Key? key}) : super(key: key);

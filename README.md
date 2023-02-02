@@ -1,13 +1,13 @@
 # Hot Live
 
-<img width="100" alt="image" src="https://github.com/Jackiu1997/hot_live/blob/master/assets/icon.png?raw=true">
+<img width="100" alt="image" src="https://github.com/Jackiu1997/pure_live/blob/master/assets/icon.png?raw=true">
 
 ![](https://img.shields.io/badge/language-dart-blue.svg?style=for-the-badge&color=00ACC1)
 ![](https://img.shields.io/badge/flutter-00B0FF?style=for-the-badge&logo=flutter)
-[![](https://img.shields.io/github/downloads/Jackiu1997/hot_live/total?style=for-the-badge&color=FF2196)](https://github.com/Jackiu1997/hot_live/releases)
-![](https://img.shields.io/github/license/Jackiu1997/hot_live?style=for-the-badge)
-![](https://img.shields.io/github/stars/Jackiu1997/hot_live?style=for-the-badge)
-![](https://img.shields.io/github/issues/Jackiu1997/hot_live?style=for-the-badge&color=9C27B0)
+[![](https://img.shields.io/github/downloads/Jackiu1997/pure_live/total?style=for-the-badge&color=FF2196)](https://github.com/Jackiu1997/pure_live/releases)
+![](https://img.shields.io/github/license/Jackiu1997/pure_live?style=for-the-badge)
+![](https://img.shields.io/github/stars/Jackiu1997/pure_live?style=for-the-badge)
+![](https://img.shields.io/github/issues/Jackiu1997/pure_live?style=for-the-badge&color=9C27B0)
 
 A Flutter application for android and ios, which can make you watch lives with ease.
 
@@ -49,7 +49,7 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 ## Donate
 
-如果你觉得该项目对您有所帮助，可以打赏一杯咖啡给我，支持我继续开发维护HotLive。
+如果你觉得该项目对您有所帮助，可以打赏一杯咖啡给我，支持我继续开发维护PureLive。
 感谢您的支持~
 
 <div style="text-align: center">
@@ -84,7 +84,7 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 - 哔哩哔哩官方搜索接口需要使用cookie，请在设置中自行设置自己的cookie
 
-如果各种问题，请发布[issue](https://github.com/Jackiu1997/hot_live/issues/new/choose)
+如果各种问题，请发布[issue](https://github.com/Jackiu1997/pure_live/issues/new/choose)
 
 ### 不定时更新（随缘开发）
 如果你想要更好的用户体验，更人性化的交互设计，更稳定的使用，可以使用[哔哩哔哩APP](https://app.bilibili.com/)，[斗鱼APP](https://www.douyu.com/client)，[虎牙APP](https://www.huya.com/download/)

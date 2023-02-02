@@ -1,4 +1,4 @@
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CheckUpdateListTile extends StatelessWidget {
@@ -100,7 +100,7 @@ class NewVersionDialog extends StatelessWidget {
               Navigator.pop(context);
             }
             launchUrl(
-              Uri.parse('https://github.com/Jackiu1997/hot_live/releases'),
+              Uri.parse('https://github.com/Jackiu1997/pure_live/releases'),
               mode: LaunchMode.externalApplication,
             );
           },

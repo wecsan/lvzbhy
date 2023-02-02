@@ -1,4 +1,4 @@
-package com.mystyle.hotlive
+package com.mystyle.purelive
 
 import io.flutter.embedding.android.FlutterActivity
 

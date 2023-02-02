@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 import 'package:http/http.dart' as http;
 
 class HuyaApi {

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 
 class SettingsProvider with ChangeNotifier {
   SettingsProvider();

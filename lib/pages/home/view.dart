@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/home/mobile_view.dart';
-import 'package:hot_live/pages/home/tablet_view.dart';
-import 'package:hot_live/pages/index.dart';
-import 'package:hot_live/pages/about/widgets/version_dialog.dart';
+import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/home/mobile_view.dart';
+import 'package:pure_live/pages/home/tablet_view.dart';
+import 'package:pure_live/pages/index.dart';
+import 'package:pure_live/pages/about/widgets/version_dialog.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class HomePage extends StatelessWidget {

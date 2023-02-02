@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class OnLoadingFooter extends StatelessWidget {

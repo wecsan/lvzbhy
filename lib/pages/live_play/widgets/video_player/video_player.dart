@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:better_player/better_player.dart';
 import 'package:dart_vlc/dart_vlc.dart';
-import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/live_play/widgets/video_player/video_controller.dart';
-import 'package:hot_live/pages/live_play/widgets/video_player/video_controller_panel.dart';
+import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/live_play/widgets/video_player/video_controller.dart';
+import 'package:pure_live/pages/live_play/widgets/video_player/video_controller_panel.dart';
 
 class VideoPlayer extends StatefulWidget {
   final VideoController controller;

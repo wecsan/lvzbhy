@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
-import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/about/donate.dart';
+import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/about/donate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets/version_dialog.dart';
@@ -137,7 +137,7 @@ class _AboutPageState extends State<AboutPage> {
   void showLicenseDialog() {
     showLicensePage(
       context: context,
-      applicationName: 'HotLive',
+      applicationName: S.of(context).app_name,
       applicationVersion: VersionUtil.version,
       applicationIcon: SizedBox(
         width: 60,

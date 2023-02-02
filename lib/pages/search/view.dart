@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/live_play/view.dart';
-import 'package:hot_live/pages/favorite/controller.dart';
+import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/live_play/view.dart';
+import 'package:pure_live/pages/favorite/controller.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);

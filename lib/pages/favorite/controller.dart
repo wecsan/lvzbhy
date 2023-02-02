@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 
 class FavoriteProvider with ChangeNotifier {
   final BuildContext context;

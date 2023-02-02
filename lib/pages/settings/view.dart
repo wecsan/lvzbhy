@@ -1,4 +1,4 @@
-import 'package:hot_live/common/index.dart';
+import 'package:pure_live/common/index.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);

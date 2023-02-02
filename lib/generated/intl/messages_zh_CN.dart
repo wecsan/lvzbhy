@@ -36,7 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about": MessageLookupByLibrary.simpleMessage("关于"),
         "app_legalese": MessageLookupByLibrary.simpleMessage(
             "本项目是一个纯本地直播转码应用，不会收集任何用户隐私，应用程序直接请求直播官方接口，所有操作生成的数据由用户本地保留。"),
-        "app_name": MessageLookupByLibrary.simpleMessage("HotLive"),
+        "app_name": MessageLookupByLibrary.simpleMessage("纯粹直播"),
         "areas_title": MessageLookupByLibrary.simpleMessage("分区"),
         "auto_refresh_time": MessageLookupByLibrary.simpleMessage("定时刷新时间"),
         "auto_refresh_time_subtitle":

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:hot_live/common/models/index.dart';
+import 'package:pure_live/common/models/index.dart';
 
 import 'danmaku/bilibili.dart';
 import 'danmaku/douyu.dart';

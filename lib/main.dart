@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hot_live/common/index.dart';
-import 'package:hot_live/pages/index.dart';
+import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
         }
 
         return MaterialApp(
-          title: 'HotLive',
+          title: 'PureLive',
           themeMode: settings.themeMode,
           theme: lightTheme,
           darkTheme: darkTheme,

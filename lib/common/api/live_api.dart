@@ -1,4 +1,4 @@
-import 'package:hot_live/common/models/index.dart';
+import 'package:pure_live/common/models/index.dart';
 
 import './platform/bilibili.dart';
 import './platform/douyu.dart';
