@@ -52,13 +52,20 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                '无法播放直播',
-                style: TextStyle(color: Colors.white),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  '无法播放直播',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () => controller.refresh(),
-                child: const Text('重试'),
+                child: const Text('重试', style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                ),
               ),
             ],
           ),
