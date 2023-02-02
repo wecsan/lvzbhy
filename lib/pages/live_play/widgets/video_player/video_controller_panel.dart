@@ -154,7 +154,7 @@ class TopActionBar extends StatelessWidget {
               child: Row(children: [
                 if (controller.fullscreenUI) BackButton(controller: controller),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.all(12),
                   child: Text(
                     controller.room.title,
                     style: const TextStyle(color: Colors.white, fontSize: 16),
@@ -162,8 +162,8 @@ class TopActionBar extends StatelessWidget {
                 ),
                 const Spacer(),
                 if (controller.fullscreenUI) ...[
-                  BatteryInfo(controller: controller),
                   const DatetimeInfo(),
+                  BatteryInfo(controller: controller),
                 ],
                 if (!controller.fullscreenUI && controller.supportPip)
                   PIPButton(controller: controller),
@@ -211,7 +211,7 @@ class _DatetimeInfoState extends State<DatetimeInfo> {
 
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
       child: Text(
         '$hour:$minute',
         style: const TextStyle(color: Colors.white, fontSize: 14),
@@ -229,7 +229,7 @@ class BatteryInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.all(12),
       child: Container(
         width: 35,
         height: 15,
@@ -262,7 +262,7 @@ class BackButton extends StatelessWidget {
           : controller.toggleFullScreen(context),
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(12),
         child: const Icon(
           Icons.arrow_back_rounded,
           color: Colors.white,
@@ -283,7 +283,7 @@ class PIPButton extends StatelessWidget {
       onTap: () => controller.enterPipMode(context),
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(12),
         child: const Icon(
           CustomIcons.float_window,
           color: Colors.white,
@@ -593,7 +593,7 @@ class PlayPauseButton extends StatelessWidget {
       onTap: () => controller.togglePlayPause(),
       child: Obx(() => Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.all(12),
             child: Icon(
               controller.isPlaying.value
                   ? Icons.pause_rounded
@@ -616,7 +616,7 @@ class RefreshButton extends StatelessWidget {
       onTap: () => controller.refresh(),
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(12),
         child: const Icon(
           Icons.refresh_rounded,
           color: Colors.white,
@@ -640,7 +640,7 @@ class DanmakuButton extends StatelessWidget {
       onTap: () => controller.hideDanmaku.toggle(),
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(12),
         child: Obx(() => Icon(
               controller.hideDanmaku.value
                   ? CustomIcons.danmaku_close
@@ -663,7 +663,7 @@ class SettingsButton extends StatelessWidget {
       onTap: () => controller.showSettting.toggle(),
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(12),
         child: const Icon(
           CustomIcons.danmaku_setting,
           color: Colors.white,
@@ -685,7 +685,7 @@ class ExpandWindowButton extends StatelessWidget {
       onTap: () => controller.toggleWindowFullScreen(context),
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(12),
         child: RotatedBox(
           quarterTurns: 1,
           child: Obx(() => Icon(
@@ -712,7 +712,7 @@ class ExpandButton extends StatelessWidget {
       onTap: () => controller.toggleFullScreen(context),
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(12),
         child: Obx(() => Icon(
               controller.isFullscreen.value
                   ? Icons.fullscreen_exit_rounded

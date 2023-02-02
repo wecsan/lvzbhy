@@ -275,6 +275,7 @@ class VideoController with ChangeNotifier {
     if (Platform.isWindows || Platform.isLinux) {
     } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController?.setOverriddenFit(fitMode.value);
+      mobileController?.retryDataSource();
     } else {
       throw UnimplementedError('Unsupported Platform');
     }
