@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:pure_live/common/index.dart';
 
@@ -108,7 +109,7 @@ class SettingsProvider with ChangeNotifier {
   }
 
   bool _enableFullScreenDefault =
-      PrefUtil.getBool('enableFullScreenDefault') ?? true;
+      PrefUtil.getBool('enableFullScreenDefault') ?? false;
   bool get enableFullScreenDefault => _enableFullScreenDefault;
   set enableFullScreenDefault(bool value) {
     _enableFullScreenDefault = value;
@@ -185,10 +186,39 @@ class SettingsProvider with ChangeNotifier {
     return true;
   }
 
+  // Backup & recover storage
+  String _backupDirectory = PrefUtil.getString('backupDirectory') ?? '';
+  String get backupDirectory => _backupDirectory;
+  set backupDirectory(String value) {
+    _backupDirectory = value;
+    notifyListeners();
+  }
+
+  bool backup(File file) {
+    try {
+      final json = toJson();
+      file.writeAsStringSync(jsonEncode(json));
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  bool recover(File file) {
+    try {
+      final json = file.readAsStringSync();
+      fromJson(jsonDecode(json));
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   void fromJson(Map<String, dynamic> json) {
-    List<String> prefs = (json['favoriteRooms'] ?? []) as List<String>;
-    _favoriteRooms =
-        prefs.map<RoomInfo>((e) => RoomInfo.fromJson(jsonDecode(e))).toList();
+    _favoriteRooms = (json['favoriteRooms'] as List)
+        .map<RoomInfo>((e) => RoomInfo.fromJson(jsonDecode(e)))
+        .toList();
+    saveRooms();
     changeThemeMode(json['themeMode'] ?? "System");
     changeThemeColor(json['themeColor'] ?? "Crimson");
     enableDenseFavorites = json['enableDenseFavorites'] ?? false;

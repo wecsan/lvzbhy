@@ -1,4 +1,5 @@
 import 'package:pure_live/common/index.dart';
+import 'package:pure_live/pages/backup/view.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -40,6 +41,15 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Text(S.of(context).change_language),
             subtitle: Text(S.of(context).change_language_subtitle),
             onTap: showLanguageSelecterDialog,
+          ),
+          ListTile(
+            leading: const Icon(Icons.backup_rounded, size: 32),
+            title: Text(S.of(context).backup_recover),
+            subtitle: Text(S.of(context).backup_recover_subtitle),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const BackupPage()),
+            ),
           ),
           SectionTitle(title: S.of(context).video),
           CupertinoSwitchListTile(

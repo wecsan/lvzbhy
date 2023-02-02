@@ -521,6 +521,136 @@ class S {
     );
   }
 
+  /// `Backup &Recover`
+  String get backup_recover {
+    return Intl.message(
+      'Backup &Recover',
+      name: 'backup_recover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create backup and recover`
+  String get backup_recover_subtitle {
+    return Intl.message(
+      'Create backup and recover',
+      name: 'backup_recover_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup`
+  String get create_backup {
+    return Intl.message(
+      'Backup',
+      name: 'create_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Used to recover from current`
+  String get create_backup_subtitle {
+    return Intl.message(
+      'Used to recover from current',
+      name: 'create_backup_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover`
+  String get recover_backup {
+    return Intl.message(
+      'Recover',
+      name: 'recover_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover form selected file`
+  String get recover_backup_subtitle {
+    return Intl.message(
+      'Recover form selected file',
+      name: 'recover_backup_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto Backup`
+  String get auto_backup {
+    return Intl.message(
+      'Auto Backup',
+      name: 'auto_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup Directory`
+  String get backup_directory {
+    return Intl.message(
+      'Backup Directory',
+      name: 'backup_directory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create backup success`
+  String get create_backup_success {
+    return Intl.message(
+      'Create backup success',
+      name: 'create_backup_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create backup failed`
+  String get create_backup_failed {
+    return Intl.message(
+      'Create backup failed',
+      name: 'create_backup_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select backup file`
+  String get select_recover_file {
+    return Intl.message(
+      'Select backup file',
+      name: 'select_recover_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover backup success, please restart`
+  String get recover_backup_success {
+    return Intl.message(
+      'Recover backup success, please restart',
+      name: 'recover_backup_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover backup failed`
+  String get recover_backup_failed {
+    return Intl.message(
+      'Recover backup failed',
+      name: 'recover_backup_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Dynamic Color`
   String get enable_dynamic_color {
     return Intl.message(

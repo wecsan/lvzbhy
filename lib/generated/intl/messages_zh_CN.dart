@@ -40,9 +40,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "本项目是一个纯本地直播转码应用，不会收集任何用户隐私，应用程序直接请求直播官方接口，所有操作生成的数据由用户本地保留。"),
         "app_name": MessageLookupByLibrary.simpleMessage("纯粹直播"),
         "areas_title": MessageLookupByLibrary.simpleMessage("分区"),
+        "auto_backup": MessageLookupByLibrary.simpleMessage("自动备份"),
         "auto_refresh_time": MessageLookupByLibrary.simpleMessage("定时刷新时间"),
         "auto_refresh_time_subtitle":
             MessageLookupByLibrary.simpleMessage("定时刷新关注直播间状态"),
+        "backup_directory": MessageLookupByLibrary.simpleMessage("备份目录"),
+        "backup_recover": MessageLookupByLibrary.simpleMessage("备份与恢复"),
+        "backup_recover_subtitle":
+            MessageLookupByLibrary.simpleMessage("创建备份与恢复"),
         "bilibili_cookie":
             MessageLookupByLibrary.simpleMessage("Bilibili Cookie"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
@@ -58,6 +63,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
         "contact": MessageLookupByLibrary.simpleMessage("联系"),
+        "create_backup": MessageLookupByLibrary.simpleMessage("创建备份"),
+        "create_backup_failed": MessageLookupByLibrary.simpleMessage("创建备份失败"),
+        "create_backup_subtitle":
+            MessageLookupByLibrary.simpleMessage("可用于恢复当前数据"),
+        "create_backup_success": MessageLookupByLibrary.simpleMessage("创建备份成功"),
         "custom": MessageLookupByLibrary.simpleMessage("定制"),
         "develop_progress": MessageLookupByLibrary.simpleMessage("开发进度"),
         "dlan_button_info": MessageLookupByLibrary.simpleMessage("DLNA投屏"),
@@ -152,9 +162,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "project_page": MessageLookupByLibrary.simpleMessage("项目主页"),
         "qq_group": MessageLookupByLibrary.simpleMessage("QQ群"),
         "qq_group_num": m3,
+        "recover_backup": MessageLookupByLibrary.simpleMessage("恢复备份"),
+        "recover_backup_failed": MessageLookupByLibrary.simpleMessage("恢复备份失败"),
+        "recover_backup_subtitle":
+            MessageLookupByLibrary.simpleMessage("从备份文件中恢复"),
+        "recover_backup_success":
+            MessageLookupByLibrary.simpleMessage("恢复备份成功，请重启"),
         "remove": MessageLookupByLibrary.simpleMessage("删除"),
         "room_info_content": m4,
         "search_input_hint": MessageLookupByLibrary.simpleMessage("输入直播关键字"),
+        "select_recover_file": MessageLookupByLibrary.simpleMessage("选择备份文件"),
         "settings_danmaku_amount": MessageLookupByLibrary.simpleMessage("弹幕数量"),
         "settings_danmaku_area": MessageLookupByLibrary.simpleMessage("弹幕区域"),
         "settings_danmaku_fontBorder":
