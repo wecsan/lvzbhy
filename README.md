@@ -1,6 +1,6 @@
-# Hot Live
+# Pure Live
 
-<img width="100" alt="image" src="https://github.com/Jackiu1997/pure_live/blob/master/assets/icon.png?raw=true">
+<img width="100" alt="image" src="./assets/icons/icon.png">
 
 ![](https://img.shields.io/badge/language-dart-blue.svg?style=for-the-badge&color=00ACC1)
 ![](https://img.shields.io/badge/flutter-00B0FF?style=for-the-badge&logo=flutter)
@@ -9,12 +9,19 @@
 ![](https://img.shields.io/github/stars/Jackiu1997/pure_live?style=for-the-badge)
 ![](https://img.shields.io/github/issues/Jackiu1997/pure_live?style=for-the-badge&color=9C27B0)
 
-A Flutter application for android and ios, which can make you watch lives with ease.
+Pure Live is a live stream transcoding application based on Flutter for android and windows, which can make you watch lives with ease. All data fetched by local machine, no cloud save, all live data and video belongs to original platform.
 
-一个为Android和IOS开发的Flutter直播应用程序，轻松看直播。
+Pure Live是一款款平台基于Flutter的直播转码软件，轻松看直播。所有数据均由本地机器获取，不存储在云端，直播数据、视频版权归原平台所有。
+
+目前支持设备:
+- Android
+- Windows
+
+## 开发进度看板[link](https://jackiu-notes.notion.site/50bc0d3d377445eea029c6e3d4195671?v=663125e639b047cea5e69d8264926b8b)
 
 ## Screenshots
 
+### Mobile UI
 <div style="text-align: center">
   <table>
     <tr>
@@ -32,6 +39,23 @@ A Flutter application for android and ios, which can make you watch lives with e
     </td>
     <td style="text-align: center">
       <img src="./screenshots/live_play_page.jpg" width="200"/>
+    </td>
+    </tr>
+  </table>
+</div>
+
+### Tablet/Desktop UI
+<div style="text-align: center">
+  <table>
+    <tr>
+    <td style="text-align: center">
+      <img src="./screenshots/desktop_favorite.png" width="350"/>
+    </td>
+    <td style="text-align: center">
+      <img src="./screenshots/desktop_popular.png" width="350"/>
+    </td>
+    <td style="text-align: center">
+      <img src="./screenshots/desktop_live_play.png" width="350"/>
     </td>
     </tr>
   </table>
@@ -67,14 +91,9 @@ A Flutter application for android and ios, which can make you watch lives with e
 
 ## Problems
 
-### 解决中的问题
+### 问题反馈
 
-- [x] 大量弹幕时会有水平弹幕遮挡
-- [x] 支持DLNA投屏
-- [x] 支持视频填充/拉伸
-- [x] 后台小窗播放
-- [ ] 斗鱼某些直播间无法播放
-- [ ] 虎牙某些弹幕无法获取
+- 如果需要反馈问题，请在Github发布[issue](https://github.com/Jackiu1997/pure_live/issues/new/choose)
 
 ### 部分链接无法播放
 
@@ -83,8 +102,6 @@ A Flutter application for android and ios, which can make you watch lives with e
 ### 搜索哔哩哔哩直播间不工作
 
 - 哔哩哔哩官方搜索接口需要使用cookie，请在设置中自行设置自己的cookie
-
-如果各种问题，请发布[issue](https://github.com/Jackiu1997/pure_live/issues/new/choose)
 
 ### 不定时更新（随缘开发）
 如果你想要更好的用户体验，更人性化的交互设计，更稳定的使用，可以使用[哔哩哔哩APP](https://app.bilibili.com/)，[斗鱼APP](https://www.douyu.com/client)，[虎牙APP](https://www.huya.com/download/)
