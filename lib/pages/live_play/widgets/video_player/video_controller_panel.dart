@@ -294,6 +294,18 @@ class PIPButton extends StatelessWidget {
 }
 
 // Center widgets
+class _DanmakuCliper extends CustomClipper<Rect> {
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTRB(0, 0, size.width, size.height + 50);
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) {
+    return false;
+  }
+}
+
 class DanmakuView extends StatelessWidget {
   const DanmakuView({
     Key? key,
@@ -318,7 +330,7 @@ class DanmakuView extends StatelessWidget {
                 : 0.0,
             duration: const Duration(milliseconds: 300),
             child: ClipRect(
-              clipBehavior: Clip.hardEdge,
+              clipper: _DanmakuCliper(),
               child: BarrageWall(
                 width: videoWidth,
                 height: videoHeight * controller.danmakuArea.value,
@@ -916,7 +928,7 @@ class DanmakuSetting extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: Text(S.of(context).settings_danmaku_area, style: label),
               title: Slider(
-                divisions: 5,
+                divisions: 10,
                 min: 0.0,
                 max: 1.0,
                 value: controller.danmakuArea.value,
