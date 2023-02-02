@@ -241,6 +241,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
     final resButtons = _streamList.keys
         .map<Widget>((res) => PopupMenuButton(
               tooltip: res,
+              color: Theme.of(context).colorScheme.surfaceVariant,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),

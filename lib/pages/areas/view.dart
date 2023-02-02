@@ -15,7 +15,7 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
   late AreasProvider provider = Provider.of<AreasProvider>(context);
   late TabController tabController;
 
-  bool get showAction => MediaQuery.of(context).size.width > 640;
+  bool get showAction => MediaQuery.of(context).size.width < 640;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +25,8 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
       appBar: AppBar(
         centerTitle: true,
         scrolledUnderElevation: 0,
+        leading: showAction ? const MenuButton() : null,
+        actions: showAction ? [const SearchButton()] : null,
         title: DefaultTabController(
           initialIndex: provider.platformIndex,
           length: provider.platformAreas.length,
@@ -44,32 +46,6 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
                 .changePlatform(provider.platformAreas.keys.toList()[index]),
           ),
         ),
-        leading: showAction
-            ? null
-            : IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SearchPage()),
-                  );
-                },
-                icon: const Icon(CustomIcons.search),
-              ),
-        actions: showAction
-            ? null
-            : [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingsPage()),
-                    );
-                  },
-                  icon: const Icon(Icons.settings),
-                ),
-                const SizedBox(width: 4),
-              ],
         bottom: provider.labels.isEmpty
             ? const PreferredSize(
                 child: SizedBox(height: 0),

@@ -1,8 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:hot_live/common/index.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import 'widgets/check_update.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -24,6 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(S.of(context).settings_title),
       ),
       body: ListView(
+        physics: const BouncingScrollPhysics(),
         children: <Widget>[
           SectionTitle(title: S.of(context).general),
           ListTile(
@@ -109,18 +106,6 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: Text(S.of(context).auto_refresh_time_subtitle),
             trailing: Text('${settings.autoRefreshTime}s'),
             onTap: showAutoRefreshTimeSetDialog,
-          ),
-          SectionTitle(title: S.of(context).about),
-          const CheckUpdateListTile(),
-          ListTile(
-            title: Text(S.of(context).what_is_new),
-            leading: const Icon(Icons.fiber_new_rounded, size: 30),
-            onTap: showNewFeaturesDialog,
-          ),
-          ListTile(
-            title: Text(S.of(context).about),
-            leading: const Icon(Icons.info_outline_rounded, size: 32),
-            onTap: showAboutInfoDialog,
           ),
         ],
       ),
@@ -292,113 +277,6 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Text(S.of(context).confirm),
           ),
         ],
-      ),
-    );
-  }
-
-  void showAboutInfoDialog() {
-    showAboutDialog(
-      context: context,
-      applicationName: 'HotLive',
-      applicationVersion: VersionUtil.version,
-      applicationIcon: SizedBox(
-        width: 60,
-        child: Center(child: Image.asset('assets/icon.png')),
-      ),
-      applicationLegalese: S.of(context).app_legalese,
-      children: [
-        const SizedBox(height: 12),
-        ListTile(
-          title: const Text('Github'),
-          leading: const Icon(CustomIcons.github_circled, size: 30),
-          onTap: () {
-            launchUrl(
-              Uri.parse(VersionUtil.projectUrl),
-              mode: LaunchMode.externalApplication,
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  void showNewFeaturesDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(S.of(context).what_is_new),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Version ${VersionUtil.latestVersion}'),
-            const SizedBox(height: 20),
-            Text(
-              VersionUtil.latestUpdateLog,
-              style: Theme.of(context).textTheme.caption,
-            ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CupertinoSwitchListTile extends StatelessWidget {
-  const CupertinoSwitchListTile({
-    Key? key,
-    required this.value,
-    required this.onChanged,
-    this.leading,
-    this.title,
-    this.subtitle,
-    this.activeColor,
-  }) : super(key: key);
-
-  final Widget? leading;
-  final Widget? title;
-  final Widget? subtitle;
-  final Color? activeColor;
-  final bool value;
-  final void Function(bool)? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: leading,
-      title: title,
-      subtitle: subtitle,
-      onTap: () {
-        if (onChanged != null) onChanged!(!value);
-      },
-      trailing: CupertinoSwitch(
-        value: value,
-        activeColor: activeColor,
-        onChanged: onChanged,
-      ),
-    );
-  }
-}
-
-class SectionTitle extends StatelessWidget {
-  final String title;
-
-  const SectionTitle({
-    required this.title,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w500,
-            ),
       ),
     );
   }

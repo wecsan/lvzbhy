@@ -56,10 +56,10 @@ A Flutter application for android and ios, which can make you watch lives with e
   <table>
     <tr>
     <td style="text-align: center">
-      <img src="./screenshots/alipay.jpg" width="200"/>
+      <img src="./assets/images/alipay.jpg" width="200"/>
     </td>
     <td style="text-align: center">
-      <img src="./screenshots/wechat.png" width="228"/>
+      <img src="./assets/images/wechat.png" width="228"/>
     </td>
     </tr>
   </table>

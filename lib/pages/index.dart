@@ -8,3 +8,4 @@ export 'settings/view.dart';
 export 'search/view.dart';
 export 'live_play/view.dart';
 export 'area_rooms/view.dart';
+export 'about/view.dart';

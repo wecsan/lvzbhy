@@ -411,16 +411,6 @@ class S {
     );
   }
 
-  /// `About`
-  String get about {
-    return Intl.message(
-      'About',
-      name: 'about',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Video`
   String get video {
     return Intl.message(
@@ -741,6 +731,36 @@ class S {
     );
   }
 
+  /// `About`
+  String get about {
+    return Intl.message(
+      'About',
+      name: 'about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Version`
+  String get version {
+    return Intl.message(
+      'Version',
+      name: 'version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Features`
+  String get what_is_new {
+    return Intl.message(
+      'New Features',
+      name: 'what_is_new',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Check Update`
   String get check_update {
     return Intl.message(
@@ -771,11 +791,141 @@ class S {
     );
   }
 
-  /// `New Features`
-  String get what_is_new {
+  /// `License`
+  String get license {
     return Intl.message(
-      'New Features',
-      name: 'what_is_new',
+      'License',
+      name: 'license',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project`
+  String get project {
+    return Intl.message(
+      'Project',
+      name: 'project',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Donate Support`
+  String get support_donate {
+    return Intl.message(
+      'Donate Support',
+      name: 'support_donate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Issue Feedback`
+  String get issue_feedback {
+    return Intl.message(
+      'Issue Feedback',
+      name: 'issue_feedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Development`
+  String get develop_progress {
+    return Intl.message(
+      'Development',
+      name: 'develop_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project Homepage`
+  String get project_page {
+    return Intl.message(
+      'Project Homepage',
+      name: 'project_page',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project Alert`
+  String get project_alert {
+    return Intl.message(
+      'Project Alert',
+      name: 'project_alert',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact`
+  String get contact {
+    return Intl.message(
+      'Contact',
+      name: 'contact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QQ Group`
+  String get qq_group {
+    return Intl.message(
+      'QQ Group',
+      name: 'qq_group',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GroupNo.: {number}`
+  String qq_group_num(Object number) {
+    return Intl.message(
+      'GroupNo.: $number',
+      name: 'qq_group_num',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Telegram`
+  String get telegram {
+    return Intl.message(
+      'Telegram',
+      name: 'telegram',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Github`
+  String get github {
+    return Intl.message(
+      'Github',
+      name: 'github',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Help`
+  String get help {
+    return Intl.message(
+      'Help',
+      name: 'help',
       desc: '',
       args: [],
     );

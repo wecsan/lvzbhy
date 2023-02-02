@@ -27,7 +27,7 @@ class _PopularPageState extends State<PopularPage>
     return crossAxisCount;
   }
 
-  bool get showAction => MediaQuery.of(context).size.width > 640;
+  bool get showAction => MediaQuery.of(context).size.width < 640;
 
   bool loading = false;
 
@@ -56,6 +56,8 @@ class _PopularPageState extends State<PopularPage>
       appBar: AppBar(
         centerTitle: true,
         scrolledUnderElevation: 0,
+        leading: showAction ? const MenuButton() : null,
+        actions: showAction ? [const SearchButton()] : null,
         title: DefaultTabController(
           initialIndex: provider.platformIndex,
           length: provider.platformRooms.length,
@@ -74,32 +76,6 @@ class _PopularPageState extends State<PopularPage>
             onTap: (index) => provider.changePlatform(index),
           ),
         ),
-        leading: showAction
-            ? null
-            : IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SearchPage()),
-                  );
-                },
-                icon: const Icon(CustomIcons.search),
-              ),
-        actions: showAction
-            ? null
-            : [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingsPage()),
-                    );
-                  },
-                  icon: const Icon(Icons.settings),
-                ),
-                const SizedBox(width: 4),
-              ],
       ),
       body: Listener(
         onPointerSignal: (event) {

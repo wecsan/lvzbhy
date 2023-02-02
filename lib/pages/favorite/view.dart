@@ -29,7 +29,7 @@ class _FavoritePageState extends State<FavoritePage>
     return crossAxisCount;
   }
 
-  bool get showAction => MediaQuery.of(context).size.width > 640;
+  bool get showAction => MediaQuery.of(context).size.width < 640;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +38,8 @@ class _FavoritePageState extends State<FavoritePage>
       appBar: AppBar(
         centerTitle: true,
         scrolledUnderElevation: 0,
+        leading: showAction ? const MenuButton() : null,
+        actions: showAction ? [const SearchButton()] : null,
         title: TabBar(
           controller: tabController,
           isScrollable: true,
@@ -53,32 +55,6 @@ class _FavoritePageState extends State<FavoritePage>
             Tab(text: '未开播'),
           ],
         ),
-        leading: showAction
-            ? null
-            : IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SearchPage()),
-                  );
-                },
-                icon: const Icon(CustomIcons.search),
-              ),
-        actions: showAction
-            ? null
-            : [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingsPage()),
-                    );
-                  },
-                  icon: const Icon(Icons.settings),
-                ),
-                const SizedBox(width: 4),
-              ],
       ),
       body: TabBarView(
         controller: tabController,

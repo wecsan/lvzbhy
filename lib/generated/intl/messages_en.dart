@@ -26,7 +26,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(version) => "New version found: v${version}";
 
-  static String m3(roomid, platform, nickname, title, livestatus) =>
+  static String m3(number) => "GroupNo.: ${number}";
+
+  static String m4(roomid, platform, nickname, title, livestatus) =>
       "RoomId: ${roomid}\nPlatform: ${platform}\nName: ${nickname}\nTitle: ${title}\nLiveStatus: ${livestatus}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -55,12 +57,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "Change form light / dark / system modes"),
         "check_update": MessageLookupByLibrary.simpleMessage("Check Update"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "contact": MessageLookupByLibrary.simpleMessage("Contact"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
+        "develop_progress": MessageLookupByLibrary.simpleMessage("Development"),
         "dlan_button_info":
             MessageLookupByLibrary.simpleMessage("DLNA Broadcast"),
         "dlan_device_not_found":
             MessageLookupByLibrary.simpleMessage("DLNA device not found"),
         "dlan_title": MessageLookupByLibrary.simpleMessage("DLNA"),
+        "email": MessageLookupByLibrary.simpleMessage("Email"),
         "empty_areas_room_subtitle":
             MessageLookupByLibrary.simpleMessage("Pull down to refresh data"),
         "empty_areas_room_title":
@@ -132,10 +137,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "follow": MessageLookupByLibrary.simpleMessage("Follow"),
         "followed": MessageLookupByLibrary.simpleMessage("Followed"),
         "general": MessageLookupByLibrary.simpleMessage("General"),
+        "github": MessageLookupByLibrary.simpleMessage("Github"),
+        "help": MessageLookupByLibrary.simpleMessage("Help"),
         "hide_offline_rooms":
             MessageLookupByLibrary.simpleMessage("Hide Offline Rooms"),
         "info_is_offline": m0,
         "info_is_replay": m1,
+        "issue_feedback":
+            MessageLookupByLibrary.simpleMessage("Issue Feedback"),
+        "license": MessageLookupByLibrary.simpleMessage("License"),
         "loading_canload":
             MessageLookupByLibrary.simpleMessage("release to load"),
         "loading_failed":
@@ -157,8 +167,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Resolution Preference"),
         "prefer_resolution_subtitle": MessageLookupByLibrary.simpleMessage(
             "When enter live play, first resolution choice"),
+        "project": MessageLookupByLibrary.simpleMessage("Project"),
+        "project_alert": MessageLookupByLibrary.simpleMessage("Project Alert"),
+        "project_page":
+            MessageLookupByLibrary.simpleMessage("Project Homepage"),
+        "qq_group": MessageLookupByLibrary.simpleMessage("QQ Group"),
+        "qq_group_num": m3,
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
-        "room_info_content": m3,
+        "room_info_content": m4,
         "search_input_hint":
             MessageLookupByLibrary.simpleMessage("Input live room keyword"),
         "settings_danmaku_amount":
@@ -176,10 +192,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
         "show_offline_rooms":
             MessageLookupByLibrary.simpleMessage("Show Offline Rooms"),
+        "support_donate":
+            MessageLookupByLibrary.simpleMessage("Donate Support"),
         "switch_platform":
             MessageLookupByLibrary.simpleMessage("Switch platform"),
+        "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
         "unfollow": MessageLookupByLibrary.simpleMessage("Unfollow"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
+        "version": MessageLookupByLibrary.simpleMessage("Version"),
         "video": MessageLookupByLibrary.simpleMessage("Video"),
         "what_is_new": MessageLookupByLibrary.simpleMessage("New Features")
       };

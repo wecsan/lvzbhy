@@ -26,7 +26,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(version) => "发现新版本: v${version}";
 
-  static String m3(roomid, platform, nickname, title, livestatus) =>
+  static String m3(number) => "群号: ${number}";
+
+  static String m4(roomid, platform, nickname, title, livestatus) =>
       "房间号: ${roomid}\n平台: ${platform}\n昵称: ${nickname}\n标题: ${title}\n状态: ${livestatus}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -53,11 +55,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("切换系统/亮色/暗色模式"),
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
+        "contact": MessageLookupByLibrary.simpleMessage("联系"),
         "custom": MessageLookupByLibrary.simpleMessage("定制"),
+        "develop_progress": MessageLookupByLibrary.simpleMessage("开发进度"),
         "dlan_button_info": MessageLookupByLibrary.simpleMessage("DLNA投屏"),
         "dlan_device_not_found":
             MessageLookupByLibrary.simpleMessage("未发现DLNA设备"),
         "dlan_title": MessageLookupByLibrary.simpleMessage("DLNA投屏"),
+        "email": MessageLookupByLibrary.simpleMessage("邮件"),
         "empty_areas_room_subtitle":
             MessageLookupByLibrary.simpleMessage("下滑/上滑刷新数据"),
         "empty_areas_room_title": MessageLookupByLibrary.simpleMessage("未发现直播"),
@@ -115,9 +120,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "follow": MessageLookupByLibrary.simpleMessage("关注"),
         "followed": MessageLookupByLibrary.simpleMessage("已关注"),
         "general": MessageLookupByLibrary.simpleMessage("通用"),
+        "github": MessageLookupByLibrary.simpleMessage("Github"),
+        "help": MessageLookupByLibrary.simpleMessage("帮助"),
         "hide_offline_rooms": MessageLookupByLibrary.simpleMessage("隐藏未直播的直播间"),
         "info_is_offline": m0,
         "info_is_replay": m1,
+        "issue_feedback": MessageLookupByLibrary.simpleMessage("问题反馈"),
+        "license": MessageLookupByLibrary.simpleMessage("开源许可证"),
         "loading_canload": MessageLookupByLibrary.simpleMessage("释放以加载"),
         "loading_failed": MessageLookupByLibrary.simpleMessage("加载失败！上滑重试"),
         "loading_idle": MessageLookupByLibrary.simpleMessage("上滑以加载"),
@@ -134,8 +143,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "prefer_resolution": MessageLookupByLibrary.simpleMessage("首选清晰度"),
         "prefer_resolution_subtitle":
             MessageLookupByLibrary.simpleMessage("当进入直播播放页，首选的视频清晰度"),
+        "project": MessageLookupByLibrary.simpleMessage("项目"),
+        "project_alert": MessageLookupByLibrary.simpleMessage("项目声明"),
+        "project_page": MessageLookupByLibrary.simpleMessage("项目主页"),
+        "qq_group": MessageLookupByLibrary.simpleMessage("QQ群"),
+        "qq_group_num": m3,
         "remove": MessageLookupByLibrary.simpleMessage("删除"),
-        "room_info_content": m3,
+        "room_info_content": m4,
         "search_input_hint": MessageLookupByLibrary.simpleMessage("输入直播关键字"),
         "settings_danmaku_amount": MessageLookupByLibrary.simpleMessage("弹幕数量"),
         "settings_danmaku_area": MessageLookupByLibrary.simpleMessage("弹幕区域"),
@@ -148,9 +162,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_danmaku_speed": MessageLookupByLibrary.simpleMessage("弹幕速度"),
         "settings_title": MessageLookupByLibrary.simpleMessage("设置"),
         "show_offline_rooms": MessageLookupByLibrary.simpleMessage("显示未直播的直播间"),
+        "support_donate": MessageLookupByLibrary.simpleMessage("捐赠支持"),
         "switch_platform": MessageLookupByLibrary.simpleMessage("切换直播平台"),
+        "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
         "unfollow": MessageLookupByLibrary.simpleMessage("取消关注"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
+        "version": MessageLookupByLibrary.simpleMessage("版本"),
         "video": MessageLookupByLibrary.simpleMessage("视频"),
         "what_is_new": MessageLookupByLibrary.simpleMessage("最新特性")
       };
