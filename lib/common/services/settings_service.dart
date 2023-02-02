@@ -148,12 +148,46 @@ class SettingsProvider with ChangeNotifier {
     }
   }
 
-  // for backup storage
-  List<RoomInfo> _favorites = [];
+  // Favorite rooms storage
+  List<RoomInfo> _favoriteRooms =
+      (PrefUtil.getStringList('favoriteRooms') ?? [])
+          .map((e) => RoomInfo.fromJson(jsonDecode(e)))
+          .toList();
+  List<RoomInfo> get favoriteRooms => _favoriteRooms;
+
+  bool isFavorite(RoomInfo room) {
+    return _favoriteRooms.contains(room);
+  }
+
+  void saveRooms() {
+    PrefUtil.setStringList('favoriteRooms',
+        _favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList());
+  }
+
+  bool addRoom(RoomInfo room) {
+    if (_favoriteRooms.contains(room)) return false;
+    _favoriteRooms.add(room);
+    saveRooms();
+    return true;
+  }
+
+  bool removeRoom(RoomInfo room) {
+    if (!_favoriteRooms.contains(room)) return false;
+    _favoriteRooms.removeWhere((e) => e == room);
+    saveRooms();
+    return true;
+  }
+
+  bool updateRoom(RoomInfo room) {
+    int idx = _favoriteRooms.indexOf(room);
+    if (idx == -1) return false;
+    _favoriteRooms[idx] = room;
+    return true;
+  }
 
   void fromJson(Map<String, dynamic> json) {
-    List<String> prefs = (json['favorites'] ?? []) as List<String>;
-    _favorites =
+    List<String> prefs = (json['favoriteRooms'] ?? []) as List<String>;
+    _favoriteRooms =
         prefs.map<RoomInfo>((e) => RoomInfo.fromJson(jsonDecode(e))).toList();
     changeThemeMode(json['themeMode'] ?? "System");
     changeThemeColor(json['themeColor'] ?? "Crimson");
@@ -169,18 +203,18 @@ class SettingsProvider with ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['favorites'] =
-        _favorites.map<String>((e) => jsonEncode(e.toJson())).toList();
-    json['themeMode'] = _themeModeName;
-    json['themeColor'] = _themeColorName;
-    json['enableDenseFavorites'] = _enableDenseFavorites;
-    json['enableBackgroundPlay'] = _enableBackgroundPlay;
-    json['enableScreenKeepOn'] = _enableScreenKeepOn;
-    json['enableAutoCheckUpdate'] = _enableAutoCheckUpdate;
-    json['enableFullScreenDefault'] = _enableFullScreenDefault;
-    json['bilibiliCustomCookie'] = _bilibiliCustomCookie;
-    json['preferResolution'] = _preferResolution;
-    json['preferPlatform'] = _preferPlatform;
+    json['favoriteRooms'] =
+        favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList();
+    json['themeMode'] = themeModeName;
+    json['themeColor'] = themeColorName;
+    json['enableDenseFavorites'] = enableDenseFavorites;
+    json['enableBackgroundPlay'] = enableBackgroundPlay;
+    json['enableScreenKeepOn'] = enableScreenKeepOn;
+    json['enableAutoCheckUpdate'] = enableAutoCheckUpdate;
+    json['enableFullScreenDefault'] = enableFullScreenDefault;
+    json['bilibiliCustomCookie'] = bilibiliCustomCookie;
+    json['preferResolution'] = preferResolution;
+    json['preferPlatform'] = preferPlatform;
     return json;
   }
 }
