@@ -216,9 +216,9 @@ class _LivePlayPageState extends State<LivePlayPage> {
 
   Widget _buildResolutions() {
     // room watching or followers
-    final List<Widget> infos = [];
+    Widget info = Container();
     if (widget.room.followers.isNotEmpty) {
-      infos.addAll([
+      info = Row(mainAxisSize: MainAxisSize.min, children: [
         const Icon(Icons.person_rounded, size: 14),
         const SizedBox(width: 4),
         Text(
@@ -227,7 +227,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
         ),
       ]);
     } else if (widget.room.watching.isNotEmpty) {
-      infos.addAll([
+      info = Row(mainAxisSize: MainAxisSize.min, children: [
         const Icon(Icons.whatshot_rounded, size: 14),
         const SizedBox(width: 4),
         Text(
@@ -240,20 +240,34 @@ class _LivePlayPageState extends State<LivePlayPage> {
     // resolution popmenu buttons
     final resButtons = _streamList.keys
         .map<Widget>((res) => PopupMenuButton(
-              iconSize: 24,
+              tooltip: res,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              offset: const Offset(0.0, 5.0),
+              position: PopupMenuPosition.under,
               icon: Text(
-                res.substring(res.length - 2, res.length),
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: res == _selectedResolution
-                        ? Theme.of(context).colorScheme.primary
-                        : null),
+                res,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: res == _selectedResolution
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
               ),
               onSelected: (String url) => setResolution(res, url),
               itemBuilder: (context) => _streamList[res]!
                   .keys
                   .map((cdn) => PopupMenuItem<String>(
-                        child:
-                            Text(cdn, style: const TextStyle(fontSize: 14.0)),
+                        child: Text(
+                          cdn,
+                          style:
+                              Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: _streamList[res]![cdn] ==
+                                            controller?.datasource
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                  ),
+                        ),
                         value: _streamList[res]![cdn],
                       ))
                   .toList(),
@@ -261,14 +275,8 @@ class _LivePlayPageState extends State<LivePlayPage> {
         .toList();
 
     return ListTile(
-      leading: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: infos,
-        ),
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      leading: Padding(padding: const EdgeInsets.all(8), child: info),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
