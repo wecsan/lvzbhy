@@ -241,8 +241,12 @@ class VideoController with ChangeNotifier {
       desktopController?.pause();
       desktopController?.open(
         Media.directShow(rawUrl: datasource),
-        autoStart: true,
+        autoStart: false,
       );
+      // Add play delay to fix windows animation lag bug
+      Timer(const Duration(milliseconds: 300), () {
+        desktopController?.play();
+      });
     } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController?.setupDataSource(BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
