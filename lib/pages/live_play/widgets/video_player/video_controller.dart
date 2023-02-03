@@ -5,6 +5,7 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:better_player/better_player.dart';
 import 'package:bordered_text/bordered_text.dart';
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:pure_live/common/index.dart';
@@ -168,7 +169,6 @@ class VideoController with ChangeNotifier {
     isBuffering.value = mobileController?.isBuffering() ?? false;
     isPipMode.value =
         mobileController?.videoPlayerController?.value.isPip ?? false;
-    isFullscreen.value = mobileController?.isFullScreen ?? false;
   }
 
   void initDanmakuListener() {
@@ -244,7 +244,7 @@ class VideoController with ChangeNotifier {
         autoStart: false,
       );
       // Add play delay to fix windows animation lag bug
-      Timer(const Duration(milliseconds: 300), () {
+      Timer(const Duration(milliseconds: 500), () {
         desktopController?.play();
       });
     } else if (Platform.isAndroid || Platform.isIOS) {
@@ -324,7 +324,15 @@ class VideoController with ChangeNotifier {
       isFullscreen.toggle();
     } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController?.toggleFullScreen();
-      isFullscreen.toggle();
+      Timer(const Duration(milliseconds: 400), () {
+        isFullscreen.toggle();
+        // fix immersion status bar problem
+        if (Platform.isAndroid) {
+          SystemChrome.setEnabledSystemUIMode(!isFullscreen.value
+              ? SystemUiMode.edgeToEdge
+              : SystemUiMode.immersiveSticky);
+        }
+      });
     } else {
       throw UnimplementedError('Unsupported Platform');
     }
