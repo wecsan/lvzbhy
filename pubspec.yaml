@@ -77,6 +77,7 @@ dev_dependencies:
     sdk: flutter
   change_app_package_name: any
   flutter_launcher_icons: "^0.11.0"
+  msix: ^3.7.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -140,3 +141,12 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 flutter_intl:
   enabled: true
+
+# windows msix package
+msix_config:
+  display_name: Pure Live
+  publisher_display_name: mystyle
+  identity_name: com.mystyle.purelive
+  msix_version: 1.0.6.0
+  logo_path: assets/icons/icon.png
+  capabilities: internetClient
