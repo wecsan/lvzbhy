@@ -83,6 +83,16 @@ class _LivePlayPageState extends State<LivePlayPage> {
         return;
       }
     }
+    // 原画选择缺陷
+    if (widget.preferResolution == '原画') {
+      for (var key in _streamList.keys) {
+        if (key.contains('原画')) {
+          _selectedResolution = key;
+          _datasource = _streamList[key]!.values.first;
+          return;
+        }
+      }
+    }
     // 蓝光8M/4M选择缺陷
     if (widget.preferResolution.contains('蓝光')) {
       for (var key in _streamList.keys) {
