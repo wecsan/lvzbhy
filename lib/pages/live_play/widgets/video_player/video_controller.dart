@@ -237,6 +237,12 @@ class VideoController with ChangeNotifier {
 
   void setDataSource(String url) {
     datasource = url;
+    // fix datasource empty error
+    if (datasource.isEmpty) {
+      hasError.value = true;
+      return;
+    }
+
     if (Platform.isWindows || Platform.isLinux) {
       desktopController?.pause();
       desktopController?.open(
