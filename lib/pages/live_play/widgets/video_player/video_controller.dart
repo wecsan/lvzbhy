@@ -447,15 +447,21 @@ class MobileFullscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: Stack(
+      body: WillPopScope(
+        onWillPop: () {
+          controller.toggleFullScreen(context);
+          return Future(() => true);
+        },
+        child: Container(
           alignment: Alignment.center,
-          children: [
-            controllerProvider,
-            VideoControllerPanel(controller: controller),
-          ],
+          color: Colors.black,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              controllerProvider,
+              VideoControllerPanel(controller: controller),
+            ],
+          ),
         ),
       ),
     );
