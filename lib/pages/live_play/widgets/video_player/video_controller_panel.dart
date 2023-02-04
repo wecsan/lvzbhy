@@ -401,11 +401,12 @@ class _BrightnessVolumnDargAreaState extends State<BrightnessVolumnDargArea> {
     if (controller.showLocked.value) return;
     if (delta.distance < 0.2) return;
 
-    if (_hideBVStuff) {
-      _isDargLeft = (postion.dx > (widget.videoWith / 2)) ? false : true;
-      // disable windows brightness
-      if (Platform.isWindows && _isDargLeft) return;
-
+    // fix darg left change to switch bug
+    final dargLeft = (postion.dx > (widget.videoWith / 2)) ? false : true;
+    // disable windows brightness
+    if (Platform.isWindows && dargLeft) return;
+    if (_hideBVStuff || _isDargLeft != dargLeft) {
+      _isDargLeft = dargLeft;
       if (_isDargLeft) {
         await controller.brightness().then((double v) {
           setState(() => _updateDargVarVal = v);
