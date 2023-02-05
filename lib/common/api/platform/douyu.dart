@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter_js/flutter_js.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,22 +39,10 @@ class DouyuApi {
     };
   }
 
-  static final jsEngine = getJavascriptRuntime();
-  static bool loadedJs = false;
   static Future<String> getSign(String rid, String tt, String ub9) async {
-    // load crypto-js package
-    if (!loadedJs) {
-      final cryptojs = (await http.get(Uri.parse(
-              'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js')))
-          .body;
-      jsEngine.evaluate(cryptojs);
-      loadedJs = true;
-    }
-
     ub9 = ub9.substring(0, ub9.lastIndexOf('function'));
-    jsEngine.evaluate(ub9);
-    final params = jsEngine
-        .evaluate(
+    JsEngine.evaluate(ub9);
+    final params = JsEngine.evaluate(
             'ub98484234(\'$rid\', \'10000000000000000000000000001501\', \'$tt\')')
         .toString();
     return params;
