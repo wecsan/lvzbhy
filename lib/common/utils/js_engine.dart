@@ -1,5 +1,5 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
-import 'package:http/http.dart' as http;
 
 class JsEngine {
   static JavascriptRuntime? _jsRuntime;
@@ -12,9 +12,7 @@ class JsEngine {
   }
 
   static Future<void> loadPackages() async {
-    final cryptojs = (await http.get(Uri.parse(
-            'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js')))
-        .body;
+    final cryptojs = await rootBundle.loadString('assets/crypto-js.js');
     jsRuntime.evaluate(cryptojs);
   }
 

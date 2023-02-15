@@ -119,6 +119,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
+    - assets/crypto-js.js
     - assets/icons/icon.png
     - assets/icons/icon_foreground.png
     - assets/images/wechat.png
@@ -149,8 +150,11 @@ flutter_intl:
 # windows msix package
 msix_config:
   display_name: Pure Live
-  publisher_display_name: mystyle
-  identity_name: com.mystyle.purelive
+  publisher_display_name: puretech.com
+  identity_name: com.puretech.purelive
   msix_version: 1.0.7.0
   logo_path: assets/icons/icon.png
   capabilities: internetClient
+  certificate_path: ~\keystore\puretech_signcert.pfx
+  certificate_password: xxxx
+  publisher: CN=puretech.com, O=Puretech Corporation, C=CN
