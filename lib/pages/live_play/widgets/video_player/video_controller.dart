@@ -433,7 +433,7 @@ class VideoController with ChangeNotifier {
   }
 }
 
-class MobileFullscreen extends StatelessWidget {
+class MobileFullscreen extends StatefulWidget {
   const MobileFullscreen({
     Key? key,
     required this.controller,
@@ -444,12 +444,37 @@ class MobileFullscreen extends StatelessWidget {
   final BetterPlayerControllerProvider controllerProvider;
 
   @override
+  State<MobileFullscreen> createState() => _MobileFullscreenState();
+}
+
+class _MobileFullscreenState extends State<MobileFullscreen>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      widget.controller.refresh();
+    }
+  }
+
+  @override
+  dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: WillPopScope(
         onWillPop: () {
-          controller.toggleFullScreen(context);
+          widget.controller.toggleFullScreen(context);
           return Future(() => true);
         },
         child: Container(
@@ -458,8 +483,8 @@ class MobileFullscreen extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              controllerProvider,
-              VideoControllerPanel(controller: controller),
+              widget.controllerProvider,
+              VideoControllerPanel(controller: widget.controller),
             ],
           ),
         ),
