@@ -4,9 +4,9 @@
 
 ![](https://img.shields.io/badge/language-dart-blue.svg?style=for-the-badge&color=00ACC1)
 ![](https://img.shields.io/badge/flutter-00B0FF?style=for-the-badge&logo=flutter)
-[![](https://img.shields.io/github/downloads/Jackiu1997/pure_live/total?style=for-the-badge&color=FF2196)](https://github.com/Jackiu1997/pure_live/releases)
+[![](https://img.shields.io/github/downloads/Jackiu1997/hot_live/total?style=for-the-badge&color=FF2196)](https://github.com/Jackiu1997/pure_live/releases)
 ![](https://img.shields.io/github/license/Jackiu1997/pure_live?style=for-the-badge)
-![](https://img.shields.io/github/stars/Jackiu1997/pure_live?style=for-the-badge)
+![](https://img.shields.io/github/stars/Jackiu1997/hot_live?style=for-the-badge)
 ![](https://img.shields.io/github/issues/Jackiu1997/pure_live?style=for-the-badge&color=9C27B0)
 
 Pure Live is a live stream transcoding application based on Flutter for android and windows, which can make you watch lives with ease. All data fetched by local machine, no cloud save, all live data and video belongs to original platform.
