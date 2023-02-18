@@ -160,14 +160,16 @@ class TopActionBar extends StatelessWidget {
               ),
               child: Row(children: [
                 if (controller.fullscreenUI) BackButton(controller: controller),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    controller.room.title,
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      controller.room.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
                 ),
-                const Spacer(),
                 if (controller.fullscreenUI) ...[
                   const DatetimeInfo(),
                   BatteryInfo(controller: controller),

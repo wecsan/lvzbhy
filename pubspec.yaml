@@ -57,6 +57,7 @@ dependencies:
   dart_vlc: 0.3.0
   window_manager: ^0.2.3
   
+  # system hardware utils
   wakelock: ^0.6.2
   dlna_dart: ^0.0.8
   battery_plus: ^3.0.2
@@ -80,7 +81,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   change_app_package_name: any
-  flutter_launcher_icons: "^0.11.0"
+  flutter_launcher_icons: ^0.11.0
   msix: ^3.7.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -144,6 +145,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+# flutter localization settings
 flutter_intl:
   enabled: true
   arb_dir: lib/common/l10n
