@@ -1,56 +1,50 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
-import 'package:pure_live/pages/live_play/view.dart';
+import 'package:pure_live/routes/app_pages.dart';
 
 // ignore: must_be_immutable
 class RoomCard extends StatelessWidget {
-  RoomCard({
+  const RoomCard({
     Key? key,
     required this.room,
-    this.onLongPress,
     this.dense = false,
   }) : super(key: key);
 
-  final RoomInfo room;
-  final Function()? onLongPress;
+  final LiveRoom room;
   final bool dense;
 
-  bool loading = false;
+  void onLongPress(BuildContext context) {
+    Get.dialog(
+      AlertDialog(
+        title: Text(room.title),
+        content: Text(
+          S.of(context).room_info_content(
+                room.roomId,
+                room.platform,
+                room.nick,
+                room.title,
+                room.liveStatus.name,
+              ),
+        ),
+        actions: [
+          GetBuilder<SettingsService>(
+            builder: (settings) {
+              return ElevatedButton(
+                onPressed: () => settings.removeRoom(room),
+                child: Text(settings.isFavorite(room)
+                    ? S.of(context).unfollow
+                    : S.of(context).follow),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   void onTap(BuildContext context) async {
-    // set loading tag avoid double click
-    if (loading) return;
-    loading = true;
-    final fullRoom = await LiveApi.getRoomInfo(room);
-    loading = false;
-
-    if (fullRoom.liveStatus == LiveStatus.live) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LivePlayPage(
-            room: fullRoom,
-            preferResolution:
-                Provider.of<SettingsProvider>(context).preferResolution,
-          ),
-        ),
-      );
-    } else {
-      final info = fullRoom.liveStatus == LiveStatus.offline
-          ? S.of(context).info_is_offline(fullRoom.nick)
-          : S.of(context).info_is_replay(fullRoom.nick);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              info,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          );
-        },
-      );
-    }
+    AppPages.toLivePlay(room);
   }
 
   @override
@@ -63,7 +57,7 @@ class RoomCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(15.0),
         onTap: () => onTap(context),
-        onLongPress: onLongPress,
+        onLongPress: () => onLongPress(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

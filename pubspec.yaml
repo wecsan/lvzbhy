@@ -49,6 +49,7 @@ dependencies:
   
   # video player mobile
   better_player: ^0.0.83
+  ns_danmaku: ^0.0.1
   bordered_text: ^2.0.0
   screen_brightness: ^0.2.2
   volume_controller: ^2.0.6
@@ -74,9 +75,11 @@ dependencies:
   provider: ^6.0.3
   quiver: ^3.1.0
   date_format: ^2.0.7
-  path_provider: ^2.0.13
   path: ^1.8.2
   file: ^6.1.4
+  path_provider: ^2.0.13
+  dart_tars_protocol:
+    git: https://github.com/xiaoyaocz/dart_tars_protocol.git
   # dpad_container: ^1.0.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -1,10 +1,48 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
 
-class SettingsProvider with ChangeNotifier {
-  SettingsProvider();
+class SettingsService extends GetxController {
+  SettingsService() {
+    enableDynamicTheme.listen((bool value) {
+      PrefUtil.setBool('enableDynamicTheme', value);
+      update(['myapp']);
+    });
+
+    enableDenseFavorites.listen((value) {
+      PrefUtil.setBool('enableDenseFavorites', value);
+    });
+    autoRefreshTime.listen((value) {
+      PrefUtil.setInt('autoRefreshTime', value);
+    });
+    enableBackgroundPlay.listen((value) {
+      PrefUtil.setBool('enableBackgroundPlay', value);
+    });
+    enableScreenKeepOn.listen((value) {
+      PrefUtil.setBool('enableScreenKeepOn', value);
+    });
+    enableAutoCheckUpdate.listen((value) {
+      PrefUtil.setBool('enableAutoCheckUpdate', value);
+    });
+    enableFullScreenDefault.listen((value) {
+      PrefUtil.setBool('enableFullScreenDefault', value);
+    });
+    bilibiliCustomCookie.listen((String value) {
+      PrefUtil.setString('bilibiliCustomCookie', value);
+    });
+
+    favoriteRooms.listen((rooms) {
+      PrefUtil.setStringList('favoriteRooms',
+          favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList());
+    });
+
+    backupDirectory.listen((String value) {
+      backupDirectory.value = value;
+      PrefUtil.setString('backupDirectory', value);
+    });
+  }
 
   // Theme settings
   static Map<String, ThemeMode> themeModes = {
@@ -12,13 +50,12 @@ class SettingsProvider with ChangeNotifier {
     "Dark": ThemeMode.dark,
     "Light": ThemeMode.light,
   };
-  String _themeModeName = PrefUtil.getString('themeMode') ?? "System";
-  get themeMode => SettingsProvider.themeModes[_themeModeName]!;
-  get themeModeName => _themeModeName;
+  final themeModeName = (PrefUtil.getString('themeMode') ?? "System").obs;
+  get themeMode => SettingsService.themeModes[themeModeName.value]!;
   void changeThemeMode(String mode) {
-    _themeModeName = mode;
-    notifyListeners();
-    PrefUtil.setString('themeMode', _themeModeName);
+    themeModeName.value = mode;
+    PrefUtil.setString('themeMode', mode);
+    update(['myapp']);
   }
 
   static Map<String, Color> themeColors = {
@@ -34,166 +71,102 @@ class SettingsProvider with ChangeNotifier {
     "Violet": Colors.deepPurple,
     "Orchid": const Color.fromARGB(255, 218, 112, 214),
   };
-  String _themeColorName = PrefUtil.getString('themeColor') ?? "Blue";
-  get themeColor => SettingsProvider.themeColors[_themeColorName]!;
-  get themeColorName => _themeColorName;
+  final themeColorName = (PrefUtil.getString('themeColor') ?? "Blue").obs;
+  get themeColor => SettingsService.themeColors[themeColorName.value]!;
   void changeThemeColor(String color) {
-    _themeColorName = color;
-    notifyListeners();
-    PrefUtil.setString('themeColor', _themeColorName);
-  }
-
-  bool _enableDynamicTheme = PrefUtil.getBool('enableDynamicTheme') ?? false;
-  bool get enableDynamicTheme => _enableDynamicTheme;
-  set enableDynamicTheme(bool value) {
-    _enableDynamicTheme = value;
-    notifyListeners();
-    PrefUtil.setBool('enableDynamicTheme', _enableDynamicTheme);
+    themeColorName.value = color;
+    PrefUtil.setString('themeColor', color);
+    update(['myapp']);
   }
 
   static Map<String, Locale> languages = {
     "English": const Locale.fromSubtags(languageCode: 'en'),
     "简体中文": const Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
   };
-  String _languageName = PrefUtil.getString('language') ?? "简体中文";
-  get language => SettingsProvider.languages[_languageName]!;
-  get languageName => _languageName;
+  final languageName = (PrefUtil.getString('language') ?? "简体中文").obs;
+  get language => SettingsService.languages[languageName.value]!;
   void changeLanguage(String value) {
-    _languageName = value;
-    notifyListeners();
-    PrefUtil.setString('language', _languageName);
+    languageName.value = value;
+    PrefUtil.setString('language', value);
+    update(['myapp']);
   }
+
+  final enableDynamicTheme =
+      (PrefUtil.getBool('enableDynamicTheme') ?? false).obs;
 
   // Custom settings
-  int _autoRefreshTime = PrefUtil.getInt('autoRefreshTime') ?? 60;
-  int get autoRefreshTime => _autoRefreshTime;
-  set autoRefreshTime(value) {
-    _autoRefreshTime = value;
-    notifyListeners();
-    PrefUtil.setInt('autoRefreshTime', _autoRefreshTime);
-  }
+  final autoRefreshTime = (PrefUtil.getInt('autoRefreshTime') ?? 60).obs;
 
-  bool _enableDenseFavorites =
-      PrefUtil.getBool('enableDenseFavorites') ?? false;
-  bool get enableDenseFavorites => _enableDenseFavorites;
-  set enableDenseFavorites(bool value) {
-    _enableDenseFavorites = value;
-    notifyListeners();
-    PrefUtil.setBool('enableDenseFavorites', _enableDenseFavorites);
-  }
+  final enableDenseFavorites =
+      (PrefUtil.getBool('enableDenseFavorites') ?? false).obs;
 
-  bool _enableBackgroundPlay =
-      PrefUtil.getBool('enableBackgroundPlay') ?? false;
-  bool get enableBackgroundPlay => _enableBackgroundPlay;
-  set enableBackgroundPlay(bool value) {
-    _enableBackgroundPlay = value;
-    notifyListeners();
-    PrefUtil.setBool('enableBackgroundPlay', _enableBackgroundPlay);
-  }
+  final enableBackgroundPlay =
+      (PrefUtil.getBool('enableBackgroundPlay') ?? false).obs;
 
-  bool _enableScreenKeepOn = PrefUtil.getBool('enableScreenKeepOn') ?? false;
-  bool get enableScreenKeepOn => _enableScreenKeepOn;
-  set enableScreenKeepOn(bool value) {
-    _enableScreenKeepOn = value;
-    notifyListeners();
-    PrefUtil.setBool('enableScreenKeepOn', _enableScreenKeepOn);
-  }
+  final enableScreenKeepOn =
+      (PrefUtil.getBool('enableScreenKeepOn') ?? false).obs;
 
-  bool _enableAutoCheckUpdate =
-      PrefUtil.getBool('enableAutoCheckUpdate') ?? true;
-  bool get enableAutoCheckUpdate => _enableAutoCheckUpdate;
-  set enableAutoCheckUpdate(bool value) {
-    _enableAutoCheckUpdate = value;
-    notifyListeners();
-    PrefUtil.setBool('enableAutoCheckUpdate', _enableAutoCheckUpdate);
-  }
+  final enableAutoCheckUpdate =
+      (PrefUtil.getBool('enableAutoCheckUpdate') ?? true).obs;
 
-  bool _enableFullScreenDefault =
-      PrefUtil.getBool('enableFullScreenDefault') ?? false;
-  bool get enableFullScreenDefault => _enableFullScreenDefault;
-  set enableFullScreenDefault(bool value) {
-    _enableFullScreenDefault = value;
-    notifyListeners();
-    PrefUtil.setBool('enableFullScreenDefault', _enableFullScreenDefault);
-  }
+  final enableFullScreenDefault =
+      (PrefUtil.getBool('enableFullScreenDefault') ?? false).obs;
 
-  String _bilibiliCustomCookie =
-      PrefUtil.getString('bilibiliCustomCookie') ?? '';
-  String get bilibiliCustomCookie => _bilibiliCustomCookie;
-  set bilibiliCustomCookie(String value) {
-    _bilibiliCustomCookie = value;
-    PrefUtil.setString('bilibiliCustomCookie', _bilibiliCustomCookie);
-    notifyListeners();
-  }
+  final bilibiliCustomCookie =
+      (PrefUtil.getString('bilibiliCustomCookie') ?? '').obs;
 
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
-  String _preferResolution =
-      PrefUtil.getString('preferResolution') ?? resolutions[0];
-  String get preferResolution => _preferResolution;
+  final preferResolution =
+      (PrefUtil.getString('preferResolution') ?? resolutions[0]).obs;
   void changePreferResolution(String name) {
     if (resolutions.indexWhere((e) => e == name) != -1) {
-      _preferResolution = name;
-      notifyListeners();
-      PrefUtil.setString('preferResolution', _preferResolution);
+      preferResolution.value = name;
+      PrefUtil.setString('preferResolution', name);
     }
   }
 
   static const List<String> platforms = ['bilibili', 'douyu', 'huya'];
-  String _preferPlatform = PrefUtil.getString('preferPlatform') ?? platforms[0];
-  String get preferPlatform => _preferPlatform;
+  final preferPlatform =
+      (PrefUtil.getString('preferPlatform') ?? platforms[0]).obs;
   void changePreferPlatform(String name) {
     if (platforms.indexWhere((e) => e == name) != -1) {
-      _preferPlatform = name;
-      notifyListeners();
-      PrefUtil.setString('preferPlatform', _preferPlatform);
+      preferPlatform.value = name;
+      update(['myapp']);
+      PrefUtil.setString('preferPlatform', name);
     }
   }
 
   // Favorite rooms storage
-  List<RoomInfo> _favoriteRooms =
-      (PrefUtil.getStringList('favoriteRooms') ?? [])
-          .map((e) => RoomInfo.fromJson(jsonDecode(e)))
-          .toList();
-  List<RoomInfo> get favoriteRooms => _favoriteRooms;
+  final favoriteRooms = ((PrefUtil.getStringList('favoriteRooms') ?? [])
+          .map((e) => LiveRoom.fromJson(jsonDecode(e)))
+          .toList())
+      .obs;
 
-  bool isFavorite(RoomInfo room) {
-    return _favoriteRooms.contains(room);
+  bool isFavorite(LiveRoom room) {
+    return favoriteRooms.contains(room);
   }
 
-  void saveRooms() {
-    PrefUtil.setStringList('favoriteRooms',
-        _favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList());
-  }
-
-  bool addRoom(RoomInfo room) {
-    if (_favoriteRooms.contains(room)) return false;
-    _favoriteRooms.add(room);
-    saveRooms();
+  bool addRoom(LiveRoom room) {
+    if (favoriteRooms.contains(room)) return false;
+    favoriteRooms.add(room);
     return true;
   }
 
-  bool removeRoom(RoomInfo room) {
-    if (!_favoriteRooms.contains(room)) return false;
-    _favoriteRooms.remove(room);
-    saveRooms();
+  bool removeRoom(LiveRoom room) {
+    if (!favoriteRooms.contains(room)) return false;
+    favoriteRooms.remove(room);
     return true;
   }
 
-  bool updateRoom(RoomInfo room) {
-    int idx = _favoriteRooms.indexOf(room);
+  bool updateRoom(LiveRoom room) {
+    int idx = favoriteRooms.indexOf(room);
     if (idx == -1) return false;
-    _favoriteRooms[idx] = room;
-    saveRooms();
+    favoriteRooms[idx] = room;
     return true;
   }
 
   // Backup & recover storage
-  String _backupDirectory = PrefUtil.getString('backupDirectory') ?? '';
-  String get backupDirectory => _backupDirectory;
-  set backupDirectory(String value) {
-    _backupDirectory = value;
-    notifyListeners();
-  }
+  final backupDirectory = (PrefUtil.getString('backupDirectory') ?? '').obs;
 
   bool backup(File file) {
     try {
@@ -216,19 +189,18 @@ class SettingsProvider with ChangeNotifier {
   }
 
   void fromJson(Map<String, dynamic> json) {
-    _favoriteRooms = (json['favoriteRooms'] as List)
-        .map<RoomInfo>((e) => RoomInfo.fromJson(jsonDecode(e)))
+    favoriteRooms.value = (json['favoriteRooms'] as List)
+        .map<LiveRoom>((e) => LiveRoom.fromJson(jsonDecode(e)))
         .toList();
-    saveRooms();
     changeThemeMode(json['themeMode'] ?? "System");
     changeThemeColor(json['themeColor'] ?? "Crimson");
-    enableDynamicTheme = json['enableDynamicTheme'] ?? false;
-    enableDenseFavorites = json['enableDenseFavorites'] ?? false;
-    enableBackgroundPlay = json['enableBackgroundPlay'] ?? false;
-    enableScreenKeepOn = json['enableScreenKeepOn'] ?? false;
-    enableAutoCheckUpdate = json['enableAutoCheckUpdate'] ?? true;
-    enableFullScreenDefault = json['enableFullScreenDefault'] ?? false;
-    bilibiliCustomCookie = json['bilibiliCustomCookie'] ?? '';
+    enableDynamicTheme.value = json['enableDynamicTheme'] ?? false;
+    enableDenseFavorites.value = json['enableDenseFavorites'] ?? false;
+    enableBackgroundPlay.value = json['enableBackgroundPlay'] ?? false;
+    enableScreenKeepOn.value = json['enableScreenKeepOn'] ?? false;
+    enableAutoCheckUpdate.value = json['enableAutoCheckUpdate'] ?? true;
+    enableFullScreenDefault.value = json['enableFullScreenDefault'] ?? false;
+    bilibiliCustomCookie.value = json['bilibiliCustomCookie'] ?? '';
     changePreferResolution(json['preferResolution'] ?? resolutions[0]);
     changePreferPlatform(json['preferPlatform'] ?? platforms[0]);
   }
@@ -239,7 +211,7 @@ class SettingsProvider with ChangeNotifier {
         favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList();
     json['themeMode'] = themeModeName;
     json['themeColor'] = themeColorName;
-    json['enableDynamicTheme'] = _enableDynamicTheme;
+    json['enableDynamicTheme'] = enableDynamicTheme;
     json['enableDenseFavorites'] = enableDenseFavorites;
     json['enableBackgroundPlay'] = enableBackgroundPlay;
     json['enableScreenKeepOn'] = enableScreenKeepOn;

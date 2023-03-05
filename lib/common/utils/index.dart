@@ -6,4 +6,3 @@ export './version_util.dart';
 export './cache_manager.dart';
 export './snackbar_util.dart';
 export './js_engine.dart';
-export './dart_tars_protocol/tarscodec.dart';

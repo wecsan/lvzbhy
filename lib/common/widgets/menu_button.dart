@@ -1,13 +1,15 @@
+import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
-import 'package:pure_live/pages/index.dart';
+
+import '../../routes/app_pages.dart';
 
 class MenuButton extends StatelessWidget {
   const MenuButton({Key? key}) : super(key: key);
 
   final menuRoutes = const [
-    SettingsPage(),
-    AboutPage(),
-    ContactPage(),
+    AppPages.settings,
+    AppPages.about,
+    AppPages.contact,
   ];
 
   @override
@@ -21,10 +23,7 @@ class MenuButton extends StatelessWidget {
       offset: const Offset(12, 0),
       position: PopupMenuPosition.under,
       icon: const Icon(Icons.menu_rounded),
-      onSelected: (int index) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => menuRoutes[index]),
-      ),
+      onSelected: (int index) => Get.toNamed(menuRoutes[index]),
       itemBuilder: (context) => [
         PopupMenuItem(
           value: 0,
