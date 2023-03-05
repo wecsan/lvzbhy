@@ -13,7 +13,7 @@ void main() async {
   JsEngine.init();
   PrefUtil.prefs = await SharedPreferences.getInstance();
   if (Platform.isWindows) {
-    await DartVLC.initialize();
+    DartVLC.initialize();
     await windowManager.ensureInitialized();
   }
 

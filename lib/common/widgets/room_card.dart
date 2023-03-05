@@ -206,7 +206,7 @@ class CountChip extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               count,
-              style: Theme.of(context).textTheme.caption?.copyWith(
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: dense ? 10 : null,
                   ),

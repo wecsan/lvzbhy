@@ -120,7 +120,7 @@ class _AboutPageState extends State<AboutPage> {
             const SizedBox(height: 20),
             Text(
               VersionUtil.latestUpdateLog,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 10),
           ],

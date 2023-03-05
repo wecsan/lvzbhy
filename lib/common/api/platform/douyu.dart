@@ -16,14 +16,14 @@ class DouyuApi {
   }
 
   static Future<Map?> getHomeJs(String rid) async {
-    String roomUrl = "https://www.douyu.com/" + rid;
+    String roomUrl = "https://www.douyu.com/$rid";
     String response = (await http.get(Uri.parse(roomUrl))).body;
 
     String realRid = response.substring(
         response.indexOf("\$ROOM.room_id =") + ("\$ROOM.room_id =").length);
     realRid = realRid.substring(0, realRid.indexOf(";")).trim();
     if (rid != realRid) {
-      roomUrl = "https://www.douyu.com/" + realRid;
+      roomUrl = "https://www.douyu.com/$realRid";
       response = (await http.get(Uri.parse(roomUrl))).body;
     }
 
@@ -71,11 +71,10 @@ class DouyuApi {
       final homejs = result["homejs"];
       // 执行JS获取签名信息
       final tt = (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
-      final params = (await getSign(rid, tt, homejs)) + "&cdn=ws-h5&rate=0";
+      final params = "${await getSign(rid, tt, homejs)}&cdn=ws-h5&rate=0";
 
       // 发送请求获取直播流信息
-      String requestUrl =
-          "https://www.douyu.com/lapi/live/getH5Play/" + realRid;
+      String requestUrl = "https://www.douyu.com/lapi/live/getH5Play/$realRid";
       final response1 = await http.post(
         Uri.parse(requestUrl),
         body: handleParams(params),

@@ -145,8 +145,10 @@ class _LivePlayPageState extends State<LivePlayPage> {
               ),
               Text(
                 '${widget.room.platform.toUpperCase()} / ${widget.room.area}',
-                style:
-                    Theme.of(context).textTheme.caption?.copyWith(fontSize: 8),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontSize: 8),
               ),
             ],
           ),
@@ -243,7 +245,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
         const SizedBox(width: 4),
         Text(
           readableCount(widget.room.followers),
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ]);
     } else if (widget.room.watching.isNotEmpty) {
@@ -252,7 +254,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
         const SizedBox(width: 4),
         Text(
           readableCount(widget.room.watching),
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ]);
     }
@@ -279,6 +281,7 @@ class _LivePlayPageState extends State<LivePlayPage> {
               itemBuilder: (context) => _streamList[res]!
                   .keys
                   .map((cdn) => PopupMenuItem<String>(
+                        value: _streamList[res]![cdn],
                         child: Text(
                           cdn,
                           style:
@@ -289,7 +292,6 @@ class _LivePlayPageState extends State<LivePlayPage> {
                                         : null,
                                   ),
                         ),
-                        value: _streamList[res]![cdn],
                       ))
                   .toList(),
             ))
@@ -353,7 +355,7 @@ class FavoriteFloatingButton extends StatelessWidget {
               children: [
                 Text(
                   S.of(context).follow,
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Text(
                   room.nick,

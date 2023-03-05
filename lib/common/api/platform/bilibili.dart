@@ -9,15 +9,15 @@ import 'package:http/http.dart' as http;
 class BilibiliApi {
   static Future<dynamic> _getJson(String url) async {
     final cookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
-    Map<String, String> _headers = {
+    Map<String, String> headers = {
       'User-Agent':
           'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
     };
-    if (cookie.isNotEmpty) _headers['cookie'] = cookie;
+    if (cookie.isNotEmpty) headers['cookie'] = cookie;
 
     var resp = await http.get(
       Uri.parse(url),
-      headers: _headers,
+      headers: headers,
     );
     return await jsonDecode(utf8.decode(resp.bodyBytes));
   }

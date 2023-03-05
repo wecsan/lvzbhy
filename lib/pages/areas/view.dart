@@ -48,8 +48,8 @@ class _AreasPageState extends State<AreasPage> with TickerProviderStateMixin {
         ),
         bottom: provider.labels.isEmpty
             ? const PreferredSize(
-                child: SizedBox(height: 0),
                 preferredSize: Size.fromHeight(0),
+                child: SizedBox(height: 0),
               )
             : TabBar(
                 controller: tabController,

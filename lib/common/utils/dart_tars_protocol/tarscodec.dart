@@ -19,6 +19,7 @@ class User extends TarsStruct {
   User({this.user = ''});
 
   @override
+  // ignore: no_leading_underscores_for_local_identifiers
   void readFrom(TarsInputStream _is) {
     user = _is.readString(2, false);
   }

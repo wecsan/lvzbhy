@@ -9,7 +9,7 @@ class LiveDlnaPage extends StatefulWidget {
   const LiveDlnaPage({Key? key, required this.datasource}) : super(key: key);
 
   @override
-  _LiveDlnaPageState createState() => _LiveDlnaPageState();
+  State<LiveDlnaPage> createState() => _LiveDlnaPageState();
 }
 
 class _LiveDlnaPageState extends State<LiveDlnaPage> {

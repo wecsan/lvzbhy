@@ -92,6 +92,7 @@ class BinaryReader {
 
 class TarsInputStream {
   late BinaryReader br;
+  // ignore: no_leading_underscores_for_local_identifiers
   TarsInputStream(Uint8List _ls) {
     br = BinaryReader(_ls);
   }

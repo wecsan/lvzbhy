@@ -43,11 +43,8 @@ class BilibiliDanmaku {
   /// ----- danmaku network stream ------
   Future<void> initLive() async {
     config = await getBServerHost(danmakuId.toString());
-    _channel = IOWebSocketChannel.connect("wss://" +
-        config!.hostServerList![2].host! +
-        ":" +
-        config!.hostServerList![2].wssPort.toString() +
-        "/sub");
+    _channel = IOWebSocketChannel.connect(
+        "wss://${config!.hostServerList![2].host!}:${config!.hostServerList![2].wssPort}/sub");
     login();
     // 设置监听
     _channel!.stream.listen((msg) {
@@ -62,17 +59,8 @@ class BilibiliDanmaku {
   }
 
   void login() {
-    String msg = "{"
-            "\"roomid\":$danmakuId,"
-            "\"uId\":0,"
-            "\"protover\":2,"
-            "\"platform\":\"web\","
-            "\"clientver\":\"1.10.6\","
-            "\"type\":2,"
-            "\"key\":\"" +
-        config!.token! +
-        "\"}";
-    debugPrint(msg);
+    String msg =
+        "{\"roomid\":$danmakuId,\"uId\":0,\"protover\":2,\"platform\":\"web\",\"clientver\":\"1.10.6\",\"type\":2,\"key\":\"${config!.token!}\"}";
     _channel!.sink.add(encode(7, msg: msg));
     heartBeat();
   }

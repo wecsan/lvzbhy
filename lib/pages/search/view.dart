@@ -140,8 +140,8 @@ class OwnerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final followedStyle = Theme.of(context)
         .textTheme
-        .button
-        ?.copyWith(color: Theme.of(context).errorColor);
+        .labelLarge
+        ?.copyWith(color: Theme.of(context).colorScheme.error);
 
     return Card(
       child: ListTile(
@@ -159,7 +159,7 @@ class OwnerCard extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
-          room.platform + " - " + room.area,
+          "${room.platform} - ${room.area}",
           maxLines: 1,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),

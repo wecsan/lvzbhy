@@ -40,11 +40,6 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.hasError.value) {
@@ -61,11 +56,11 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
               ),
               ElevatedButton(
                 onPressed: () => controller.refresh(),
-                child: const Text('重试', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: Colors.white.withOpacity(0.2),
                 ),
+                child: const Text('重试', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
@@ -809,7 +804,7 @@ class ShutdownTimerSetting extends StatelessWidget {
             S.of(context).settings_timedclose_title,
             style: Theme.of(context)
                 .textTheme
-                .caption
+                .bodySmall
                 ?.copyWith(color: Colors.white),
           ),
         ),
@@ -873,7 +868,7 @@ class _VideoFitSettingState extends State<VideoFitSetting> {
             S.of(context).settings_videofit_title,
             style: Theme.of(context)
                 .textTheme
-                .caption
+                .bodySmall
                 ?.copyWith(color: Colors.white),
           ),
         ),
@@ -885,6 +880,11 @@ class _VideoFitSettingState extends State<VideoFitSetting> {
             // borderColor: color,
             selectedColor: Theme.of(context).colorScheme.primary,
             fillColor: color,
+            isSelected: isSelected,
+            onPressed: (index) {
+              setState(() => fitIndex = index);
+              widget.controller.setVideoFit(fitmodes.values.toList()[index]);
+            },
             children: fitmodes.keys
                 .map<Widget>((e) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -895,11 +895,6 @@ class _VideoFitSettingState extends State<VideoFitSetting> {
                           )),
                     ))
                 .toList(),
-            isSelected: isSelected,
-            onPressed: (index) {
-              setState(() => fitIndex = index);
-              widget.controller.setVideoFit(fitmodes.values.toList()[index]);
-            },
           ),
         ),
       ],
@@ -930,7 +925,7 @@ class DanmakuSetting extends StatelessWidget {
                 S.of(context).settings_danmaku_title,
                 style: Theme.of(context)
                     .textTheme
-                    .caption
+                    .bodySmall
                     ?.copyWith(color: Colors.white),
               ),
             ),
@@ -946,7 +941,7 @@ class DanmakuSetting extends StatelessWidget {
                 onChanged: (val) => controller.danmakuArea.value = val,
               ),
               trailing: Text(
-                (controller.danmakuArea.value * 100).toInt().toString() + '%',
+                '${(controller.danmakuArea.value * 100).toInt()}%',
                 style: digit,
               ),
             ),
@@ -963,8 +958,7 @@ class DanmakuSetting extends StatelessWidget {
                 onChanged: (val) => controller.danmakuOpacity.value = val,
               ),
               trailing: Text(
-                (controller.danmakuOpacity.value * 100).toInt().toString() +
-                    '%',
+                '${(controller.danmakuOpacity.value * 100).toInt()}%',
                 style: digit,
               ),
             ),

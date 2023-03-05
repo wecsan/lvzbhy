@@ -32,9 +32,10 @@ class MyTheme {
     return ThemeData(
       useMaterial3: true,
       colorSchemeSeed: primaryColor,
-      colorScheme: colorScheme,
+      colorScheme: colorScheme?.copyWith(
+        error: const Color.fromARGB(255, 255, 99, 71),
+      ),
       brightness: Brightness.dark,
-      errorColor: const Color.fromARGB(255, 255, 99, 71),
       fontFamily: fontFamily,
     );
   }

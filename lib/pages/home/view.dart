@@ -62,7 +62,7 @@ class _HomePageRouterState extends State<HomePageRouter>
               child: NewVersionDialog(entry: entry),
             ),
           );
-          Overlay.of(context)?.insert(entry);
+          Overlay.of(context).insert(entry);
         }
       },
     );

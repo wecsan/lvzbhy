@@ -117,7 +117,7 @@ class VideoController with ChangeNotifier {
 
   void initController() {
     if (Platform.isWindows || Platform.isLinux) {
-      desktopController = Player(id: 100, registerTexture: true);
+      desktopController = Player(id: 100);
       setDataSource(datasource);
     } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController = BetterPlayerController(

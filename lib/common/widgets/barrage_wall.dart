@@ -125,14 +125,14 @@ class _BarrageState extends State<BarrageWall> with TickerProviderStateMixin {
 
   /// null means no available channels exists
   int? _nextChannel() {
-    final _randomSeed = _totalChannels! - 1;
+    final randomSeed = _totalChannels! - 1;
 
     if (_usedChannel ^ _channelMask! == 0) {
       return null;
     }
 
     var times = 1;
-    var channel = _random.nextInt(_randomSeed);
+    var channel = _random.nextInt(randomSeed);
     var channelCode = 1 << channel;
 
     while (
@@ -144,7 +144,7 @@ class _BarrageState extends State<BarrageWall> with TickerProviderStateMixin {
       /// return random channel if no channels available and massive mode is enabled
       if (times > _totalChannels!) {
         if (widget.massiveMode == true) {
-          return _random.nextInt(_randomSeed);
+          return _random.nextInt(randomSeed);
         }
         return null;
       }

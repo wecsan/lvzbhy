@@ -92,7 +92,7 @@ class DanmakuListViewState extends State<DanmakuListView>
                           text: "${danmaku.name}: ",
                           style: Theme.of(context)
                               .textTheme
-                              .caption
+                              .bodySmall
                               ?.copyWith(fontSize: 13.5),
                         ),
                         TextSpan(
