@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pure_live/common/core/sites.dart';
+import 'package:pure_live/core/sites.dart';
 import 'package:pure_live/common/widgets/index.dart';
 import 'package:pure_live/modules/popular/popular_controller.dart';
 
@@ -22,13 +22,10 @@ class PopularPage extends GetView<PopularController> {
         title: TabBar(
           controller: controller.tabController,
           isScrollable: true,
-          labelColor: Theme.of(context).colorScheme.onBackground,
           labelStyle:
               const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          unselectedLabelColor: Theme.of(context).disabledColor,
           labelPadding: const EdgeInsets.symmetric(horizontal: 12),
           indicatorSize: TabBarIndicatorSize.label,
-          indicatorColor: Theme.of(context).colorScheme.primary,
           tabs: Sites.supportSites.map((e) => Tab(text: e.name)).toList(),
         ),
       ),

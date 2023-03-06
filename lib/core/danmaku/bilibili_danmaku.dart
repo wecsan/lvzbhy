@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:pure_live/common/core/interface/live_danmaku.dart';
+import 'package:pure_live/core/interface/live_danmaku.dart';
 import 'package:pure_live/common/models/index.dart';
 
 import '../common/binary_writer.dart';

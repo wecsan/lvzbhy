@@ -100,13 +100,12 @@ class VideoController with ChangeNotifier {
   }) {
     videoFit.value = fitMode;
     if (allowScreenKeepOn) Wakelock.enable();
-    initController();
-    initStateListener();
-    initDanmakuListener();
+    initVideoController();
+    initDanmaku();
     initBattery();
   }
 
-  void initController() {
+  void initVideoController() {
     if (Platform.isWindows || Platform.isLinux) {
       desktopController = Player(id: 100);
       setDataSource(datasource);
@@ -135,9 +134,7 @@ class VideoController with ChangeNotifier {
     } else {
       throw UnimplementedError('Unsupported Platform');
     }
-  }
 
-  void initStateListener() {
     if (Platform.isWindows || Platform.isLinux) {
       desktopController?.playbackStream.listen(desktopStateListener);
     } else if (Platform.isAndroid || Platform.isIOS) {
@@ -168,39 +165,42 @@ class VideoController with ChangeNotifier {
   final danmakuList = [].obs;
   final GlobalKey danmakuKey = GlobalKey();
   final hideDanmaku = false.obs;
-  final danmakuArea = 0.5.obs;
+  final danmakuArea = 1.0.obs;
   final danmakuSpeed = 8.0.obs;
   final danmakuFontSize = 16.0.obs;
   final danmakuFontBorder = 0.5.obs;
   final danmakuOpacity = 1.0.obs;
-  final danmakuAmount = 100.obs;
 
-  void initDanmakuListener() {
+  void initDanmaku() {
     hideDanmaku.value = PrefUtil.getBool('hideDanmaku') ?? false;
     hideDanmaku.listen((data) {
       PrefUtil.setBool('hideDanmaku', data);
     });
-    danmakuArea.value = PrefUtil.getDouble('danmakuArea') ?? 0.5;
+    danmakuArea.value = PrefUtil.getDouble('danmakuArea') ?? 1.0;
     danmakuArea.listen((data) {
       PrefUtil.setDouble('danmakuArea', data);
+      updateDanmakuOption();
     });
     danmakuSpeed.value = PrefUtil.getDouble('danmakuSpeed') ?? 8;
     danmakuSpeed.listen((data) {
       PrefUtil.setDouble('danmakuSpeed', data);
+      updateDanmakuOption();
     });
     danmakuFontSize.value = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     danmakuFontSize.listen((data) {
       PrefUtil.setDouble('danmakuFontSize', data);
+      updateDanmakuOption();
     });
     danmakuFontBorder.value = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
     danmakuFontBorder.listen((data) {
       PrefUtil.setDouble('danmakuFontBorder', data);
+      updateDanmakuOption();
     });
     danmakuOpacity.value = PrefUtil.getDouble('danmakuOpacity') ?? 1.0;
     danmakuOpacity.listen((data) {
       PrefUtil.setDouble('danmakuOpacity', data);
+      updateDanmakuOption();
     });
-    danmakuAmount.value = PrefUtil.getInt('danmakuAmount') ?? 100;
 
     danmakuView ??= DanmakuView(
       key: danmakuKey,
@@ -212,6 +212,15 @@ class VideoController with ChangeNotifier {
         opacity: danmakuOpacity.value,
       ),
     );
+  }
+
+  void updateDanmakuOption() {
+    danmakuController?.updateOption(DanmakuOption(
+      fontSize: danmakuFontSize.value,
+      area: danmakuArea.value,
+      duration: danmakuSpeed.value,
+      opacity: danmakuOpacity.value,
+    ));
   }
 
   void sendDanmaku(LiveMessage msg) {

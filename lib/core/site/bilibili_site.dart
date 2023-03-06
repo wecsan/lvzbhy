@@ -2,8 +2,8 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'package:pure_live/common/core/danmaku/bilibili_danmaku.dart';
-import 'package:pure_live/common/core/interface/live_danmaku.dart';
+import 'package:pure_live/core/danmaku/bilibili_danmaku.dart';
+import 'package:pure_live/core/interface/live_danmaku.dart';
 import 'package:pure_live/common/models/index.dart';
 import 'package:pure_live/common/utils/index.dart';
 import 'package:http/http.dart' as http;
@@ -139,6 +139,7 @@ class BilibiliSite implements LiveSite {
       if (response['code'] == 0) {
         Map data = response['data'];
         room.platform = 'bilibili';
+        room.userId = room.roomId;
         room.title = data['room_info']?['title'] ?? '';
         room.nick = data['anchor_info']?['base_info']?['uname'] ?? '';
         room.cover = data['room_info']?['cover'] ?? '';
@@ -173,6 +174,7 @@ class BilibiliSite implements LiveSite {
         for (var roomInfo in roomList) {
           var room = LiveRoom(roomInfo['roomid'].toString());
           room.platform = 'bilibili';
+          room.userId = room.roomId;
           room.nick = roomInfo['uname'] ?? '';
           room.title = roomInfo['title'] ?? '';
           room.cover = roomInfo['user_cover'];
@@ -239,6 +241,7 @@ class BilibiliSite implements LiveSite {
         for (var roomInfo in roomInfoList) {
           var room = LiveRoom(roomInfo['roomid'].toString());
           room.platform = 'bilibili';
+          room.userId = room.roomId;
           room.nick = roomInfo['uname'] ?? '';
           room.title = roomInfo['title'] ?? '';
           room.cover = roomInfo['cover'] ?? '';
@@ -271,6 +274,7 @@ class BilibiliSite implements LiveSite {
         for (Map ownerInfo in ownerList) {
           LiveRoom owner = LiveRoom(ownerInfo['roomid'].toString());
           owner.platform = 'bilibili';
+          owner.userId = owner.roomId;
           final nick = ownerInfo['uname'] ?? '';
           owner.nick = nick
               .replaceAll('<em class="keyword">', '')

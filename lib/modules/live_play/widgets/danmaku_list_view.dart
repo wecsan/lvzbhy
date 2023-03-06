@@ -17,6 +17,17 @@ class DanmakuListViewState extends State<DanmakuListView>
   final ScrollController _scrollController = ScrollController();
   bool _scrollHappen = false;
 
+  LivePlayController get controller => Get.find<LivePlayController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.messages.listen((p0) {
+      _scrollToBottom();
+      setState(() {});
+    });
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -46,55 +57,48 @@ class DanmakuListViewState extends State<DanmakuListView>
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-
     super.build(context);
     return Stack(
       children: [
         NotificationListener<UserScrollNotification>(
           onNotification: _userScrollAction,
-          child: GetBuilder<LivePlayController>(
-            builder: (controller) {
-              return ListView.builder(
-                controller: _scrollController,
-                itemCount: controller.messages.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final danmaku = controller.messages[index];
-                  return Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onBackground
-                            .withOpacity(0.04),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text.rich(
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: controller.messages.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final danmaku = controller.messages[index];
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withOpacity(0.04),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
                         TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "${danmaku.userName}: ",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(fontSize: 13.5),
-                            ),
-                            TextSpan(
-                              text: danmaku.message,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ],
+                          text: "${danmaku.userName}: ",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
-                      ),
+                        TextSpan(
+                          text: danmaku.message,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               );
             },
           ),

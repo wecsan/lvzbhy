@@ -55,7 +55,7 @@ class SettingsService extends GetxController {
   void changeThemeMode(String mode) {
     themeModeName.value = mode;
     PrefUtil.setString('themeMode', mode);
-    update(['myapp']);
+    Get.changeThemeMode(themeMode);
   }
 
   static Map<String, Color> themeColors = {
@@ -76,7 +76,6 @@ class SettingsService extends GetxController {
   void changeThemeColor(String color) {
     themeColorName.value = color;
     PrefUtil.setString('themeColor', color);
-    update(['myapp']);
   }
 
   static Map<String, Locale> languages = {
@@ -88,7 +87,7 @@ class SettingsService extends GetxController {
   void changeLanguage(String value) {
     languageName.value = value;
     PrefUtil.setString('language', value);
-    update(['myapp']);
+    Get.updateLocale(language);
   }
 
   final enableDynamicTheme =
@@ -209,17 +208,17 @@ class SettingsService extends GetxController {
     Map<String, dynamic> json = {};
     json['favoriteRooms'] =
         favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList();
-    json['themeMode'] = themeModeName;
-    json['themeColor'] = themeColorName;
-    json['enableDynamicTheme'] = enableDynamicTheme;
-    json['enableDenseFavorites'] = enableDenseFavorites;
-    json['enableBackgroundPlay'] = enableBackgroundPlay;
-    json['enableScreenKeepOn'] = enableScreenKeepOn;
-    json['enableAutoCheckUpdate'] = enableAutoCheckUpdate;
-    json['enableFullScreenDefault'] = enableFullScreenDefault;
-    json['bilibiliCustomCookie'] = bilibiliCustomCookie;
-    json['preferResolution'] = preferResolution;
-    json['preferPlatform'] = preferPlatform;
+    json['themeMode'] = themeModeName.value;
+    json['themeColor'] = themeColorName.value;
+    json['enableDynamicTheme'] = enableDynamicTheme.value;
+    json['enableDenseFavorites'] = enableDenseFavorites.value;
+    json['enableBackgroundPlay'] = enableBackgroundPlay.value;
+    json['enableScreenKeepOn'] = enableScreenKeepOn.value;
+    json['enableAutoCheckUpdate'] = enableAutoCheckUpdate.value;
+    json['enableFullScreenDefault'] = enableFullScreenDefault.value;
+    json['bilibiliCustomCookie'] = bilibiliCustomCookie.value;
+    json['preferResolution'] = preferResolution.value;
+    json['preferPlatform'] = preferPlatform.value;
     return json;
   }
 }

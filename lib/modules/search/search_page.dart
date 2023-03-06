@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pure_live/common/core/sites.dart';
+import 'package:pure_live/core/sites.dart';
 import 'package:pure_live/common/l10n/generated/l10n.dart';
 import 'package:pure_live/modules/search/search_controller.dart';
 

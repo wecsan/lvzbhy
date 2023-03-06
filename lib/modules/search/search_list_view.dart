@@ -48,13 +48,10 @@ class _OwnerCardState extends State<OwnerCard> {
     AppPages.toLivePlay(widget.room);
   }
 
+  late bool isFavorite = settings.isFavorite(widget.room);
+
   @override
   Widget build(BuildContext context) {
-    final followedStyle = Theme.of(context)
-        .textTheme
-        .labelLarge
-        ?.copyWith(color: Theme.of(context).colorScheme.error);
-
     return Card(
       child: ListTile(
         onTap: () => _onTap(context),
@@ -75,15 +72,23 @@ class _OwnerCardState extends State<OwnerCard> {
           maxLines: 1,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
-        trailing: settings.isFavorite(widget.room)
-            ? ElevatedButton(
-                onPressed: () => settings.removeRoom(widget.room),
-                child: Text(S.of(context).followed, style: followedStyle),
-              )
-            : ElevatedButton(
-                onPressed: () => settings.addRoom(widget.room),
-                child: Text(S.of(context).follow),
-              ),
+        trailing: FilledButton.tonal(
+          onPressed: () {
+            setState(() => isFavorite = !isFavorite);
+            if (isFavorite) {
+              settings.addRoom(widget.room);
+            } else {
+              settings.removeRoom(widget.room);
+            }
+          },
+          style: isFavorite
+              ? null
+              : FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.surface),
+          child: Text(
+            isFavorite ? S.of(context).unfollow : S.of(context).follow,
+          ),
+        ),
       ),
     );
   }

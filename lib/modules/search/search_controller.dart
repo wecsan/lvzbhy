@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../../common/core/sites.dart';
+import '../../core/sites.dart';
 import 'search_list_controller.dart';
 
 class SearchController extends GetxController

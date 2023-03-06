@@ -63,7 +63,9 @@ class _BackupPageState extends State<BackupPage> {
       }
     }
 
-    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath(
+      initialDirectory: backupDirectory.isEmpty ? '/' : backupDirectory,
+    );
     if (selectedDirectory == null) return;
 
     final dateStr = formatDate(

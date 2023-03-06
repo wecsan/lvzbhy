@@ -21,13 +21,10 @@ class AreasPage extends GetView<AreasController> {
         title: TabBar(
           controller: controller.tabController,
           isScrollable: true,
-          labelColor: Theme.of(context).colorScheme.onBackground,
           labelStyle:
               const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          unselectedLabelColor: Theme.of(context).disabledColor,
           labelPadding: const EdgeInsets.symmetric(horizontal: 12),
           indicatorSize: TabBarIndicatorSize.label,
-          indicatorColor: Theme.of(context).colorScheme.primary,
           tabs: Sites.supportSites.map((e) => Tab(text: e.name)).toList(),
         ),
       ),
@@ -75,15 +72,15 @@ class _AreaGridViewState extends State<AreaGridView>
         TabBar(
           controller: tabController,
           isScrollable: true,
-          labelColor: Theme.of(context).colorScheme.onBackground,
-          unselectedLabelColor: Theme.of(context).disabledColor,
           indicatorSize: TabBarIndicatorSize.label,
-          indicatorColor: Theme.of(context).colorScheme.primary,
           tabs: widget.labels.map<Widget>((e) => Tab(text: e)).toList(),
         ),
-        TabBarView(
-          controller: tabController,
-          children: widget.areas.map<Widget>((e) => buildAreasView(e)).toList(),
+        Expanded(
+          child: TabBarView(
+            controller: tabController,
+            children:
+                widget.areas.map<Widget>((e) => buildAreasView(e)).toList(),
+          ),
         ),
       ],
     );

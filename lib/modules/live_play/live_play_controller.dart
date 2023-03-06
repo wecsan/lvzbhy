@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:pure_live/common/core/interface/live_danmaku.dart';
 import 'package:pure_live/common/index.dart';
+import 'package:pure_live/core/interface/live_danmaku.dart';
 
 import 'widgets/video_player/video_controller.dart';
 
@@ -19,7 +19,7 @@ class LivePlayController extends GetxController {
   final messages = <LiveMessage>[].obs;
 
   // 控制唯一子组件
-  VideoController? controller;
+  VideoController? videoController;
   final playerKey = GlobalKey();
   final danmakuViewKey = GlobalKey();
 
@@ -29,11 +29,15 @@ class LivePlayController extends GetxController {
   String selectedStreamUrl = '';
 
   @override
+  void onClose() {
+    super.onClose();
+    videoController?.dispose();
+    liveDanmaku.stop();
+  }
+
+  @override
   void onInit() {
     super.onInit();
-    liveDanmaku.onMessage = (msg) {
-      messages.add(msg);
-    };
     site.liveSite.getLiveStream(room).then((value) {
       liveStream = value;
       setPreferResolution();
@@ -41,7 +45,7 @@ class LivePlayController extends GetxController {
       // add delay to avoid hero animation lag
       int delay = (Platform.isWindows || Platform.isLinux) ? 500 : 0;
       Timer(Duration(milliseconds: delay), () {
-        controller = VideoController(
+        videoController = VideoController(
           playerKey: playerKey,
           room: room,
           datasourceType: 'network',
@@ -54,12 +58,21 @@ class LivePlayController extends GetxController {
         success.value = true;
       });
     });
+
+    // start danmaku server
+    liveDanmaku.start(int.parse(
+      room.userId.isEmpty ? room.roomId : room.userId,
+    ));
+    liveDanmaku.onMessage = (msg) {
+      messages.add(msg);
+      videoController?.sendDanmaku(msg);
+    };
   }
 
   void setResolution(String name, String url) {
     selectedResolution = name;
     selectedStreamUrl = url;
-    controller?.setDataSource(selectedStreamUrl);
+    videoController?.setDataSource(selectedStreamUrl);
     update();
   }
 

@@ -8,15 +8,9 @@ class SearchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          onPressed: () => Get.toNamed(AppPages.search),
-          icon: const Icon(CustomIcons.search),
-        ),
-        const SizedBox(width: 4),
-      ],
+    return IconButton(
+      onPressed: () => Get.toNamed(AppPages.search),
+      icon: const Icon(CustomIcons.search),
     );
   }
 }

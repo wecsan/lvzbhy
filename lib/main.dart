@@ -22,7 +22,7 @@ void main() async {
   }
   initService();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 void initService() {
@@ -33,43 +33,43 @@ void initService() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final settings = Get.find<SettingsService>();
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SettingsService>(
-      id: 'myapp',
-      builder: (settings) {
-        return DynamicColorBuilder(
-          builder: (lightDynamic, darkDynamic) {
-            // 主题颜色设定/Monet取色
-            var lightTheme =
-                MyTheme(primaryColor: settings.themeColor).lightThemeData;
-            var darkTheme =
-                MyTheme(primaryColor: settings.themeColor).darkThemeData;
-            if (settings.enableDynamicTheme.value) {
-              lightTheme = MyTheme(colorScheme: lightDynamic).lightThemeData;
-              darkTheme = MyTheme(colorScheme: darkDynamic).darkThemeData;
-            }
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        return Obx(() {
+          var themeColor =
+              SettingsService.themeColors[settings.themeColorName]!;
+          // 主题颜色设定/Monet取色
+          var lightTheme = MyTheme(primaryColor: themeColor).lightThemeData;
+          var darkTheme = MyTheme(primaryColor: themeColor).darkThemeData;
+          if (settings.enableDynamicTheme.value) {
+            lightTheme = MyTheme(colorScheme: lightDynamic).lightThemeData;
+            darkTheme = MyTheme(colorScheme: darkDynamic).darkThemeData;
+          }
 
-            return GetMaterialApp(
-              title: 'PureLive',
-              themeMode: Get.find<SettingsService>().themeMode,
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              locale: Get.find<SettingsService>().language,
-              localizationsDelegates: const [
-                S.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: S.delegate.supportedLocales,
-              initialRoute: AppPages.initial,
-              getPages: AppPages.routes,
-            );
-          },
-        );
+          return GetMaterialApp(
+            title: 'PureLive',
+            themeMode:
+                SettingsService.themeModes[settings.themeModeName.value]!,
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            locale: SettingsService.languages[settings.languageName.value]!,
+            supportedLocales: S.delegate.supportedLocales,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            initialRoute: AppPages.initial,
+            getPages: AppPages.routes,
+          );
+        });
       },
     );
   }

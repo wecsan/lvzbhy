@@ -13,10 +13,7 @@ class FavoriteController extends GetxController
   late RefreshController refreshController = RefreshController();
 
   FavoriteController() {
-    tabController = TabController(
-      length: Sites.supportSites.length,
-      vsync: this,
-    );
+    tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -27,11 +24,23 @@ class FavoriteController extends GetxController
         .where((room) => room.liveStatus == LiveStatus.live));
     offlineRooms.addAll(settings.favoriteRooms
         .where((room) => room.liveStatus != LiveStatus.live));
+
     // 刷新数据
     onRefresh();
     // 定时自动刷新
     Timer.periodic(Duration(minutes: settings.autoRefreshTime.value), (timer) {
       onRefresh();
+    });
+
+    // 监听settings rooms变化
+    settings.favoriteRooms.listen((rooms) {
+      onlineRooms.clear();
+      onlineRooms.addAll(settings.favoriteRooms
+          .where((room) => room.liveStatus == LiveStatus.live));
+
+      offlineRooms.clear();
+      offlineRooms.addAll(settings.favoriteRooms
+          .where((room) => room.liveStatus != LiveStatus.live));
     });
   }
 

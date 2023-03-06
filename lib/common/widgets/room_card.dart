@@ -14,6 +14,10 @@ class RoomCard extends StatelessWidget {
   final LiveRoom room;
   final bool dense;
 
+  void onTap(BuildContext context) async {
+    AppPages.toLivePlay(room);
+  }
+
   void onLongPress(BuildContext context) {
     Get.dialog(
       AlertDialog(
@@ -27,24 +31,9 @@ class RoomCard extends StatelessWidget {
                 room.liveStatus.name,
               ),
         ),
-        actions: [
-          GetBuilder<SettingsService>(
-            builder: (settings) {
-              return ElevatedButton(
-                onPressed: () => settings.removeRoom(room),
-                child: Text(settings.isFavorite(room)
-                    ? S.of(context).unfollow
-                    : S.of(context).follow),
-              );
-            },
-          ),
-        ],
+        actions: [FollowButton(room: room)],
       ),
     );
-  }
-
-  void onTap(BuildContext context) async {
-    AppPages.toLivePlay(room);
   }
 
   @override
@@ -165,6 +154,40 @@ class RoomCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class FollowButton extends StatefulWidget {
+  const FollowButton({
+    Key? key,
+    required this.room,
+  }) : super(key: key);
+
+  final LiveRoom room;
+
+  @override
+  State<FollowButton> createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<FollowButton> {
+  final settings = Get.find<SettingsService>();
+
+  late bool isFavorite = settings.isFavorite(widget.room);
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.tonal(
+      onPressed: () {
+        setState(() => isFavorite = !isFavorite);
+        if (isFavorite) {
+          settings.addRoom(widget.room);
+        } else {
+          settings.removeRoom(widget.room);
+        }
+      },
+      style: ElevatedButton.styleFrom(),
+      child: Text(isFavorite ? S.of(context).unfollow : S.of(context).follow),
     );
   }
 }

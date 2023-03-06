@@ -41,20 +41,22 @@ class AreasRoomPage extends GetView<AreaRoomsController> {
           controller: controller.refreshController,
           onRefresh: controller.onRefresh,
           onLoading: controller.onLoading,
-          child: controller.list.isNotEmpty
-              ? MasonryGridView.count(
-                  padding: const EdgeInsets.all(5),
-                  controller: controller.scrollController,
-                  crossAxisCount: crossAxisCount,
-                  itemCount: controller.list.length,
-                  itemBuilder: (context, index) =>
-                      RoomCard(room: controller.list[index], dense: true),
-                )
-              : EmptyView(
-                  icon: Icons.live_tv_rounded,
-                  title: S.of(context).empty_areas_room_title,
-                  subtitle: S.of(context).empty_areas_room_subtitle,
-                ),
+          child: Obx(
+            () => controller.list.isNotEmpty
+                ? MasonryGridView.count(
+                    padding: const EdgeInsets.all(5),
+                    controller: controller.scrollController,
+                    crossAxisCount: crossAxisCount,
+                    itemCount: controller.list.length,
+                    itemBuilder: (context, index) =>
+                        RoomCard(room: controller.list[index], dense: true),
+                  )
+                : EmptyView(
+                    icon: Icons.live_tv_rounded,
+                    title: S.of(context).empty_areas_room_title,
+                    subtitle: S.of(context).empty_areas_room_subtitle,
+                  ),
+          ),
         ),
       ),
     );

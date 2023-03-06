@@ -10,7 +10,7 @@ class AreaRoomsController extends BaseListController<LiveRoom> {
   Future<List<LiveRoom>> getData(int page, int pageSize) async {
     return await Sites.of(area.platform)
         .liveSite
-        .getRecommend(page: page, size: pageSize);
+        .getAreaRooms(area, page: page, size: pageSize);
   }
 
   @override

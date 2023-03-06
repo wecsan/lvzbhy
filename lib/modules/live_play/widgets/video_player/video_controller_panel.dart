@@ -317,15 +317,15 @@ class DanmakuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      width: videoWidth,
-      height: videoHeight * controller.danmakuArea.value,
-      child: ClipRect(
-        clipper: _DanmakuCliper(),
-        child: controller.danmakuView ?? Container(),
-      ),
-    );
+    return Obx(() => Positioned(
+          top: controller.hideDanmaku.value ? -videoHeight : 0,
+          width: videoWidth,
+          height: videoHeight * controller.danmakuArea.value,
+          child: ClipRect(
+            clipper: _DanmakuCliper(),
+            child: controller.danmakuView ?? Container(),
+          ),
+        ));
   }
 }
 

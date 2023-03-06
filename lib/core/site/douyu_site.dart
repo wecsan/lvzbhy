@@ -128,6 +128,7 @@ class DouyuSite implements LiveSite {
           'https://open.douyucdn.cn/api/RoomApi/room/${room.roomId}');
       if (body['error'] == 0) {
         Map data = body['data'];
+        room.userId = room.roomId;
         room.nick = data['owner_name'] ?? '';
         room.title = data['room_name'] ?? '';
         room.avatar = data['avatar'] ?? '';
@@ -166,6 +167,7 @@ class DouyuSite implements LiveSite {
           for (var roomInfo in roomInfoList) {
             LiveRoom room = LiveRoom(roomInfo["rid"].toString());
             room.platform = 'douyu';
+            room.userId = room.roomId;
             room.nick = roomInfo["nickname"] ?? '';
             room.title = roomInfo["roomName"] ?? '';
             room.cover = roomInfo["roomSrc"] ?? '';
@@ -256,6 +258,7 @@ class DouyuSite implements LiveSite {
           for (var roomInfo in roomInfoList) {
             LiveRoom room = LiveRoom(roomInfo["rid"].toString());
             room.platform = 'douyu';
+            room.userId = room.roomId;
             room.nick = roomInfo["nickname"] ?? '';
             room.title = roomInfo["roomName"] ?? '';
             room.cover = roomInfo["roomSrc"] ?? '';

@@ -61,12 +61,14 @@ class LivePlayPage extends GetView<LivePlayController> {
             ? Row(children: <Widget>[
                 Flexible(
                   flex: 5,
-                  child: _buildVideoPlayer(width: screenWidth / 8.0 * 5.0),
+                  child: VideoPlayerHero(
+                    width: screenWidth / 8.0 * 5.0,
+                  ),
                 ),
                 Flexible(
                   flex: 3,
                   child: Column(children: [
-                    _buildResolutions(),
+                    const ResolutionsRow(),
                     const Divider(height: 1),
                     Expanded(
                       child: DanmakuListView(
@@ -79,8 +81,8 @@ class LivePlayPage extends GetView<LivePlayController> {
               ])
             : Column(
                 children: <Widget>[
-                  _buildVideoPlayer(width: screenWidth),
-                  _buildResolutions(),
+                  VideoPlayerHero(width: screenWidth),
+                  const ResolutionsRow(),
                   const Divider(height: 1),
                   Expanded(
                     child: DanmakuListView(
@@ -95,41 +97,58 @@ class LivePlayPage extends GetView<LivePlayController> {
     );
   }
 
-  Widget _buildVideoPlayer({required double width}) {
+  void showDlnaCastDialog() {
+    Get.dialog(LiveDlnaPage(datasource: controller.selectedStreamUrl));
+  }
+}
+
+class VideoPlayerHero extends GetWidget<LivePlayController> {
+  const VideoPlayerHero({Key? key, required this.width}) : super(key: key);
+
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
     return Hero(
       tag: controller.room.roomId,
       child: AspectRatio(
         aspectRatio: 16 / 9,
         child: Container(
           color: Colors.black,
-          child: controller.success.value
-              ? Card(
-                  elevation: 0,
-                  margin: const EdgeInsets.all(0),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero),
-                  clipBehavior: Clip.antiAlias,
-                  color: Get.theme.focusColor,
-                  child: CachedNetworkImage(
-                    imageUrl: controller.room.cover,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, error, stackTrace) => const Center(
-                      child: Icon(Icons.live_tv_rounded, size: 48),
+          child: Obx(
+            () => controller.success.value
+                ? VideoPlayer(
+                    key: controller.playerKey,
+                    controller: controller.videoController!,
+                    width: width,
+                    height: width / 16.0 * 9.0,
+                  )
+                : Card(
+                    elevation: 0,
+                    margin: const EdgeInsets.all(0),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero),
+                    clipBehavior: Clip.antiAlias,
+                    color: Get.theme.focusColor,
+                    child: CachedNetworkImage(
+                      imageUrl: controller.room.cover,
+                      fit: BoxFit.fill,
+                      errorWidget: (context, error, stackTrace) => const Center(
+                        child: Icon(Icons.live_tv_rounded, size: 48),
+                      ),
                     ),
                   ),
-                )
-              : VideoPlayer(
-                  key: controller.playerKey,
-                  controller: controller.controller!,
-                  width: width,
-                  height: width / 16.0 * 9.0,
-                ),
+          ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildResolutions() {
+class ResolutionsRow extends GetWidget<LivePlayController> {
+  const ResolutionsRow({Key? key}) : super(key: key);
+
+  Widget buildInfoCount() {
     // controller.room watching or followers
     Widget info = Container();
     if (controller.room.followers.isNotEmpty) {
@@ -151,9 +170,11 @@ class LivePlayPage extends GetView<LivePlayController> {
         ),
       ]);
     }
+    return info;
+  }
 
-    // resolution popmenu buttons
-    final resButtons = controller.liveStream.keys
+  List<Widget> buildResultionsList() {
+    return controller.liveStream.keys
         .map<Widget>((res) => PopupMenuButton(
               tooltip: res,
               color: Get.theme.colorScheme.surfaceVariant,
@@ -188,24 +209,30 @@ class LivePlayPage extends GetView<LivePlayController> {
                   .toList(),
             ))
         .toList();
+  }
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      leading: Padding(padding: const EdgeInsets.all(8), child: info),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: resButtons,
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => Container(
+        height: 55,
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: buildInfoCount(),
+            ),
+            const Spacer(),
+            ...controller.success.value ? buildResultionsList() : [],
+          ],
+        ),
       ),
     );
   }
-
-  void showDlnaCastDialog() {
-    Get.dialog(LiveDlnaPage(datasource: controller.selectedStreamUrl));
-  }
 }
 
-class FavoriteFloatingButton extends StatelessWidget {
+class FavoriteFloatingButton extends StatefulWidget {
   const FavoriteFloatingButton({
     Key? key,
     required this.room,
@@ -214,17 +241,29 @@ class FavoriteFloatingButton extends StatelessWidget {
   final LiveRoom room;
 
   @override
+  State<FavoriteFloatingButton> createState() => _FavoriteFloatingButtonState();
+}
+
+class _FavoriteFloatingButtonState extends State<FavoriteFloatingButton> {
+  final settings = Get.find<SettingsService>();
+
+  late bool isFavorite = settings.isFavorite(widget.room);
+
+  @override
   Widget build(BuildContext context) {
-    final settings = Get.find<SettingsService>();
-    return settings.isFavorite(room)
+    return isFavorite
         ? FloatingActionButton(
             elevation: 2,
             backgroundColor: Theme.of(context).cardColor,
             tooltip: S.of(context).unfollow,
-            onPressed: () => settings.removeRoom(room),
+            onPressed: () {
+              setState(() => isFavorite = !isFavorite);
+              settings.removeRoom(widget.room);
+            },
             child: CircleAvatar(
-              foregroundImage:
-                  (room.avatar == '') ? null : NetworkImage(room.avatar),
+              foregroundImage: (widget.room.avatar == '')
+                  ? null
+                  : NetworkImage(widget.room.avatar),
               radius: 18,
               backgroundColor: Theme.of(context).disabledColor,
             ),
@@ -232,10 +271,14 @@ class FavoriteFloatingButton extends StatelessWidget {
         : FloatingActionButton.extended(
             elevation: 2,
             backgroundColor: Theme.of(context).cardColor,
-            onPressed: () => settings.addRoom(room),
+            onPressed: () {
+              setState(() => isFavorite = !isFavorite);
+              settings.addRoom(widget.room);
+            },
             icon: CircleAvatar(
-              foregroundImage:
-                  (room.avatar == '') ? null : NetworkImage(room.avatar),
+              foregroundImage: (widget.room.avatar == '')
+                  ? null
+                  : NetworkImage(widget.room.avatar),
               radius: 18,
               backgroundColor: Theme.of(context).disabledColor,
             ),
@@ -247,7 +290,7 @@ class FavoriteFloatingButton extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Text(
-                  room.nick,
+                  widget.room.nick,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

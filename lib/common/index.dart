@@ -1,6 +1,6 @@
 library common;
 
-export 'core/index.dart';
+export '../core/index.dart';
 export 'l10n/generated/l10n.dart';
 export 'models/index.dart';
 export 'services/index.dart';

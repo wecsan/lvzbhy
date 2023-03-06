@@ -16,7 +16,6 @@ class MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       tooltip: 'menu',
-      color: Theme.of(context).colorScheme.surfaceVariant,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -37,7 +36,7 @@ class MenuButton extends StatelessWidget {
           value: 1,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: MenuListTile(
-            leading: const Icon(Icons.info_outline_rounded),
+            leading: const Icon(Icons.info_rounded),
             text: S.of(context).about,
           ),
         ),
