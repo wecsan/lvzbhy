@@ -2,22 +2,26 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/live_play/live_play_controller.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'widgets/index.dart';
 
+// ignore: must_be_immutable
 class LivePlayPage extends GetView<LivePlayController> {
   LivePlayPage({Key? key}) : super(key: key);
 
   final SettingsService settings = Get.find<SettingsService>();
 
+  late double width;
+
   @override
   Widget build(BuildContext context) {
+    width = MediaQuery.of(context).size.width;
     if (settings.enableScreenKeepOn.value) {
       Wakelock.toggle(enable: settings.enableScreenKeepOn.value);
     }
 
-    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Row(children: [
@@ -57,58 +61,55 @@ class LivePlayPage extends GetView<LivePlayController> {
         ],
       ),
       body: SafeArea(
-        child: screenWidth > 640
-            ? Row(children: <Widget>[
-                Flexible(
-                  flex: 5,
-                  child: VideoPlayerHero(
-                    width: screenWidth / 8.0 * 5.0,
-                  ),
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Column(children: [
-                    const ResolutionsRow(),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: DanmakuListView(
-                        key: controller.danmakuViewKey,
-                        room: controller.room,
-                      ),
-                    ),
-                  ]),
-                ),
-              ])
-            : Column(
-                children: <Widget>[
-                  VideoPlayerHero(width: screenWidth),
-                  const ResolutionsRow(),
-                  const Divider(height: 1),
-                  Expanded(
-                    child: DanmakuListView(
-                      key: controller.danmakuViewKey,
-                      room: controller.room,
-                    ),
-                  ),
-                ],
-              ),
+        child: ScreenTypeLayout.builder(
+          mobile: (context) => buildMobileView(),
+          tablet: (context) => buildTabletView(),
+          desktop: (context) => buildTabletView(),
+        ),
       ),
       floatingActionButton: FavoriteFloatingButton(room: controller.room),
     );
   }
 
-  void showDlnaCastDialog() {
-    Get.dialog(LiveDlnaPage(datasource: controller.selectedStreamUrl));
+  Widget buildMobileView() {
+    return Column(
+      children: <Widget>[
+        buildVideoPlayer(width),
+        const ResolutionsRow(),
+        const Divider(height: 1),
+        Expanded(
+          child: DanmakuListView(
+            key: controller.danmakuViewKey,
+            room: controller.room,
+          ),
+        ),
+      ],
+    );
   }
-}
 
-class VideoPlayerHero extends GetWidget<LivePlayController> {
-  const VideoPlayerHero({Key? key, required this.width}) : super(key: key);
+  Widget buildTabletView() {
+    return Row(children: <Widget>[
+      Flexible(
+        flex: 5,
+        child: buildVideoPlayer(width / 8.0 * 5.0),
+      ),
+      Flexible(
+        flex: 3,
+        child: Column(children: [
+          const ResolutionsRow(),
+          const Divider(height: 1),
+          Expanded(
+            child: DanmakuListView(
+              key: controller.danmakuViewKey,
+              room: controller.room,
+            ),
+          ),
+        ]),
+      ),
+    ]);
+  }
 
-  final double width;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget buildVideoPlayer(double videoWidth) {
     return Hero(
       tag: controller.room.roomId,
       child: AspectRatio(
@@ -120,8 +121,8 @@ class VideoPlayerHero extends GetWidget<LivePlayController> {
                 ? VideoPlayer(
                     key: controller.playerKey,
                     controller: controller.videoController!,
-                    width: width,
-                    height: width / 16.0 * 9.0,
+                    width: videoWidth,
+                    height: videoWidth / 16.0 * 9.0,
                   )
                 : Card(
                     elevation: 0,
@@ -142,6 +143,10 @@ class VideoPlayerHero extends GetWidget<LivePlayController> {
         ),
       ),
     );
+  }
+
+  void showDlnaCastDialog() {
+    Get.dialog(LiveDlnaPage(datasource: controller.selectedStreamUrl));
   }
 }
 

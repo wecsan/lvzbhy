@@ -7,11 +7,6 @@
     "update": "Update",
     "remove": "Remove",
     "move_to_top": "Move To Top",
-    
-    "loading_idle": "pull up to load",
-    "loading_failed": "Load Failed! Drag Retry!",
-    "loading_nomore": "No more Data",
-    "loading_canload": "release to load",
 
     "favorites_title": "Favorites",
     "empty_favorite_title": "No Favorites",

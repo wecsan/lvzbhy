@@ -7,11 +7,6 @@
     "update": "更新",
     "remove": "删除",
     "move_to_top": "移到顶部",
-    
-    "loading_idle": "上滑以加载",
-    "loading_failed": "加载失败！上滑重试",
-    "loading_nomore": "没有更多数据",
-    "loading_canload": "释放以加载",
 
     "favorites_title": "关注",
     "empty_favorite_title": "无关注直播",

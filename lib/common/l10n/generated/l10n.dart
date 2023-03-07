@@ -120,46 +120,6 @@ class S {
     );
   }
 
-  /// `pull up to load`
-  String get loading_idle {
-    return Intl.message(
-      'pull up to load',
-      name: 'loading_idle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load Failed! Drag Retry!`
-  String get loading_failed {
-    return Intl.message(
-      'Load Failed! Drag Retry!',
-      name: 'loading_failed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No more Data`
-  String get loading_nomore {
-    return Intl.message(
-      'No more Data',
-      name: 'loading_nomore',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `release to load`
-  String get loading_canload {
-    return Intl.message(
-      'release to load',
-      name: 'loading_canload',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Favorites`
   String get favorites_title {
     return Intl.message(

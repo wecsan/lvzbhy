@@ -64,8 +64,10 @@ class LivePlayController extends GetxController {
       room.userId.isEmpty ? room.roomId : room.userId,
     ));
     liveDanmaku.onMessage = (msg) {
-      messages.add(msg);
-      videoController?.sendDanmaku(msg);
+      if (msg.type == LiveMessageType.chat) {
+        messages.add(msg);
+        videoController?.sendDanmaku(msg);
+      }
     };
   }
 

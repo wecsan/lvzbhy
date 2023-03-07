@@ -4,6 +4,7 @@ import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/areas/areas_controller.dart';
 import 'package:pure_live/modules/favorite/favorite_controller.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
             supportedLocales: S.delegate.supportedLocales,
             localizationsDelegates: const [
               S.delegate,
+              RefreshLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,

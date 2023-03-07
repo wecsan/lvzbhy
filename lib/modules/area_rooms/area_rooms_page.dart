@@ -37,7 +37,7 @@ class AreasRoomPage extends GetView<AreaRoomsController> {
           enablePullDown: true,
           enablePullUp: true,
           header: const WaterDropHeader(),
-          footer: const OnLoadingFooter(),
+          footer: const ClassicFooter(),
           controller: controller.refreshController,
           onRefresh: controller.onRefresh,
           onLoading: controller.onLoading,

@@ -41,76 +41,91 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.hasError.value) {
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  '无法播放直播',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => controller.refresh(),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: Colors.white.withOpacity(0.2),
-                ),
-                child: const Text('重试', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-        );
-      } else if (controller.isPipMode.value) {
-        return Container();
-      }
-
-      return MouseRegion(
-        onHover: (event) => controller.enableController(),
-        onExit: (event) {
-          controller.showControllerTimer?.cancel();
-          controller.showController.toggle();
-        },
-        child: Stack(children: [
-          DanmakuView(
-            controller: controller,
-            videoWidth: videoWidth,
-            videoHeight: videoHeight,
-          ),
-          if (controller.showSettting.value)
-            SettingsPanel(controller: controller)
-          else ...[
-            GestureDetector(
-              onTap: () => controller.isPlaying.value
-                  ? controller.enableController()
-                  : controller.togglePlayPause(),
-              onDoubleTap: () => controller.isWindowFullscreen.value
-                  ? controller.toggleWindowFullScreen(context)
-                  : controller.toggleFullScreen(context),
-              child: BrightnessVolumnDargArea(
+    return Obx(() => controller.hasError.value
+        ? ErrorWidget(controller: controller)
+        : MouseRegion(
+            onHover: (event) => controller.enableController(),
+            onExit: (event) {
+              controller.showControllerTimer?.cancel();
+              controller.showController.toggle();
+            },
+            child: Stack(children: [
+              DanmakuViewer(
                 controller: controller,
-                videoWith: videoWidth,
+                videoWidth: videoWidth,
+                videoHeight: videoHeight,
               ),
+              GestureDetector(
+                onTap: () {
+                  if (controller.showSettting.value) {
+                    controller.showSettting.toggle();
+                  } else {
+                    controller.isPlaying.value
+                        ? controller.enableController()
+                        : controller.togglePlayPause();
+                  }
+                },
+                onDoubleTap: () => controller.isWindowFullscreen.value
+                    ? controller.toggleWindowFullScreen(context)
+                    : controller.toggleFullScreen(context),
+                child: BrightnessVolumnDargArea(
+                  controller: controller,
+                  videoWith: videoWidth,
+                ),
+              ),
+              SettingsPanel(
+                controller: controller,
+                videoWidth: videoWidth,
+                videoHeight: videoHeight,
+              ),
+              LockButton(controller: controller),
+              TopActionBar(
+                controller: controller,
+                barHeight: barHeight,
+                barWidth: videoWidth,
+              ),
+              BottomActionBar(
+                controller: controller,
+                barHeight: barHeight,
+                barWidth: videoWidth,
+              ),
+            ]),
+          ));
+  }
+}
+
+class ErrorWidget extends StatelessWidget {
+  const ErrorWidget({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final VideoController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              '无法播放直播',
+              style: TextStyle(color: Colors.white),
             ),
-            LockButton(controller: controller),
-            TopActionBar(
-              controller: controller,
-              barHeight: barHeight,
-              barWidth: videoWidth,
+          ),
+          ElevatedButton(
+            onPressed: () => controller.refresh(),
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              backgroundColor: Colors.white.withOpacity(0.2),
             ),
-            BottomActionBar(
-              controller: controller,
-              barHeight: barHeight,
-              barWidth: videoWidth,
-            ),
-          ],
-        ]),
-      );
-    });
+            child: const Text('重试', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -131,7 +146,9 @@ class TopActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => AnimatedPositioned(
-        top: (controller.showController.value && !controller.showLocked.value)
+        top: (!controller.showSettting.value &&
+                controller.showController.value &&
+                !controller.showLocked.value)
             ? 0
             : -barHeight,
         height: barHeight,
@@ -291,20 +308,8 @@ class PIPButton extends StatelessWidget {
 }
 
 // Center widgets
-class _DanmakuCliper extends CustomClipper<Rect> {
-  @override
-  Rect getClip(Size size) {
-    return Rect.fromLTRB(0, 0, size.width, size.height + 50);
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) {
-    return false;
-  }
-}
-
-class DanmakuView extends StatelessWidget {
-  const DanmakuView({
+class DanmakuViewer extends StatelessWidget {
+  const DanmakuViewer({
     Key? key,
     required this.controller,
     required this.videoWidth,
@@ -317,15 +322,19 @@ class DanmakuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Positioned(
-          top: controller.hideDanmaku.value ? -videoHeight : 0,
-          width: videoWidth,
-          height: videoHeight * controller.danmakuArea.value,
-          child: ClipRect(
-            clipper: _DanmakuCliper(),
-            child: controller.danmakuView ?? Container(),
-          ),
-        ));
+    return Positioned(
+      top: 0,
+      width: videoWidth,
+      height: videoHeight * controller.danmakuArea.value,
+      child: Obx(() => Offstage(
+            offstage: controller.hideDanmaku.value,
+            child: DanmakuView(
+              key: controller.danmakuKey,
+              danmakuController: controller.danmakuController!,
+              option: DanmakuOption(),
+            ),
+          )),
+    );
   }
 }
 
@@ -485,7 +494,9 @@ class LockButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => AnimatedOpacity(
-          opacity: controller.fullscreenUI && controller.showController.value
+          opacity: (!controller.showSettting.value &&
+                  controller.fullscreenUI &&
+                  controller.showController.value)
               ? 0.9
               : 0.0,
           duration: const Duration(milliseconds: 300),
@@ -533,10 +544,11 @@ class BottomActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => AnimatedPositioned(
-          bottom:
-              (controller.showController.value && !controller.showLocked.value)
-                  ? 0
-                  : -barHeight,
+          bottom: (!controller.showSettting.value &&
+                  controller.showController.value &&
+                  !controller.showLocked.value)
+              ? 0
+              : -barHeight,
           height: barHeight,
           width: barWidth,
           duration: const Duration(milliseconds: 300),
@@ -716,40 +728,41 @@ class ExpandButton extends StatelessWidget {
 
 // Settings panel widgets
 class SettingsPanel extends StatelessWidget {
-  const SettingsPanel({Key? key, required this.controller}) : super(key: key);
+  const SettingsPanel({
+    Key? key,
+    required this.controller,
+    required this.videoWidth,
+    required this.videoHeight,
+  }) : super(key: key);
 
   final VideoController controller;
+  final double videoWidth;
+  final double videoHeight;
 
   static const double width = 380;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => controller.showSettting.toggle(),
-      child: Container(
-        color: Colors.transparent,
-        child: Container(
-          alignment: Alignment.centerRight,
-          child: GestureDetector(
-            onTap: () {},
-            child: Card(
-              color: Colors.black.withOpacity(0.8),
-              child: SizedBox(
-                width: width,
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    ShutdownTimerSetting(controller: controller),
-                    VideoFitSetting(controller: controller),
-                    DanmakuSetting(controller: controller),
-                  ],
-                ),
+    return Obx(() => AnimatedPositioned(
+          right: controller.showSettting.value ? 0 : -width,
+          width: width,
+          height: videoHeight,
+          duration: const Duration(milliseconds: 500),
+          child: Card(
+            color: Colors.black.withOpacity(0.8),
+            child: SizedBox(
+              width: width,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  ShutdownTimerSetting(controller: controller),
+                  VideoFitSetting(controller: controller),
+                  DanmakuSetting(controller: controller),
+                ],
               ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 

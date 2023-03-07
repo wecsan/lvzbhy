@@ -162,12 +162,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "issue_feedback":
             MessageLookupByLibrary.simpleMessage("Issue Feedback"),
         "license": MessageLookupByLibrary.simpleMessage("License"),
-        "loading_canload":
-            MessageLookupByLibrary.simpleMessage("release to load"),
-        "loading_failed":
-            MessageLookupByLibrary.simpleMessage("Load Failed! Drag Retry!"),
-        "loading_idle": MessageLookupByLibrary.simpleMessage("pull up to load"),
-        "loading_nomore": MessageLookupByLibrary.simpleMessage("No more Data"),
         "move_to_top": MessageLookupByLibrary.simpleMessage("Move To Top"),
         "new_version_info": m2,
         "no_new_version_info": MessageLookupByLibrary.simpleMessage(

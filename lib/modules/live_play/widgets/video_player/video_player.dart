@@ -41,18 +41,19 @@ class _VideoPlayerState extends State<VideoPlayer> {
     }
   }
 
+  Widget get videoPanel {
+    return VideoControllerPanel(
+      key: _danmakuNormal,
+      controller: widget.controller,
+      width: widget.width,
+      height: widget.height,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
-        videoFrame,
-        VideoControllerPanel(
-          key: _danmakuNormal,
-          controller: widget.controller,
-          width: widget.width,
-          height: widget.height,
-        ),
-      ],
+      children: [videoFrame, videoPanel],
     );
   }
 }

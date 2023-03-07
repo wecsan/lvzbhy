@@ -3,21 +3,16 @@ import 'dart:io';
 
 import 'package:battery_plus/battery_plus.dart';
 import 'package:better_player/better_player.dart';
-import 'package:bordered_text/bordered_text.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:ns_danmaku/danmaku_controller.dart';
-import 'package:ns_danmaku/danmaku_view.dart';
-import 'package:ns_danmaku/models/danmaku_item.dart';
-import 'package:ns_danmaku/models/danmaku_option.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'video_controller_panel.dart' hide DanmakuView;
+import 'video_controller_panel.dart';
 
 class VideoController with ChangeNotifier {
   final GlobalKey playerKey;
@@ -109,6 +104,7 @@ class VideoController with ChangeNotifier {
     if (Platform.isWindows || Platform.isLinux) {
       desktopController = Player(id: 100);
       setDataSource(datasource);
+      desktopController?.playbackStream.listen(desktopStateListener);
     } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController = BetterPlayerController(
         BetterPlayerConfiguration(
@@ -131,13 +127,6 @@ class VideoController with ChangeNotifier {
       );
       mobileController?.setControlsEnabled(false);
       setDataSource(datasource);
-    } else {
-      throw UnimplementedError('Unsupported Platform');
-    }
-
-    if (Platform.isWindows || Platform.isLinux) {
-      desktopController?.playbackStream.listen(desktopStateListener);
-    } else if (Platform.isAndroid || Platform.isIOS) {
       mobileController?.addEventsListener(mobileStateListener);
     } else {
       throw UnimplementedError('Unsupported Platform');
@@ -161,9 +150,7 @@ class VideoController with ChangeNotifier {
 
   // Danmaku player control
   DanmakuController? danmakuController;
-  DanmakuView? danmakuView;
-  final danmakuList = [].obs;
-  final GlobalKey danmakuKey = GlobalKey();
+  GlobalKey danmakuKey = GlobalKey();
   final hideDanmaku = false.obs;
   final danmakuArea = 1.0.obs;
   final danmakuSpeed = 8.0.obs;
@@ -202,16 +189,8 @@ class VideoController with ChangeNotifier {
       updateDanmakuOption();
     });
 
-    danmakuView ??= DanmakuView(
-      key: danmakuKey,
-      createdController: (ctl) => danmakuController = ctl,
-      option: DanmakuOption(
-        fontSize: danmakuFontSize.value,
-        area: danmakuArea.value,
-        duration: danmakuSpeed.value,
-        opacity: danmakuOpacity.value,
-      ),
-    );
+    danmakuController ??= DanmakuController();
+    updateDanmakuOption();
   }
 
   void updateDanmakuOption() {
@@ -220,10 +199,14 @@ class VideoController with ChangeNotifier {
       area: danmakuArea.value,
       duration: danmakuSpeed.value,
       opacity: danmakuOpacity.value,
+      borderText: danmakuFontBorder.value != 0,
+      strokeWidth: danmakuFontBorder.value,
     ));
   }
 
   void sendDanmaku(LiveMessage msg) {
+    if (hideDanmaku.value) return;
+
     danmakuController?.addItems([
       DanmakuItem(
         msg.message,
@@ -538,37 +521,6 @@ class DesktopFullscreen extends StatelessWidget {
             ),
             VideoControllerPanel(controller: controller),
           ]),
-        ),
-      ),
-    );
-  }
-}
-
-class DanmakuText extends StatelessWidget {
-  const DanmakuText({
-    Key? key,
-    required this.message,
-    required this.danmakuFontSize,
-    required this.danmakuFontBorder,
-  }) : super(key: key);
-
-  final String message;
-  final RxDouble danmakuFontSize;
-  final RxDouble danmakuFontBorder;
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => BorderedText(
-        strokeWidth: danmakuFontBorder.value,
-        child: Text(
-          message,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: danmakuFontSize.value,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
-          ),
         ),
       ),
     );
