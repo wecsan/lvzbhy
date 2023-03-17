@@ -36,8 +36,8 @@ class BilibiliSite implements LiveSite {
   }
 
   @override
-  Future<Map<String, Map<String, String>>> getLiveStream(LiveRoom room) async {
-    Map<String, Map<String, String>> links = {};
+  Future<Map<String, List<String>>> getLiveStream(LiveRoom room) async {
+    Map<String, List<String>> links = {};
 
     String defaultQn = '10000';
     String newStreamUrl =
@@ -74,21 +74,19 @@ class BilibiliSite implements LiveSite {
         }
       }
 
-      List<dynamic> acceptQn = streamProtocol['codec'][0]['accept_qn'];
-      for (int i = 0; i < acceptQn.length; i++) {
-        int qn = acceptQn[i].toInt();
-        String qnName = qualityRefMap[qn] ?? qn.toString();
+      List<dynamic> rates = streamProtocol['codec'][0]['accept_qn'];
+      for (int i = 0; i < rates.length; i++) {
+        int qn = rates[i].toInt();
+        String name = qualityRefMap[qn] ?? qn.toString();
 
+        links[name] ??= [];
         if (qn == 10000) {
           List urlInfo = streamProtocol['codec'][0]['url_info'];
           String baseUrl = streamProtocol['codec'][0]['base_url'];
-          Map<String, String> urlMap = {};
           for (int i = 0; i < urlInfo.length; i++) {
-            String finalUrl =
-                urlInfo[i]['host'] + baseUrl + urlInfo[i]['extra'];
-            urlMap['线路$i'] = finalUrl;
+            links[name]
+                ?.add("${urlInfo[i]['host']}$baseUrl${urlInfo[i]['extra']}");
           }
-          links[qnName] = urlMap;
           continue;
         }
 
@@ -100,7 +98,7 @@ class BilibiliSite implements LiveSite {
         List<dynamic> qnStreamMultiList =
             qnJson['data']['playurl_info']['playurl']['stream'];
 
-        //get m3u8 default, if not, get unplayable flv
+        // get m3u8 default, if not, get unplayable flv
         Map qnStreamProtocol = qnStreamMultiList[1]['format'][0] ??
             qnStreamMultiList[0]['format'][0];
         for (int i = 0; i < qnStreamMultiList.length; i++) {
@@ -115,12 +113,10 @@ class BilibiliSite implements LiveSite {
         }
         List urlInfo = qnStreamProtocol['codec'][0]['url_info'];
         String baseUrl = qnStreamProtocol['codec'][0]['base_url'];
-        Map<String, String> urlMap = {};
         for (int i = 0; i < urlInfo.length; i++) {
-          String finalUrl = urlInfo[i]['host'] + baseUrl + urlInfo[i]['extra'];
-          urlMap['线路$i'] = finalUrl;
+          links[name]
+              ?.add("${urlInfo[i]['host']}$baseUrl${urlInfo[i]['extra']}");
         }
-        links[qnName] = urlMap;
       }
     } catch (e) {
       log(e.toString(), name: 'BilibiliApi.getRoomStreamLink');

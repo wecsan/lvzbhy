@@ -150,8 +150,18 @@ class LivePlayPage extends GetView<LivePlayController> {
   }
 }
 
-class ResolutionsRow extends GetWidget<LivePlayController> {
+class ResolutionsRow extends StatefulWidget {
   const ResolutionsRow({Key? key}) : super(key: key);
+
+  @override
+  State<ResolutionsRow> createState() => _ResolutionsRowState();
+}
+
+class _ResolutionsRowState extends State<ResolutionsRow> {
+  LivePlayController get controller => Get.find();
+
+  late String selectedRate = controller.selectedResolution;
+  late String selectedStreamUrl = controller.selectedStreamUrl;
 
   Widget buildInfoCount() {
     // controller.room watching or followers
@@ -180,8 +190,8 @@ class ResolutionsRow extends GetWidget<LivePlayController> {
 
   List<Widget> buildResultionsList() {
     return controller.liveStream.keys
-        .map<Widget>((res) => PopupMenuButton(
-              tooltip: res,
+        .map<Widget>((rate) => PopupMenuButton(
+              tooltip: rate,
               color: Get.theme.colorScheme.surfaceVariant,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -189,29 +199,38 @@ class ResolutionsRow extends GetWidget<LivePlayController> {
               offset: const Offset(0.0, 5.0),
               position: PopupMenuPosition.under,
               icon: Text(
-                res,
+                rate,
                 style: Get.theme.textTheme.labelSmall?.copyWith(
-                  color: res == controller.selectedResolution
+                  color: rate == selectedRate
                       ? Get.theme.colorScheme.primary
                       : null,
                 ),
               ),
-              onSelected: (String url) => controller.setResolution(res, url),
-              itemBuilder: (context) => controller.liveStream[res]!.keys
-                  .map((cdn) => PopupMenuItem<String>(
-                        value: controller.liveStream[res]![cdn],
-                        child: Text(
-                          cdn,
-                          style:
-                              Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: controller.liveStream[res]![cdn] ==
-                                            controller.selectedStreamUrl
-                                        ? Get.theme.colorScheme.primary
-                                        : null,
-                                  ),
-                        ),
-                      ))
-                  .toList(),
+              onSelected: (String url) {
+                controller.setResolution(rate, url);
+                setState(() {
+                  selectedRate = rate;
+                  selectedStreamUrl = url;
+                });
+              },
+              itemBuilder: (context) {
+                final items = <PopupMenuItem<String>>[];
+                final urls = controller.liveStream[rate]!;
+                for (int i = 0; i < urls.length; i++) {
+                  items.add(PopupMenuItem<String>(
+                    value: urls[i],
+                    child: Text(
+                      '线路${i + 1}',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: urls[i] == selectedStreamUrl
+                                ? Get.theme.colorScheme.primary
+                                : null,
+                          ),
+                    ),
+                  ));
+                }
+                return items;
+              },
             ))
         .toList();
   }

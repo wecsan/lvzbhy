@@ -29,8 +29,8 @@ class HuyaSite implements LiveSite {
   }
 
   @override
-  Future<Map<String, Map<String, String>>> getLiveStream(LiveRoom room) async {
-    Map<String, Map<String, String>> links = {};
+  Future<Map<String, List<String>>> getLiveStream(LiveRoom room) async {
+    Map<String, List<String>> links = {};
 
     String url = 'https://mp.huya.com/cache.php?m=Live'
         '&do=profileRoom&roomid=${room.roomId}';
@@ -38,28 +38,24 @@ class HuyaSite implements LiveSite {
     try {
       dynamic response = await _getJson(url);
       if (response['status'] == 200) {
-        Map streamDict = response['data']['stream']['flv'];
+        Map data = response['data']['stream']['flv'];
 
         // 获取支持的分辨率
-        Map resolutions = {};
-        List rateArray = streamDict['rateArray'];
-        for (Map res in rateArray) {
-          String bitrate = res['iBitRate'].toString();
-          resolutions[res['sDisplayName']] = '_$bitrate';
+        Map<String, String> rates = {};
+        for (var rate in data['rateArray']) {
+          String bitrate = rate['iBitRate'].toString();
+          rates[rate['sDisplayName']] = '_$bitrate';
         }
 
         // 获取支持的线路
-        List multiLine = streamDict['multiLine'];
-        links['原画'] = {};
-        for (Map item in multiLine) {
+        links['原画'] = [];
+        for (var item in data['multiLine']) {
           String url = (item['url']).replaceAll('http://', 'https://');
-          String cdn = item['cdnType'];
-          links['原画']![cdn] = url;
-          for (var resolution in resolutions.keys) {
-            String key = resolutions[resolution];
-            String tempUrl = url.replaceAll('imgplus.flv', 'imgplus$key.flv');
-            if (links[resolution] == null) links[resolution] = {};
-            links[resolution]![cdn] = tempUrl;
+          links['原画']?.add(url);
+          for (var name in rates.keys) {
+            links[name] ??= [];
+            links[name]?.add(
+                url.replaceAll('imgplus.flv', 'imgplus${rates[name]!}.flv'));
           }
         }
       }

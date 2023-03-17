@@ -77,6 +77,7 @@ dependencies:
   path_provider: ^2.0.13
   dart_tars_protocol:
     git: https://github.com/xiaoyaocz/dart_tars_protocol.git
+  html_unescape: ^2.0.0
   # dpad_container: ^1.0.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

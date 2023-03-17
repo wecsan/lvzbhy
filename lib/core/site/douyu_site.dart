@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:http/http.dart' as http;
 
@@ -72,9 +73,20 @@ class DouyuSite implements LiveSite {
     return paramsMap;
   }
 
+  Future<String> getPlayUrl(
+      String roomId, String args, int rate, String cdn) async {
+    args += "&cdn=$cdn&rate=$rate";
+    var response = await http.post(
+      Uri.parse("https://www.douyu.com/lapi/live/getH5Play/$roomId"),
+      body: handleParams(args),
+    );
+    final data = jsonDecode(response.body)["data"];
+    return "${data["rtmp_url"]}/${HtmlUnescape().convert(data["rtmp_live"].toString())}";
+  }
+
   @override
-  Future<Map<String, Map<String, String>>> getLiveStream(LiveRoom room) async {
-    Map<String, Map<String, String>> links = {};
+  Future<Map<String, List<String>>> getLiveStream(LiveRoom room) async {
+    Map<String, List<String>> links = {};
 
     final rid = room.roomId;
     try {
@@ -84,7 +96,8 @@ class DouyuSite implements LiveSite {
       final homejs = result["homejs"];
       // 执行JS获取签名信息
       final tt = (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
-      final params = "${await getSign(rid, tt, homejs)}&cdn=ws-h5&rate=0";
+      final sign = await getSign(rid, tt, homejs);
+      final params = "$sign&cdn=ws-h5&rate=0";
 
       // 发送请求获取直播流信息
       String requestUrl = "https://www.douyu.com/lapi/live/getH5Play/$realRid";
@@ -95,23 +108,18 @@ class DouyuSite implements LiveSite {
       final response = jsonDecode(response1.body);
       final data = response["data"];
 
-      // 获取真实直播Key
-      final url = data["rtmp_live"];
-      final key = url.substring(0, url.indexOf(".")).split("_")[0];
-
-      // 获取支持分辨率
-      Map<String, String> resolutions = {};
-      data["multirates"].forEach((e) {
-        resolutions[e['name']] = e['rate'] == 0 ? '' : '_${e['bit']}';
+      // 获取支持的Cdn
+      List<String> cdns = [];
+      data["cdnsWithName"].forEach((e) {
+        cdns.add(e['cdn'].toString());
       });
 
-      List<String> cdns = ['akm', 'hw', 'ws'];
-      for (String res in resolutions.keys) {
-        String v = resolutions[res]!;
-        links[res] = {};
-        for (String cdn in cdns) {
-          links[res]![cdn] =
-              'https://$cdn-tct.douyucdn.cn/live/$key$v.flv?uuid=';
+      // 获取支持分辨率
+      for (var e in data["multirates"]) {
+        links[e['name']] ??= [];
+        for (var cdn in cdns) {
+          links[e['name']]
+              ?.add(await getPlayUrl(room.roomId, sign, e['rate'], cdn));
         }
       }
     } catch (e) {

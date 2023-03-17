@@ -14,7 +14,7 @@ class LiveSite {
 
   /// 获取直播间所有清晰度的url
   /// @param room
-  Future<Map<String, Map<String, String>>> getLiveStream(LiveRoom room) {
+  Future<Map<String, List<String>>> getLiveStream(LiveRoom room) {
     return Future(() => {});
   }
 

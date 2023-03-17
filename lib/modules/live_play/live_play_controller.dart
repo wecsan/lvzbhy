@@ -24,7 +24,7 @@ class LivePlayController extends GetxController {
   final danmakuViewKey = GlobalKey();
 
   final success = false.obs;
-  Map<String, Map<String, String>> liveStream = {};
+  Map<String, List<String>> liveStream = {};
   String selectedResolution = '';
   String selectedStreamUrl = '';
 
@@ -84,7 +84,7 @@ class LivePlayController extends GetxController {
     for (var key in liveStream.keys) {
       if (settings.preferResolution.contains(key)) {
         selectedResolution = key;
-        selectedStreamUrl = liveStream[key]!.values.first;
+        selectedStreamUrl = liveStream[key]!.first;
         return;
       }
     }
@@ -93,7 +93,7 @@ class LivePlayController extends GetxController {
       for (var key in liveStream.keys) {
         if (key.contains('原画')) {
           selectedResolution = key;
-          selectedStreamUrl = liveStream[key]!.values.first;
+          selectedStreamUrl = liveStream[key]!.first;
           return;
         }
       }
@@ -103,13 +103,13 @@ class LivePlayController extends GetxController {
       for (var key in liveStream.keys) {
         if (key.contains('蓝光')) {
           selectedResolution = key;
-          selectedStreamUrl = liveStream[key]!.values.first;
+          selectedStreamUrl = liveStream[key]!.first;
           return;
         }
       }
     }
     // 偏好选择失败，选择最低清晰度
     selectedResolution = liveStream.keys.last;
-    selectedStreamUrl = liveStream.values.last.values.first;
+    selectedStreamUrl = liveStream.values.last.first;
   }
 }
