@@ -221,7 +221,7 @@ class SettingsPage extends GetView<SettingsService> {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text(S.of(context).prefer_resolution),
+          title: Text(S.of(context).prefer_platform),
           children: SettingsService.platforms.map<Widget>((name) {
             return RadioListTile<String>(
               activeColor: Theme.of(context).colorScheme.primary,

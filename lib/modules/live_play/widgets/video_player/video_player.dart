@@ -2,20 +2,19 @@ import 'dart:io';
 
 import 'package:better_player/better_player.dart';
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller_panel.dart';
 
+import 'video_player_provider.dart';
+
 class VideoPlayer extends StatefulWidget {
   final VideoController controller;
-  final double? width;
-  final double? height;
 
   const VideoPlayer({
     Key? key,
     required this.controller,
-    this.width,
-    this.height,
   }) : super(key: key);
 
   @override
@@ -23,37 +22,55 @@ class VideoPlayer extends StatefulWidget {
 }
 
 class _VideoPlayerState extends State<VideoPlayer> {
-  final _playerKey = GlobalKey();
-  final _danmakuNormal = GlobalKey();
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.controllerProvider = VideoPlayerProvider(
+      controller: widget.controller,
+      child: _buildPlayer(),
+    );
+  }
 
-  Widget get videoFrame {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  Widget _buildVideoFrame() {
     if (Platform.isWindows || Platform.isLinux) {
-      return Video(
-        player: widget.controller.desktopController,
-        scale: 1.0, // default
-        showControls: false, // default
-      );
+      return Obx(() => Video(
+            key: Key("${widget.controller.hashCode}_video"),
+            player: widget.controller.desktopController,
+            scale: 1.0, // default
+            showControls: false, // default
+            fit: widget.controller.videoFit.value,
+          ));
     } else {
       return BetterPlayer(
-        key: _playerKey,
+        key: Key("${widget.controller.hashCode}_video"),
         controller: widget.controller.mobileController!,
       );
     }
   }
 
-  Widget get videoPanel {
+  Widget _buildVideoPanel() {
     return VideoControllerPanel(
-      key: _danmakuNormal,
+      key: Key("${widget.controller.hashCode}_danmaku"),
       controller: widget.controller,
-      width: widget.width,
-      height: widget.height,
+    );
+  }
+
+  Widget _buildPlayer() {
+    return Stack(
+      children: [
+        _buildVideoFrame(),
+        _buildVideoPanel(),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [videoFrame, videoPanel],
-    );
+    return _buildPlayer();
   }
 }

@@ -10,14 +10,10 @@ import 'package:pure_live/modules/live_play/widgets/video_player/video_controlle
 
 class VideoControllerPanel extends StatefulWidget {
   final VideoController controller;
-  final double? width;
-  final double? height;
 
   const VideoControllerPanel({
     Key? key,
     required this.controller,
-    this.width,
-    this.height,
   }) : super(key: key);
 
   @override
@@ -27,8 +23,6 @@ class VideoControllerPanel extends StatefulWidget {
 class _VideoControllerPanelState extends State<VideoControllerPanel>
     with SingleTickerProviderStateMixin {
   static const barHeight = 56.0;
-  double get videoWidth => widget.width ?? MediaQuery.of(context).size.width;
-  double get videoHeight => widget.height ?? MediaQuery.of(context).size.height;
 
   // Video controllers
   VideoController get controller => widget.controller;
@@ -50,11 +44,7 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
               controller.showController.toggle();
             },
             child: Stack(children: [
-              DanmakuViewer(
-                controller: controller,
-                videoWidth: videoWidth,
-                videoHeight: videoHeight,
-              ),
+              DanmakuViewer(controller: controller),
               GestureDetector(
                 onTap: () {
                   if (controller.showSettting.value) {
@@ -68,26 +58,19 @@ class _VideoControllerPanelState extends State<VideoControllerPanel>
                 onDoubleTap: () => controller.isWindowFullscreen.value
                     ? controller.toggleWindowFullScreen(context)
                     : controller.toggleFullScreen(context),
-                child: BrightnessVolumnDargArea(
-                  controller: controller,
-                  videoWith: videoWidth,
-                ),
+                child: BrightnessVolumnDargArea(controller: controller),
               ),
               SettingsPanel(
                 controller: controller,
-                videoWidth: videoWidth,
-                videoHeight: videoHeight,
               ),
               LockButton(controller: controller),
               TopActionBar(
                 controller: controller,
                 barHeight: barHeight,
-                barWidth: videoWidth,
               ),
               BottomActionBar(
                 controller: controller,
                 barHeight: barHeight,
-                barWidth: videoWidth,
               ),
             ]),
           ));
@@ -135,12 +118,10 @@ class TopActionBar extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.barHeight,
-    required this.barWidth,
   }) : super(key: key);
 
   final VideoController controller;
   final double barHeight;
-  final double barWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -151,8 +132,9 @@ class TopActionBar extends StatelessWidget {
                 !controller.showLocked.value)
             ? 0
             : -barHeight,
+        left: 0,
+        right: 0,
         height: barHeight,
-        width: barWidth,
         duration: const Duration(milliseconds: 300),
         child: Container(
           height: barHeight,
@@ -312,28 +294,26 @@ class DanmakuViewer extends StatelessWidget {
   const DanmakuViewer({
     Key? key,
     required this.controller,
-    required this.videoWidth,
-    required this.videoHeight,
   }) : super(key: key);
 
   final VideoController controller;
-  final double videoWidth;
-  final double videoHeight;
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      width: videoWidth,
-      height: videoHeight * controller.danmakuArea.value,
-      child: Obx(() => Offstage(
-            offstage: controller.hideDanmaku.value,
-            child: DanmakuView(
-              key: controller.danmakuKey,
-              danmakuController: controller.danmakuController!,
-              option: DanmakuOption(),
-            ),
-          )),
+    return LayoutBuilder(
+      builder: (context, constraint) => Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        height: constraint.maxHeight * controller.danmakuArea.value,
+        child: Obx(() => Offstage(
+              offstage: controller.hideDanmaku.value,
+              child: DanmakuView(
+                danmakuController: controller.danmakuController!,
+                option: DanmakuOption(),
+              ),
+            )),
+      ),
     );
   }
 }
@@ -342,11 +322,9 @@ class BrightnessVolumnDargArea extends StatefulWidget {
   const BrightnessVolumnDargArea({
     Key? key,
     required this.controller,
-    required this.videoWith,
   }) : super(key: key);
 
   final VideoController controller;
-  final double videoWith;
 
   @override
   State<BrightnessVolumnDargArea> createState() =>
@@ -386,7 +364,8 @@ class _BrightnessVolumnDargAreaState extends State<BrightnessVolumnDargArea> {
     if (delta.distance < 0.2) return;
 
     // fix darg left change to switch bug
-    final dargLeft = (postion.dx > (widget.videoWith / 2)) ? false : true;
+    final width = MediaQuery.of(context).size.width;
+    final dargLeft = (postion.dx > (width / 2)) ? false : true;
     // disable windows brightness
     if (Platform.isWindows && dargLeft) return;
     if (_hideBVStuff || _isDargLeft != dargLeft) {
@@ -534,12 +513,10 @@ class BottomActionBar extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.barHeight,
-    required this.barWidth,
   }) : super(key: key);
 
   final VideoController controller;
   final double barHeight;
-  final double barWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -549,8 +526,9 @@ class BottomActionBar extends StatelessWidget {
                   !controller.showLocked.value)
               ? 0
               : -barHeight,
+          left: 0,
+          right: 0,
           height: barHeight,
-          width: barWidth,
           duration: const Duration(milliseconds: 300),
           child: Container(
             height: barHeight,
@@ -568,7 +546,7 @@ class BottomActionBar extends StatelessWidget {
                 PlayPauseButton(controller: controller),
                 RefreshButton(controller: controller),
                 DanmakuButton(controller: controller),
-                if (barWidth > 640 || controller.fullscreenUI)
+                if (controller.fullscreenUI)
                   SettingsButton(controller: controller),
                 const Spacer(),
                 if (controller.supportWindowFull &&
@@ -731,22 +709,19 @@ class SettingsPanel extends StatelessWidget {
   const SettingsPanel({
     Key? key,
     required this.controller,
-    required this.videoWidth,
-    required this.videoHeight,
   }) : super(key: key);
 
   final VideoController controller;
-  final double videoWidth;
-  final double videoHeight;
 
   static const double width = 380;
 
   @override
   Widget build(BuildContext context) {
     return Obx(() => AnimatedPositioned(
+          top: 0,
+          bottom: 0,
           right: controller.showSettting.value ? 0 : -width,
           width: width,
-          height: videoHeight,
           duration: const Duration(milliseconds: 500),
           child: Card(
             color: Colors.black.withOpacity(0.8),

@@ -7,6 +7,7 @@ import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
+import 'package:pure_live/modules/live_play/widgets/video_player/video_player_provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock/wakelock.dart';
@@ -148,9 +149,10 @@ class VideoController with ChangeNotifier {
         mobileController?.videoPlayerController?.value.isPip ?? false;
   }
 
+  VideoPlayerProvider? controllerProvider;
+
   // Danmaku player control
   DanmakuController? danmakuController;
-  GlobalKey danmakuKey = GlobalKey();
   final hideDanmaku = false.obs;
   final danmakuArea = 1.0.obs;
   final danmakuSpeed = 8.0.obs;
@@ -318,7 +320,10 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(controller: this),
+            builder: (context) => DesktopFullscreen(
+              controller: controllerProvider!.controller,
+              child: controllerProvider!.child,
+            ),
           ),
         );
       } else {
@@ -366,7 +371,10 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(controller: this),
+            builder: (context) => DesktopFullscreen(
+              controller: controllerProvider!.controller,
+              child: controllerProvider!.child,
+            ),
           ),
         );
       } else {
@@ -433,6 +441,7 @@ class VideoController with ChangeNotifier {
   }
 }
 
+// use fullscreen with controller provider
 class MobileFullscreen extends StatefulWidget {
   const MobileFullscreen({
     Key? key,
@@ -494,35 +503,20 @@ class _MobileFullscreenState extends State<MobileFullscreen>
 }
 
 class DesktopFullscreen extends StatelessWidget {
-  const DesktopFullscreen({Key? key, required this.controller})
-      : super(key: key);
+  const DesktopFullscreen({
+    Key? key,
+    required this.controller,
+    required this.child,
+  }) : super(key: key);
 
   final VideoController controller;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: Hero(
-          tag: controller.datasource,
-          child: Stack(children: [
-            Positioned.fill(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Obx(() => Video(
-                      player: controller.desktopController,
-                      fit: controller.videoFit.value,
-                    )),
-              ),
-            ),
-            VideoControllerPanel(controller: controller),
-          ]),
-        ),
-      ),
+      body: child,
     );
   }
 }

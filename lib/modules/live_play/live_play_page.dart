@@ -121,8 +121,6 @@ class LivePlayPage extends GetView<LivePlayController> {
                 ? VideoPlayer(
                     key: controller.playerKey,
                     controller: controller.videoController!,
-                    width: videoWidth,
-                    height: videoWidth / 16.0 * 9.0,
                   )
                 : Card(
                     elevation: 0,
