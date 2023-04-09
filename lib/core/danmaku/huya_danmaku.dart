@@ -13,17 +13,6 @@ import 'package:dart_tars_protocol/tars_struct.dart';
 import '../common/websocket_utils.dart';
 import '../interface/live_danmaku.dart';
 
-class HuyaDanmakuArgs {
-  final int ayyuid;
-  final int topSid;
-  final int subSid;
-  HuyaDanmakuArgs({
-    required this.ayyuid,
-    required this.topSid,
-    required this.subSid,
-  });
-}
-
 class HuyaDanmaku implements LiveDanmaku {
   @override
   int heartbeatTime = 60 * 1000;
@@ -40,11 +29,8 @@ class HuyaDanmaku implements LiveDanmaku {
 
   final heartbeatData = base64.decode("ABQdAAwsNgBM");
 
-  late HuyaDanmakuArgs danmakuArgs;
-
   @override
   Future start(dynamic args) async {
-    danmakuArgs = args as HuyaDanmakuArgs;
     webScoketUtils = WebScoketUtils(
       url: serverUrl,
       heartBeatTime: heartbeatTime,
@@ -53,7 +39,7 @@ class HuyaDanmaku implements LiveDanmaku {
       },
       onReady: () {
         onReady?.call();
-        joinRoom();
+        joinRoom(args);
       },
       onHeartBeat: () {
         heartbeat();
@@ -68,21 +54,20 @@ class HuyaDanmaku implements LiveDanmaku {
     webScoketUtils?.connect();
   }
 
-  void joinRoom() {
-    var joinData =
-        getJoinData(danmakuArgs.ayyuid, danmakuArgs.topSid, danmakuArgs.topSid);
+  void joinRoom(roomId) {
+    var joinData = getJoinData(roomId);
     webScoketUtils?.sendMessage(joinData);
   }
 
-  List<int> getJoinData(int ayyuid, int tid, int sid) {
+  List<int> getJoinData(int uid) {
     try {
       var oos = TarsOutputStream();
-      oos.write(ayyuid, 0);
+      oos.write(uid, 0);
       oos.write(true, 1);
       oos.write("", 2);
       oos.write("", 3);
-      oos.write(tid, 4);
-      oos.write(sid, 5);
+      oos.write(uid, 4);
+      oos.write(uid, 5);
       oos.write(0, 6);
       oos.write(0, 7);
 
