@@ -8,7 +8,7 @@ import 'widgets/area_card.dart';
 class AreasPage extends GetView<AreasController> {
   const AreasPage({Key? key}) : super(key: key);
 
-  bool get showAction => Get.size.width < 640;
+  bool get showAction => Get.size.width <= 480;
 
   @override
   Widget build(BuildContext context) {

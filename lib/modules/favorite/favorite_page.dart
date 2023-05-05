@@ -7,7 +7,7 @@ import 'package:pure_live/modules/favorite/favorite_controller.dart';
 class FavoritePage extends GetView<FavoriteController> {
   const FavoritePage({Key? key}) : super(key: key);
 
-  bool get showAction => Get.size.width < 640;
+  bool get showAction => Get.size.width <= 480;
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +30,12 @@ class FavoritePage extends GetView<FavoriteController> {
           ],
         ),
       ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        physics: const BouncingScrollPhysics(),
-        header: const WaterDropHeader(),
-        controller: controller.refreshController,
-        onRefresh: controller.onRefresh,
-        child: TabBarView(
-          controller: controller.tabController,
-          children: const [
-            _RoomGridView(online: true),
-            _RoomGridView(online: false),
-          ],
-        ),
+      body: TabBarView(
+        controller: controller.tabController,
+        children: [
+          _RoomGridView(online: true),
+          _RoomGridView(online: false),
+        ],
       ),
     );
   }
@@ -51,7 +44,7 @@ class FavoritePage extends GetView<FavoriteController> {
 class _RoomGridView extends GetWidget<FavoriteController> {
   final bool online;
 
-  const _RoomGridView({
+  _RoomGridView({
     Key? key,
     required this.online,
   }) : super(key: key);
@@ -69,29 +62,48 @@ class _RoomGridView extends GetWidget<FavoriteController> {
     return crossAxisCount;
   }
 
+  final refreshController = RefreshController();
+
+  Future onRefresh() async {
+    bool result = await controller.onRefresh();
+    if (result) {
+      refreshController.refreshCompleted();
+    } else {
+      refreshController.refreshFailed();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final dense = Get.find<SettingsService>().enableDenseFavorites.value;
       final rooms = online ? controller.onlineRooms : controller.offlineRooms;
-      return rooms.isNotEmpty
-          ? MasonryGridView.count(
-              padding: const EdgeInsets.all(5),
-              controller: ScrollController(),
-              crossAxisCount: crossAxisCount(dense),
-              itemCount: rooms.length,
-              itemBuilder: (context, index) =>
-                  RoomCard(room: rooms[index], dense: dense),
-            )
-          : EmptyView(
-              icon: Icons.favorite_rounded,
-              title: online
-                  ? S.of(context).empty_favorite_online_title
-                  : S.of(context).empty_favorite_offline_title,
-              subtitle: online
-                  ? S.of(context).empty_favorite_online_subtitle
-                  : S.of(context).empty_favorite_offline_subtitle,
-            );
+
+      return SmartRefresher(
+        enablePullDown: true,
+        physics: const BouncingScrollPhysics(),
+        header: const WaterDropHeader(),
+        controller: refreshController,
+        onRefresh: onRefresh,
+        child: rooms.isNotEmpty
+            ? MasonryGridView.count(
+                padding: const EdgeInsets.all(5),
+                controller: ScrollController(),
+                crossAxisCount: crossAxisCount(dense),
+                itemCount: rooms.length,
+                itemBuilder: (context, index) =>
+                    RoomCard(room: rooms[index], dense: dense),
+              )
+            : EmptyView(
+                icon: Icons.favorite_rounded,
+                title: online
+                    ? S.of(context).empty_favorite_online_title
+                    : S.of(context).empty_favorite_offline_title,
+                subtitle: online
+                    ? S.of(context).empty_favorite_online_subtitle
+                    : S.of(context).empty_favorite_offline_subtitle,
+              ),
+      );
     });
   }
 }

@@ -11,6 +11,7 @@ class LivePlayPage extends GetView<LivePlayController> {
   LivePlayPage({Key? key}) : super(key: key);
 
   final SettingsService settings = Get.find<SettingsService>();
+  final GlobalKey videoPlayerKey = GlobalKey();
 
   late double width;
 
@@ -108,6 +109,7 @@ class LivePlayPage extends GetView<LivePlayController> {
           child: Obx(
             () => controller.success.value
                 ? VideoPlayer(
+                    key: videoPlayerKey,
                     controller: controller.videoController!,
                   )
                 : Card(

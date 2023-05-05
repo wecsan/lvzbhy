@@ -9,7 +9,7 @@ import 'popular_grid_view.dart';
 class PopularPage extends GetView<PopularController> {
   const PopularPage({Key? key}) : super(key: key);
 
-  bool get showAction => Get.size.width < 640;
+  bool get showAction => Get.size.width <= 480;
 
   @override
   Widget build(BuildContext context) {

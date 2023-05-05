@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pure_live/common/index.dart';
 
 class FavoriteController extends GetxController
@@ -9,8 +8,6 @@ class FavoriteController extends GetxController
   final SettingsService settings = Get.find<SettingsService>();
   late TabController tabController;
   int index = 0;
-
-  late RefreshController refreshController = RefreshController();
 
   FavoriteController() {
     tabController = TabController(length: 2, vsync: this);
@@ -47,13 +44,13 @@ class FavoriteController extends GetxController
   final onlineRooms = [].obs;
   final offlineRooms = [].obs;
 
-  Future onRefresh() async {
+  Future<bool> onRefresh() async {
     for (final room in settings.favoriteRooms) {
       try {
         var newRoom = await Sites.of(room.platform).liveSite.getRoomInfo(room);
         settings.updateRoom(newRoom);
       } catch (e) {
-        refreshController.refreshFailed();
+        return false;
       }
     }
 
@@ -65,6 +62,6 @@ class FavoriteController extends GetxController
     offlineRooms.addAll(settings.favoriteRooms
         .where((room) => room.liveStatus != LiveStatus.live));
 
-    refreshController.refreshCompleted();
+    return true;
   }
 }

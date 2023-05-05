@@ -128,7 +128,8 @@ class TopActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => AnimatedPositioned(
-        top: (!controller.showSettting.value &&
+        top: (!controller.isPipMode.value &&
+                !controller.showSettting.value &&
                 controller.showController.value &&
                 !controller.showLocked.value)
             ? 0
@@ -479,7 +480,8 @@ class LockButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => AnimatedOpacity(
-          opacity: (!controller.showSettting.value &&
+          opacity: (!controller.isPipMode.value &&
+                  !controller.showSettting.value &&
                   controller.fullscreenUI &&
                   controller.showController.value)
               ? 0.9
@@ -527,7 +529,8 @@ class BottomActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => AnimatedPositioned(
-          bottom: (!controller.showSettting.value &&
+          bottom: (!controller.isPipMode.value &&
+                  !controller.showSettting.value &&
                   controller.showController.value &&
                   !controller.showLocked.value)
               ? 0

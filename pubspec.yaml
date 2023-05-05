@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: "1.0.8"
+version: "1.0.9"
 
 environment:
   sdk: ">=2.16.1 <3.0.0"
@@ -44,7 +44,6 @@ dependencies:
   # ui related
   dynamic_color: ^1.5.4
   pull_to_refresh: ^2.0.0
-  responsive_builder: ^0.6.3
   flutter_staggered_grid_view: ^0.6.2
 
   # barrage wall
@@ -165,7 +164,7 @@ msix_config:
   display_name: Pure Live
   publisher_display_name: puretech.com
   identity_name: com.puretech.purelive
-  msix_version: 1.0.8.0
+  msix_version: 1.0.9.0
   logo_path: assets/icons/icon.png
   capabilities: internetClient
   certificate_path: ~\keystore\puretech_signcert.pfx

@@ -9,8 +9,6 @@ import 'package:pure_live/modules/home/mobile_view.dart';
 import 'package:pure_live/modules/home/tablet_view.dart';
 import 'package:pure_live/modules/about/widgets/version_dialog.dart';
 import 'package:pure_live/modules/popular/popular_page.dart';
-import 'package:responsive_builder/responsive_builder.dart';
-
 import '../search/search_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -76,26 +74,23 @@ class _HomePageRouterState extends State<HomePageRouter>
     setState(() => _selectedIndex = index);
   }
 
-  Widget get homeMobile => HomeMobileView(
-        body: bodys[_selectedIndex],
-        index: _selectedIndex,
-        onDestinationSelected: onDestinationSelected,
-      );
-
-  Widget get homeTablet => HomeTabletView(
-        body: bodys[_selectedIndex],
-        index: _selectedIndex,
-        onDestinationSelected: onDestinationSelected,
-      );
+  late double width;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ScreenTypeLayout.builder(
-      mobile: (context) => homeMobile,
-      tablet: (context) => homeTablet,
-      desktop: (context) => homeTablet,
-    );
+    width = MediaQuery.of(context).size.width;
+    return width <= 480
+        ? HomeMobileView(
+            body: bodys[_selectedIndex],
+            index: _selectedIndex,
+            onDestinationSelected: onDestinationSelected,
+          )
+        : HomeTabletView(
+            body: bodys[_selectedIndex],
+            index: _selectedIndex,
+            onDestinationSelected: onDestinationSelected,
+          );
   }
 
   @override
