@@ -5,15 +5,17 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:better_player/better_player.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
-import 'package:pure_live/modules/live_play/widgets/video_player/video_player_provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'danmaku_text.dart';
 import 'video_controller_panel.dart';
+import 'video_player_provider.dart';
 
 class VideoController with ChangeNotifier {
   final GlobalKey playerKey;
@@ -152,7 +154,7 @@ class VideoController with ChangeNotifier {
   VideoPlayerProvider? controllerProvider;
 
   // Danmaku player control
-  DanmakuController? danmakuController;
+  final danmakuController = BarrageWallController();
   final hideDanmaku = false.obs;
   final danmakuArea = 1.0.obs;
   final danmakuSpeed = 8.0.obs;
@@ -168,57 +170,37 @@ class VideoController with ChangeNotifier {
     danmakuArea.value = PrefUtil.getDouble('danmakuArea') ?? 1.0;
     danmakuArea.listen((data) {
       PrefUtil.setDouble('danmakuArea', data);
-      updateDanmakuOption();
     });
     danmakuSpeed.value = PrefUtil.getDouble('danmakuSpeed') ?? 8;
     danmakuSpeed.listen((data) {
       PrefUtil.setDouble('danmakuSpeed', data);
-      updateDanmakuOption();
     });
     danmakuFontSize.value = PrefUtil.getDouble('danmakuFontSize') ?? 16;
     danmakuFontSize.listen((data) {
       PrefUtil.setDouble('danmakuFontSize', data);
-      updateDanmakuOption();
     });
     danmakuFontBorder.value = PrefUtil.getDouble('danmakuFontBorder') ?? 0.5;
     danmakuFontBorder.listen((data) {
       PrefUtil.setDouble('danmakuFontBorder', data);
-      updateDanmakuOption();
     });
     danmakuOpacity.value = PrefUtil.getDouble('danmakuOpacity') ?? 1.0;
     danmakuOpacity.listen((data) {
       PrefUtil.setDouble('danmakuOpacity', data);
-      updateDanmakuOption();
     });
-
-    danmakuController ??= DanmakuController();
-    updateDanmakuOption();
-  }
-
-  void updateDanmakuOption() {
-    danmakuController?.updateOption(DanmakuOption(
-      fontSize: danmakuFontSize.value,
-      area: danmakuArea.value,
-      duration: danmakuSpeed.value,
-      opacity: danmakuOpacity.value,
-      borderText: danmakuFontBorder.value != 0,
-      strokeWidth: danmakuFontBorder.value,
-    ));
   }
 
   void sendDanmaku(LiveMessage msg) {
     if (hideDanmaku.value) return;
 
-    danmakuController?.addItems([
-      DanmakuItem(
-        msg.message,
-        color: Color.fromARGB(
-          255,
-          msg.color.r,
-          msg.color.g,
-          msg.color.b,
+    danmakuController.send([
+      Bullet(
+        child: DanmakuText(
+          msg.message,
+          fontSize: danmakuFontSize.value,
+          strokeWidth: danmakuFontBorder.value,
+          color: Color.fromARGB(255, msg.color.r, msg.color.g, msg.color.b),
         ),
-      )
+      ),
     ]);
   }
 
@@ -228,7 +210,7 @@ class VideoController with ChangeNotifier {
     if (allowScreenKeepOn) Wakelock.disable();
     _shutdownTimer?.cancel();
     brightnessController.resetScreenBrightness();
-    danmakuController?.pause();
+    danmakuController.dispose();
     desktopController?.dispose();
     mobileController?.removeEventsListener(mobileStateListener);
     mobileController?.dispose();
@@ -266,7 +248,7 @@ class VideoController with ChangeNotifier {
                 showNotification: true,
                 title: room.title,
                 author: room.nick,
-                imageUrl: room.cover,
+                imageUrl: room.avatar,
                 activityName: "MainActivity",
               )
             : null,
@@ -390,6 +372,7 @@ class VideoController with ChangeNotifier {
   void enterPipMode(BuildContext context) async {
     if ((Platform.isAndroid || Platform.isIOS)) {
       if (await mobileController?.isPictureInPictureSupported() ?? false) {
+        isPipMode.value = true;
         mobileController?.enablePictureInPicture(playerKey);
       } else {
         SnackBarUtil.error('暂不支持画中画');

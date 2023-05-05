@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/gestures.dart';
+import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:pure_live/common/index.dart';
@@ -301,16 +302,21 @@ class DanmakuViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraint) => Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        height: constraint.maxHeight * controller.danmakuArea.value,
-        child: Obx(() => Offstage(
-              offstage: controller.hideDanmaku.value,
-              child: DanmakuView(
-                danmakuController: controller.danmakuController!,
-                option: DanmakuOption(),
+      builder: (context, constraint) => SizedBox(
+        width: constraint.maxWidth,
+        height: constraint.maxHeight,
+        child: Obx(() => Opacity(
+              opacity: controller.hideDanmaku.value
+                  ? 0
+                  : controller.danmakuOpacity.value,
+              child: BarrageWall(
+                width: constraint.maxWidth,
+                height: constraint.maxHeight * controller.danmakuArea.value,
+                controller: controller.danmakuController,
+                speed: controller.danmakuSpeed.value.toInt(),
+                maxBulletHeight: controller.danmakuFontSize * 1.5,
+                massiveMode: false, // disabled by default
+                child: Container(),
               ),
             )),
       ),

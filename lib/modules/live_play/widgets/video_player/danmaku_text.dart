@@ -1,14 +1,14 @@
+import 'package:pure_live/common/index.dart';
 import 'package:bordered_text/bordered_text.dart';
-import 'package:flutter/material.dart';
 
-class DanmakuBorderText extends StatelessWidget {
+class DanmakuText extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
   final Color color;
   final double fontSize;
   final double strokeWidth;
 
-  const DanmakuBorderText(
+  const DanmakuText(
     this.text, {
     this.textAlign = TextAlign.left,
     this.color = Colors.white,

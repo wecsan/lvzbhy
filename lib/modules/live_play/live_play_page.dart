@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/live_play/live_play_controller.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'widgets/index.dart';
@@ -61,52 +60,42 @@ class LivePlayPage extends GetView<LivePlayController> {
         ],
       ),
       body: SafeArea(
-        child: ScreenTypeLayout.builder(
-          mobile: (context) => buildMobileView(),
-          tablet: (context) => buildTabletView(),
-          desktop: (context) => buildTabletView(),
-        ),
+        child: width <= 480
+            ? Column(
+                children: <Widget>[
+                  buildVideoPlayer(width),
+                  const ResolutionsRow(),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: DanmakuListView(
+                      key: controller.danmakuViewKey,
+                      room: controller.room,
+                    ),
+                  ),
+                ],
+              )
+            : Row(children: <Widget>[
+                Flexible(
+                  flex: 5,
+                  child: buildVideoPlayer(width / 8.0 * 5.0),
+                ),
+                Flexible(
+                  flex: 3,
+                  child: Column(children: [
+                    const ResolutionsRow(),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: DanmakuListView(
+                        key: controller.danmakuViewKey,
+                        room: controller.room,
+                      ),
+                    ),
+                  ]),
+                ),
+              ]),
       ),
       floatingActionButton: FavoriteFloatingButton(room: controller.room),
     );
-  }
-
-  Widget buildMobileView() {
-    return Column(
-      children: <Widget>[
-        buildVideoPlayer(width),
-        const ResolutionsRow(),
-        const Divider(height: 1),
-        Expanded(
-          child: DanmakuListView(
-            key: controller.danmakuViewKey,
-            room: controller.room,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget buildTabletView() {
-    return Row(children: <Widget>[
-      Flexible(
-        flex: 5,
-        child: buildVideoPlayer(width / 8.0 * 5.0),
-      ),
-      Flexible(
-        flex: 3,
-        child: Column(children: [
-          const ResolutionsRow(),
-          const Divider(height: 1),
-          Expanded(
-            child: DanmakuListView(
-              key: controller.danmakuViewKey,
-              room: controller.room,
-            ),
-          ),
-        ]),
-      ),
-    ]);
   }
 
   Widget buildVideoPlayer(double videoWidth) {
@@ -119,7 +108,6 @@ class LivePlayPage extends GetView<LivePlayController> {
           child: Obx(
             () => controller.success.value
                 ? VideoPlayer(
-                    key: controller.playerKey,
                     controller: controller.videoController!,
                   )
                 : Card(

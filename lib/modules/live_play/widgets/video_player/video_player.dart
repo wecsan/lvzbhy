@@ -39,7 +39,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
   Widget _buildVideoFrame() {
     if (Platform.isWindows || Platform.isLinux) {
       return Obx(() => Video(
-            key: Key("${widget.controller.hashCode}_video"),
+            key: widget.controller.playerKey,
             player: widget.controller.desktopController,
             scale: 1.0, // default
             showControls: false, // default
@@ -47,7 +47,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           ));
     } else {
       return BetterPlayer(
-        key: Key("${widget.controller.hashCode}_video"),
+        key: widget.controller.playerKey,
         controller: widget.controller.mobileController!,
       );
     }
