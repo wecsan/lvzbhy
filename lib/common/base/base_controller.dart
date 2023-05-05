@@ -119,7 +119,9 @@ class BaseListController<T> extends BaseController {
         refreshController.loadNoData();
       }
       // 赋值数据
-      list.addAll(result);
+      for (var room in result) {
+        list.addIf(!list.contains(room), room);
+      }
     } catch (e) {
       handleError(e, showPageError: currentPage == 1);
       refreshController.loadFailed();

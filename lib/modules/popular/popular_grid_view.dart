@@ -33,7 +33,7 @@ class PopularGridView extends StatelessWidget {
             event.scrollDelta.direction <= pi) {
           final pos = controller.scrollController.position;
           if (pos.maxScrollExtent - pos.pixels < 40) {
-            controller.onLoading;
+            controller.onLoading();
           }
         }
       },
