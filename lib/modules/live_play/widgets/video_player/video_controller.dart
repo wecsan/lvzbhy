@@ -15,7 +15,6 @@ import 'package:window_manager/window_manager.dart';
 
 import 'danmaku_text.dart';
 import 'video_controller_panel.dart';
-import 'video_player_provider.dart';
 
 class VideoController with ChangeNotifier {
   final GlobalKey playerKey;
@@ -150,8 +149,6 @@ class VideoController with ChangeNotifier {
     isPipMode.value =
         mobileController?.videoPlayerController?.value.isPip ?? false;
   }
-
-  VideoPlayerProvider? controllerProvider;
 
   // Danmaku player control
   final danmakuController = BarrageWallController();
@@ -302,10 +299,7 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(
-              controller: controllerProvider!.controller,
-              child: controllerProvider!.child,
-            ),
+            builder: (context) => DesktopFullscreen(controller: this),
           ),
         );
       } else {
@@ -353,10 +347,7 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(
-              controller: controllerProvider!.controller,
-              child: controllerProvider!.child,
-            ),
+            builder: (context) => DesktopFullscreen(controller: this),
           ),
         );
       } else {
@@ -486,20 +477,24 @@ class _MobileFullscreenState extends State<MobileFullscreen>
 }
 
 class DesktopFullscreen extends StatelessWidget {
-  const DesktopFullscreen({
-    Key? key,
-    required this.controller,
-    required this.child,
-  }) : super(key: key);
+  const DesktopFullscreen({Key? key, required this.controller})
+      : super(key: key);
 
   final VideoController controller;
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: child,
+      body: Stack(
+        children: [
+          Obx(() => Video(
+                player: controller.desktopController,
+                fit: controller.videoFit.value,
+              )),
+          VideoControllerPanel(controller: controller),
+        ],
+      ),
     );
   }
 }

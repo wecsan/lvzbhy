@@ -7,8 +7,6 @@ import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller_panel.dart';
 
-import 'video_player_provider.dart';
-
 class VideoPlayer extends StatefulWidget {
   final VideoController controller;
 
@@ -25,10 +23,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void initState() {
     super.initState();
-    widget.controller.controllerProvider = VideoPlayerProvider(
-      controller: widget.controller,
-      child: _buildPlayer(),
-    );
   }
 
   @override
