@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
-import 'package:pure_live/modules/live_play/widgets/video_player/video_player_provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock/wakelock.dart';
