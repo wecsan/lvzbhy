@@ -37,6 +37,10 @@ class SettingsService extends GetxController {
       PrefUtil.setStringList('favoriteRooms',
           favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList());
     });
+    favoriteAreas.listen((rooms) {
+      PrefUtil.setStringList('favoriteAreas',
+          favoriteAreas.map<String>((e) => jsonEncode(e.toJson())).toList());
+    });
 
     backupDirectory.listen((String value) {
       backupDirectory.value = value;
@@ -164,6 +168,28 @@ class SettingsService extends GetxController {
     return true;
   }
 
+  // Favorite areas storage
+  final favoriteAreas = ((PrefUtil.getStringList('favoriteAreas') ?? [])
+          .map((e) => LiveArea.fromJson(jsonDecode(e)))
+          .toList())
+      .obs;
+
+  bool isFavoriteArea(LiveArea area) {
+    return favoriteAreas.contains(area);
+  }
+
+  bool addArea(LiveArea area) {
+    if (favoriteAreas.contains(area)) return false;
+    favoriteAreas.add(area);
+    return true;
+  }
+
+  bool removeArea(LiveArea area) {
+    if (!favoriteAreas.contains(area)) return false;
+    favoriteAreas.remove(area);
+    return true;
+  }
+
   // Backup & recover storage
   final backupDirectory = (PrefUtil.getString('backupDirectory') ?? '').obs;
 
@@ -191,6 +217,10 @@ class SettingsService extends GetxController {
     favoriteRooms.value = (json['favoriteRooms'] as List)
         .map<LiveRoom>((e) => LiveRoom.fromJson(jsonDecode(e)))
         .toList();
+    favoriteAreas.value = (json['favoriteAreas'] as List)
+        .map<LiveArea>((e) => LiveArea.fromJson(jsonDecode(e)))
+        .toList();
+
     changeThemeMode(json['themeMode'] ?? "System");
     changeThemeColor(json['themeColor'] ?? "Crimson");
     enableDynamicTheme.value = json['enableDynamicTheme'] ?? false;
@@ -208,6 +238,8 @@ class SettingsService extends GetxController {
     Map<String, dynamic> json = {};
     json['favoriteRooms'] =
         favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList();
+    json['favoriteAreas'] =
+        favoriteAreas.map<String>((e) => jsonEncode(e.toJson())).toList();
     json['themeMode'] = themeModeName.value;
     json['themeColor'] = themeColorName.value;
     json['enableDynamicTheme'] = enableDynamicTheme.value;

@@ -2,6 +2,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pure_live/common/index.dart';
+import 'package:pure_live/modules/favorite/favorite_areas_page.dart';
 import 'package:pure_live/modules/favorite/favorite_controller.dart';
 
 class FavoritePage extends GetView<FavoriteController> {
@@ -36,6 +37,11 @@ class FavoritePage extends GetView<FavoriteController> {
             _RoomGridView(online: true),
             _RoomGridView(online: false),
           ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: FloatingActionButton.small(
+          onPressed: () => Get.to(() => const FavoriteAreasPage()),
+          child: const Icon(Icons.area_chart_rounded),
         ),
       );
     });
