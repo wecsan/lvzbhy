@@ -154,11 +154,7 @@ class VideoController with ChangeNotifier {
   VideoPlayerProvider? controllerProvider;
 
   // Danmaku player control
-<<<<<<< HEAD
   final danmakuController = BarrageWallController();
-=======
-  DanmakuController? danmakuController;
->>>>>>> fe8ce92 (dev#ns_danmaku)
   final hideDanmaku = false.obs;
   final danmakuArea = 1.0.obs;
   final danmakuSpeed = 8.0.obs;
@@ -503,7 +499,6 @@ class DesktopFullscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-<<<<<<< HEAD
       body: Stack(
         children: [
           Obx(() => Video(
@@ -513,9 +508,6 @@ class DesktopFullscreen extends StatelessWidget {
           VideoControllerPanel(controller: controller),
         ],
       ),
-=======
-      body: child,
->>>>>>> fe8ce92 (dev#ns_danmaku)
     );
   }
 }
