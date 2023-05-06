@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barrage/flutter_barrage.dart';
 import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
+import 'package:pure_live/modules/live_play/widgets/video_player/video_player_provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock/wakelock.dart';
@@ -150,8 +151,14 @@ class VideoController with ChangeNotifier {
         mobileController?.videoPlayerController?.value.isPip ?? false;
   }
 
+  VideoPlayerProvider? controllerProvider;
+
   // Danmaku player control
+<<<<<<< HEAD
   final danmakuController = BarrageWallController();
+=======
+  DanmakuController? danmakuController;
+>>>>>>> fe8ce92 (dev#ns_danmaku)
   final hideDanmaku = false.obs;
   final danmakuArea = 1.0.obs;
   final danmakuSpeed = 8.0.obs;
@@ -299,7 +306,10 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(controller: this),
+            builder: (context) => DesktopFullscreen(
+              controller: controllerProvider!.controller,
+              child: controllerProvider!.child,
+            ),
           ),
         );
       } else {
@@ -347,7 +357,10 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(controller: this),
+            builder: (context) => DesktopFullscreen(
+              controller: controllerProvider!.controller,
+              child: controllerProvider!.child,
+            ),
           ),
         );
       } else {
@@ -477,15 +490,20 @@ class _MobileFullscreenState extends State<MobileFullscreen>
 }
 
 class DesktopFullscreen extends StatelessWidget {
-  const DesktopFullscreen({Key? key, required this.controller})
-      : super(key: key);
+  const DesktopFullscreen({
+    Key? key,
+    required this.controller,
+    required this.child,
+  }) : super(key: key);
 
   final VideoController controller;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+<<<<<<< HEAD
       body: Stack(
         children: [
           Obx(() => Video(
@@ -495,6 +513,9 @@ class DesktopFullscreen extends StatelessWidget {
           VideoControllerPanel(controller: controller),
         ],
       ),
+=======
+      body: child,
+>>>>>>> fe8ce92 (dev#ns_danmaku)
     );
   }
 }

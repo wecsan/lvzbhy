@@ -7,6 +7,8 @@ import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller_panel.dart';
 
+import 'video_player_provider.dart';
+
 class VideoPlayer extends StatefulWidget {
   final VideoController controller;
 
@@ -23,6 +25,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
+=======
+    widget.controller.controllerProvider = VideoPlayerProvider(
+      controller: widget.controller,
+      child: _buildPlayer(),
+    );
+>>>>>>> fe8ce92 (dev#ns_danmaku)
   }
 
   @override
@@ -33,7 +42,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
   Widget _buildVideoFrame() {
     if (Platform.isWindows || Platform.isLinux) {
       return Obx(() => Video(
+<<<<<<< HEAD
             key: widget.controller.playerKey,
+=======
+            key: Key("${widget.controller.hashCode}_video"),
+>>>>>>> fe8ce92 (dev#ns_danmaku)
             player: widget.controller.desktopController,
             scale: 1.0, // default
             showControls: false, // default
@@ -41,7 +54,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
           ));
     } else {
       return BetterPlayer(
+<<<<<<< HEAD
         key: widget.controller.playerKey,
+=======
+        key: Key("${widget.controller.hashCode}_video"),
+>>>>>>> fe8ce92 (dev#ns_danmaku)
         controller: widget.controller.mobileController!,
       );
     }

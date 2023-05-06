@@ -305,6 +305,7 @@ class DanmakuViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
+<<<<<<< HEAD
       builder: (context, constraint) => SizedBox(
         width: constraint.maxWidth,
         height: constraint.maxHeight,
@@ -320,6 +321,18 @@ class DanmakuViewer extends StatelessWidget {
                 maxBulletHeight: controller.danmakuFontSize * 1.5,
                 massiveMode: false, // disabled by default
                 child: Container(),
+=======
+      builder: (context, constraint) => Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        height: constraint.maxHeight * controller.danmakuArea.value,
+        child: Obx(() => Offstage(
+              offstage: controller.hideDanmaku.value,
+              child: DanmakuView(
+                danmakuController: controller.danmakuController!,
+                option: DanmakuOption(),
+>>>>>>> fe8ce92 (dev#ns_danmaku)
               ),
             )),
       ),
