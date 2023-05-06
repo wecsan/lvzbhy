@@ -31,8 +31,8 @@ class AreasPage extends GetView<AreasController> {
           controller: controller.tabController,
           children: Sites.supportSites
               .map((e) => AreaGridView(
-                    labels: controller.data[e.id]!['labels'],
-                    areas: controller.data[e.id]!['areas'],
+                    labels: controller.data[e.id]?['labels'] ?? [],
+                    areas: controller.data[e.id]?['areas'] ?? [],
                   ))
               .toList(),
         ),

@@ -4,10 +4,12 @@ import 'package:pure_live/common/index.dart';
 class AreasController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late TabController tabController;
-  int index = 0;
 
   AreasController() {
+    final preferPlatform = Get.find<SettingsService>().preferPlatform.value;
+    final index = Sites.supportSites.indexWhere((e) => e.id == preferPlatform);
     tabController = TabController(
+      initialIndex: index == -1 ? 0 : index,
       length: Sites.supportSites.length,
       vsync: this,
     );
