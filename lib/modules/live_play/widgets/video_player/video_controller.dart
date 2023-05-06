@@ -151,8 +151,6 @@ class VideoController with ChangeNotifier {
         mobileController?.videoPlayerController?.value.isPip ?? false;
   }
 
-  VideoPlayerProvider? controllerProvider;
-
   // Danmaku player control
   final danmakuController = BarrageWallController();
   final hideDanmaku = false.obs;
@@ -302,10 +300,7 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(
-              controller: controllerProvider!.controller,
-              child: controllerProvider!.child,
-            ),
+            builder: (context) => DesktopFullscreen(controller: this),
           ),
         );
       } else {
@@ -353,10 +348,7 @@ class VideoController with ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(
-              controller: controllerProvider!.controller,
-              child: controllerProvider!.child,
-            ),
+            builder: (context) => DesktopFullscreen(controller: this),
           ),
         );
       } else {
@@ -486,14 +478,10 @@ class _MobileFullscreenState extends State<MobileFullscreen>
 }
 
 class DesktopFullscreen extends StatelessWidget {
-  const DesktopFullscreen({
-    Key? key,
-    required this.controller,
-    required this.child,
-  }) : super(key: key);
+  const DesktopFullscreen({Key? key, required this.controller})
+      : super(key: key);
 
   final VideoController controller;
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {

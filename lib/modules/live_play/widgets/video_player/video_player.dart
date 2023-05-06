@@ -7,8 +7,6 @@ import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller.dart';
 import 'package:pure_live/modules/live_play/widgets/video_player/video_controller_panel.dart';
 
-import 'video_player_provider.dart';
-
 class VideoPlayer extends StatefulWidget {
   final VideoController controller;
 
