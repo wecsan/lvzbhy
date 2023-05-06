@@ -64,7 +64,7 @@ class RoomCard extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       color: Theme.of(context).focusColor,
                       elevation: 0,
-                      child: room.liveStatus.name == 'live'
+                      child: room.liveStatus != LiveStatus.offline
                           ? CachedNetworkImage(
                               imageUrl: room.cover,
                               fit: BoxFit.fill,
@@ -97,6 +97,16 @@ class RoomCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (room.liveStatus == LiveStatus.replay)
+                  Positioned(
+                    right: dense ? 1 : 4,
+                    top: dense ? 1 : 4,
+                    child: CountChip(
+                      icon: Icons.videocam_rounded,
+                      count: '播放录播中',
+                      dense: dense,
+                    ),
+                  ),
                 if (room.liveStatus == LiveStatus.live &&
                     room.watching.isNotEmpty)
                   Positioned(

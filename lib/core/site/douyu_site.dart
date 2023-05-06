@@ -148,6 +148,20 @@ class DouyuSite implements LiveSite {
                 ? LiveStatus.live
                 : LiveStatus.offline;
       }
+
+      // fix douyu replay status
+      try {
+        dynamic body = await _getJson(
+            'https://www.douyu.com/wgapi/live/liveweb/getRoomLoopInfo?rid=${room.roomId}');
+        if (body['error'] == 0) {
+          Map data = body['data'];
+          if (data.containsKey('rst') && data['rst'] == 3) {
+            room.liveStatus = LiveStatus.replay;
+          }
+        }
+      } catch (e) {
+        log(e.toString(), name: 'DouyuApi.getRoomInfo.rstinfo');
+      }
     } catch (e) {
       log(e.toString(), name: 'DouyuApi.getRoomInfo');
       return room;
