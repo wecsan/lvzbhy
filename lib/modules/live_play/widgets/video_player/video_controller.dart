@@ -143,7 +143,7 @@ class VideoController with ChangeNotifier {
 
   dynamic mobileStateListener(dynamic state) {
     hasError.value =
-        mobileController?.videoPlayerController?.value.hasError ?? false;
+        mobileController?.videoPlayerController?.value.hasError ?? true;
     isPlaying.value = mobileController?.isPlaying() ?? false;
     isBuffering.value = mobileController?.isBuffering() ?? false;
     isPipMode.value =

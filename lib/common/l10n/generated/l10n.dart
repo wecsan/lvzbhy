@@ -1300,6 +1300,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Play Video Failed`
+  String get play_video_failed {
+    return Intl.message(
+      'Play Video Failed',
+      name: 'play_video_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get retry {
+    return Intl.message(
+      'Retry',
+      name: 'retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `REPLAY`
+  String get replay {
+    return Intl.message(
+      'REPLAY',
+      name: 'replay',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

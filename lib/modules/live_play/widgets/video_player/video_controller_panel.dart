@@ -21,8 +21,7 @@ class VideoControllerPanel extends StatefulWidget {
   State<StatefulWidget> createState() => _VideoControllerPanelState();
 }
 
-class _VideoControllerPanelState extends State<VideoControllerPanel>
-    with SingleTickerProviderStateMixin {
+class _VideoControllerPanelState extends State<VideoControllerPanel> {
   static const barHeight = 56.0;
 
   // Video controllers
@@ -92,11 +91,11 @@ class ErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Text(
-              '无法播放直播',
-              style: TextStyle(color: Colors.white),
+              S.of(context).play_video_failed,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
           ElevatedButton(
@@ -105,7 +104,10 @@ class ErrorWidget extends StatelessWidget {
               elevation: 0,
               backgroundColor: Colors.white.withOpacity(0.2),
             ),
-            child: const Text('重试', style: TextStyle(color: Colors.white)),
+            child: Text(
+              S.of(context).retry,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),

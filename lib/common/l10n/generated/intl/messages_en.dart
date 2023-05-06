@@ -172,6 +172,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline_room_title": MessageLookupByLibrary.simpleMessage("Offline"),
         "online_room_title": MessageLookupByLibrary.simpleMessage("Online"),
         "only_living": MessageLookupByLibrary.simpleMessage("Only Living"),
+        "play_video_failed":
+            MessageLookupByLibrary.simpleMessage("Play Video Failed"),
         "popular_title": MessageLookupByLibrary.simpleMessage("Popular"),
         "prefer_platform":
             MessageLookupByLibrary.simpleMessage("Platform Preference"),
@@ -195,6 +197,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recover_backup_success": MessageLookupByLibrary.simpleMessage(
             "Recover backup success, please restart"),
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
+        "replay": MessageLookupByLibrary.simpleMessage("REPLAY"),
+        "retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "room_info_content": m4,
         "search_input_hint":
             MessageLookupByLibrary.simpleMessage("Input live room keyword"),

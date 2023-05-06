@@ -64,34 +64,22 @@ class RoomCard extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       color: Theme.of(context).focusColor,
                       elevation: 0,
-                      child: room.liveStatus != LiveStatus.offline
-                          ? CachedNetworkImage(
+                      child: room.liveStatus == LiveStatus.offline
+                          ? Center(
+                              child: Icon(
+                                Icons.tv_off_rounded,
+                                size: dense ? 36 : 60,
+                              ),
+                            )
+                          : CachedNetworkImage(
                               imageUrl: room.cover,
                               fit: BoxFit.fill,
                               errorWidget: (context, error, stackTrace) =>
                                   Center(
                                 child: Icon(
                                   Icons.live_tv_rounded,
-                                  size: dense ? 30 : 48,
+                                  size: dense ? 38 : 62,
                                 ),
-                              ),
-                            )
-                          : Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.tv_off_rounded,
-                                    size: dense ? 38 : 48,
-                                  ),
-                                  Text(
-                                    S.of(context).offline,
-                                    style: TextStyle(
-                                      fontSize: dense ? 18 : 26,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )
-                                ],
                               ),
                             ),
                     ),
@@ -103,8 +91,9 @@ class RoomCard extends StatelessWidget {
                     top: dense ? 1 : 4,
                     child: CountChip(
                       icon: Icons.videocam_rounded,
-                      count: '播放录播中',
+                      count: S.of(context).replay,
                       dense: dense,
+                      color: Theme.of(context).colorScheme.errorContainer,
                     ),
                   ),
                 if (room.liveStatus == LiveStatus.live &&
@@ -208,22 +197,25 @@ class CountChip extends StatelessWidget {
     required this.icon,
     required this.count,
     this.dense = false,
+    this.color = Colors.black,
   }) : super(key: key);
 
   final IconData icon;
   final String count;
   final bool dense;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: const StadiumBorder(),
-      color: Colors.black.withOpacity(0.4),
+      color: color.withOpacity(0.5),
       shadowColor: Colors.transparent,
       elevation: 0,
       child: Padding(
         padding: EdgeInsets.all(dense ? 4 : 6),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Icon(
               icon,
@@ -235,7 +227,7 @@ class CountChip extends StatelessWidget {
               count,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.white.withOpacity(0.8),
-                    fontSize: dense ? 10 : null,
+                    fontSize: dense ? 9 : 11,
                   ),
             ),
           ],

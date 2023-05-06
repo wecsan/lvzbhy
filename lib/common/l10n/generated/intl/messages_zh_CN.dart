@@ -148,6 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline_room_title": MessageLookupByLibrary.simpleMessage("未开播"),
         "online_room_title": MessageLookupByLibrary.simpleMessage("已开播"),
         "only_living": MessageLookupByLibrary.simpleMessage("只搜索直播中"),
+        "play_video_failed": MessageLookupByLibrary.simpleMessage("无法播放直播"),
         "popular_title": MessageLookupByLibrary.simpleMessage("热门"),
         "prefer_platform": MessageLookupByLibrary.simpleMessage("首选直播平台"),
         "prefer_platform_subtitle":
@@ -167,6 +168,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recover_backup_success":
             MessageLookupByLibrary.simpleMessage("恢复备份成功，请重启"),
         "remove": MessageLookupByLibrary.simpleMessage("删除"),
+        "replay": MessageLookupByLibrary.simpleMessage("录播"),
+        "retry": MessageLookupByLibrary.simpleMessage("重试"),
         "room_info_content": m4,
         "search_input_hint": MessageLookupByLibrary.simpleMessage("输入直播关键字"),
         "select_recover_file": MessageLookupByLibrary.simpleMessage("选择备份文件"),
