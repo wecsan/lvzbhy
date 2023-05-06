@@ -7,37 +7,38 @@ import 'package:pure_live/modules/favorite/favorite_controller.dart';
 class FavoritePage extends GetView<FavoriteController> {
   const FavoritePage({Key? key}) : super(key: key);
 
-  bool get showAction => Get.size.width <= 480;
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        scrolledUnderElevation: 0,
-        leading: showAction ? const MenuButton() : null,
-        actions: showAction ? [const SearchButton()] : null,
-        title: TabBar(
+    return LayoutBuilder(builder: (context, constraint) {
+      bool showAction = constraint.maxWidth <= 480;
+      return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          scrolledUnderElevation: 0,
+          leading: showAction ? const MenuButton() : null,
+          actions: showAction ? [const SearchButton()] : null,
+          title: TabBar(
+            controller: controller.tabController,
+            isScrollable: true,
+            labelStyle:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: [
+              Tab(text: S.of(context).online_room_title),
+              Tab(text: S.of(context).offline_room_title),
+            ],
+          ),
+        ),
+        body: TabBarView(
           controller: controller.tabController,
-          isScrollable: true,
-          labelStyle:
-              const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 12),
-          indicatorSize: TabBarIndicatorSize.label,
-          tabs: [
-            Tab(text: S.of(context).online_room_title),
-            Tab(text: S.of(context).offline_room_title),
+          children: [
+            _RoomGridView(online: true),
+            _RoomGridView(online: false),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: controller.tabController,
-        children: [
-          _RoomGridView(online: true),
-          _RoomGridView(online: false),
-        ],
-      ),
-    );
+      );
+    });
   }
 }
 

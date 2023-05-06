@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
@@ -15,20 +16,27 @@ class SearchListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => controller.list.isNotEmpty
-        ? ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(8),
-            itemCount: controller.list.length,
-            itemBuilder: (context, index) {
-              final room = controller.list[index];
-              return OwnerCard(room: room);
-            })
-        : EmptyView(
-            icon: Icons.live_tv_rounded,
-            title: S.of(context).empty_search_title,
-            subtitle: S.of(context).empty_search_subtitle,
-          ));
+    return LayoutBuilder(builder: (context, constraint) {
+      final width = constraint.maxWidth;
+      final crossAxisCount =
+          width > 1280 ? 4 : (width > 960 ? 3 : (width > 640 ? 2 : 1));
+      return Obx(() => controller.list.isNotEmpty
+          ? MasonryGridView.count(
+              padding: const EdgeInsets.all(8),
+              physics: const BouncingScrollPhysics(),
+              controller: controller.scrollController,
+              crossAxisCount: crossAxisCount,
+              itemCount: controller.list.length,
+              itemBuilder: (context, index) {
+                final room = controller.list[index];
+                return OwnerCard(room: room);
+              })
+          : EmptyView(
+              icon: Icons.live_tv_rounded,
+              title: S.of(context).empty_search_title,
+              subtitle: S.of(context).empty_search_subtitle,
+            ));
+    });
   }
 }
 

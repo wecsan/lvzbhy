@@ -8,60 +8,64 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pure_live/common/index.dart';
 import 'package:pure_live/modules/popular/popular_grid_controller.dart';
 
-class PopularGridView extends StatelessWidget {
+class PopularGridView extends StatefulWidget {
   final String tag;
 
   const PopularGridView(this.tag, {Key? key}) : super(key: key);
 
-  PopularGridController get controller =>
-      Get.find<PopularGridController>(tag: tag);
+  @override
+  State<PopularGridView> createState() => _PopularGridViewState();
+}
 
-  int get crossAxisCount {
-    double screenWidth = Get.size.width;
-    int crossAxisCount = screenWidth > 1280
-        ? 5
-        : (screenWidth > 960 ? 4 : (screenWidth > 640 ? 3 : 2));
-    return crossAxisCount;
-  }
+class _PopularGridViewState extends State<PopularGridView> {
+  PopularGridController get controller =>
+      Get.find<PopularGridController>(tag: widget.tag);
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerSignal: (event) {
-        if (event is PointerScrollEvent &&
-            event.scrollDelta.direction >= 0 &&
-            event.scrollDelta.direction <= pi) {
-          final pos = controller.scrollController.position;
-          if (pos.maxScrollExtent - pos.pixels < 40) {
-            controller.onLoading();
-          }
-        }
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        final width = constraint.maxWidth;
+        final crossAxisCount =
+            width > 1280 ? 5 : (width > 960 ? 4 : (width > 640 ? 3 : 2));
+        return Listener(
+          onPointerSignal: (event) {
+            if (event is PointerScrollEvent &&
+                event.scrollDelta.direction >= 0 &&
+                event.scrollDelta.direction <= pi) {
+              final pos = controller.scrollController.position;
+              if (pos.maxScrollExtent - pos.pixels < 40) {
+                controller.onLoading();
+              }
+            }
+          },
+          child: Obx(() => SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: true,
+                header: const WaterDropHeader(),
+                footer: const ClassicFooter(),
+                controller: controller.refreshController,
+                onRefresh: controller.onRefresh,
+                onLoading: controller.onLoading,
+                child: controller.list.isNotEmpty
+                    ? MasonryGridView.count(
+                        padding: const EdgeInsets.all(5),
+                        controller: controller.scrollController,
+                        crossAxisCount: crossAxisCount,
+                        itemCount: controller.list.length,
+                        itemBuilder: (context, index) => RoomCard(
+                          room: controller.list[index],
+                          dense: true,
+                        ),
+                      )
+                    : EmptyView(
+                        icon: Icons.live_tv_rounded,
+                        title: S.of(context).empty_live_title,
+                        subtitle: S.of(context).empty_live_subtitle,
+                      ),
+              )),
+        );
       },
-      child: Obx(() => SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            header: const WaterDropHeader(),
-            footer: const ClassicFooter(),
-            controller: controller.refreshController,
-            onRefresh: controller.onRefresh,
-            onLoading: controller.onLoading,
-            child: controller.list.isNotEmpty
-                ? MasonryGridView.count(
-                    padding: const EdgeInsets.all(5),
-                    controller: controller.scrollController,
-                    crossAxisCount: crossAxisCount,
-                    itemCount: controller.list.length,
-                    itemBuilder: (context, index) => RoomCard(
-                      room: controller.list[index],
-                      dense: true,
-                    ),
-                  )
-                : EmptyView(
-                    icon: Icons.live_tv_rounded,
-                    title: S.of(context).empty_live_title,
-                    subtitle: S.of(context).empty_live_subtitle,
-                  ),
-          )),
     );
   }
 }

@@ -13,11 +13,8 @@ class LivePlayPage extends GetView<LivePlayController> {
   final SettingsService settings = Get.find<SettingsService>();
   final GlobalKey videoPlayerKey = GlobalKey();
 
-  late double width;
-
   @override
   Widget build(BuildContext context) {
-    width = MediaQuery.of(context).size.width;
     if (settings.enableScreenKeepOn.value) {
       Wakelock.toggle(enable: settings.enableScreenKeepOn.value);
     }
@@ -60,29 +57,13 @@ class LivePlayPage extends GetView<LivePlayController> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: width <= 480
-            ? Column(
-                children: <Widget>[
-                  buildVideoPlayer(width),
-                  const ResolutionsRow(),
-                  const Divider(height: 1),
-                  Expanded(
-                    child: DanmakuListView(
-                      key: controller.danmakuViewKey,
-                      room: controller.room,
-                    ),
-                  ),
-                ],
-              )
-            : Row(children: <Widget>[
-                Flexible(
-                  flex: 5,
-                  child: buildVideoPlayer(width / 8.0 * 5.0),
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Column(children: [
+      body: LayoutBuilder(builder: (context, constraint) {
+        final width = constraint.maxWidth;
+        return SafeArea(
+          child: width <= 480
+              ? Column(
+                  children: <Widget>[
+                    buildVideoPlayer(),
                     const ResolutionsRow(),
                     const Divider(height: 1),
                     Expanded(
@@ -91,15 +72,34 @@ class LivePlayPage extends GetView<LivePlayController> {
                         room: controller.room,
                       ),
                     ),
-                  ]),
-                ),
-              ]),
-      ),
+                  ],
+                )
+              : Row(children: <Widget>[
+                  Flexible(
+                    flex: 5,
+                    child: buildVideoPlayer(),
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: Column(children: [
+                      const ResolutionsRow(),
+                      const Divider(height: 1),
+                      Expanded(
+                        child: DanmakuListView(
+                          key: controller.danmakuViewKey,
+                          room: controller.room,
+                        ),
+                      ),
+                    ]),
+                  ),
+                ]),
+        );
+      }),
       floatingActionButton: FavoriteFloatingButton(room: controller.room),
     );
   }
 
-  Widget buildVideoPlayer(double videoWidth) {
+  Widget buildVideoPlayer() {
     return Hero(
       tag: controller.room.roomId,
       child: AspectRatio(

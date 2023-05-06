@@ -11,32 +11,15 @@ import 'package:pure_live/modules/about/widgets/version_dialog.dart';
 import 'package:pure_live/modules/popular/popular_page.dart';
 import '../search/search_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
-  //homepage
-  @override
-  Widget build(BuildContext context) {
-    return const HomePageRouter();
-  }
-}
-
-class HomePageRouter extends StatefulWidget {
-  const HomePageRouter({Key? key}) : super(key: key);
 
   @override
-  State<HomePageRouter> createState() => _HomePageRouterState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageRouterState extends State<HomePageRouter>
+class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  int _selectedIndex = 0;
-  final bodys = const [
-    FavoritePage(),
-    PopularPage(),
-    AreasPage(),
-    SearchPage(),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -70,27 +53,34 @@ class _HomePageRouterState extends State<HomePageRouter>
     );
   }
 
+  int _selectedIndex = 0;
+  final List<Widget> bodys = const [
+    FavoritePage(),
+    PopularPage(),
+    AreasPage(),
+    SearchPage(),
+  ];
+
   void onDestinationSelected(int index) {
     setState(() => _selectedIndex = index);
   }
 
-  late double width;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    width = MediaQuery.of(context).size.width;
-    return width <= 480
-        ? HomeMobileView(
-            body: bodys[_selectedIndex],
-            index: _selectedIndex,
-            onDestinationSelected: onDestinationSelected,
-          )
-        : HomeTabletView(
-            body: bodys[_selectedIndex],
-            index: _selectedIndex,
-            onDestinationSelected: onDestinationSelected,
-          );
+    return LayoutBuilder(
+      builder: (context, constraint) => constraint.maxWidth <= 480
+          ? HomeMobileView(
+              body: bodys[_selectedIndex],
+              index: _selectedIndex,
+              onDestinationSelected: onDestinationSelected,
+            )
+          : HomeTabletView(
+              body: bodys[_selectedIndex],
+              index: _selectedIndex,
+              onDestinationSelected: onDestinationSelected,
+            ),
+    );
   }
 
   @override

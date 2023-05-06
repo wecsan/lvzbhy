@@ -8,15 +8,19 @@ class DonatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).support_donate)),
-      body: MasonryGridView.count(
-        physics: const BouncingScrollPhysics(),
-        crossAxisCount: MediaQuery.of(context).size.width < 640 ? 1 : 2,
-        itemCount: 2,
-        itemBuilder: (BuildContext context, int index) => widgets[index],
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraint) {
+      final width = constraint.maxWidth;
+      final crossAxisCount = width > 640 ? 2 : 1;
+      return Scaffold(
+        appBar: AppBar(title: Text(S.of(context).support_donate)),
+        body: MasonryGridView.count(
+          physics: const BouncingScrollPhysics(),
+          crossAxisCount: crossAxisCount,
+          itemCount: 2,
+          itemBuilder: (BuildContext context, int index) => widgets[index],
+        ),
+      );
+    });
   }
 }
 
