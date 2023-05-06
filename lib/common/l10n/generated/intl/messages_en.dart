@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(time) => "${time} Min";
 
+  static String m6(name) => "Are you sure to unfollow ${name}?";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("About"),
@@ -226,6 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
         "timedclose_time": m5,
         "unfollow": MessageLookupByLibrary.simpleMessage("Unfollow"),
+        "unfollow_message": m6,
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "video": MessageLookupByLibrary.simpleMessage("Video"),

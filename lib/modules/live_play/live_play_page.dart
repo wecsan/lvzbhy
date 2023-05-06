@@ -269,8 +269,28 @@ class _FavoriteFloatingButtonState extends State<FavoriteFloatingButton> {
             backgroundColor: Theme.of(context).cardColor,
             tooltip: S.of(context).unfollow,
             onPressed: () {
-              setState(() => isFavorite = !isFavorite);
-              settings.removeRoom(widget.room);
+              Get.dialog(
+                AlertDialog(
+                  title: Text(S.of(context).unfollow),
+                  content:
+                      Text(S.of(context).unfollow_message(widget.room.nick)),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Get.back(result: false),
+                      child: Text(S.of(context).cancel),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Get.back(result: true),
+                      child: Text(S.of(context).confirm),
+                    ),
+                  ],
+                ),
+              ).then((value) {
+                if (value) {
+                  setState(() => isFavorite = !isFavorite);
+                  settings.removeRoom(widget.room);
+                }
+              });
             },
             child: CircleAvatar(
               foregroundImage: (widget.room.avatar == '')

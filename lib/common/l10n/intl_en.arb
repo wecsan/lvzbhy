@@ -143,6 +143,7 @@
     
     "follow": "Follow",
     "unfollow": "Unfollow",
+    "unfollow_message": "Are you sure to unfollow {name}?",
     "followed": "Followed",
     "offline": "Offline",
     "info_is_offline": "{name} is offline.",

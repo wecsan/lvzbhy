@@ -142,6 +142,7 @@
     
     "follow": "关注",
     "unfollow": "取消关注",
+    "unfollow_message": "确定要取消关注{name}吗？",
     "followed": "已关注",
     "offline": "未直播",
     "info_is_offline": "{name}未开始直播.",

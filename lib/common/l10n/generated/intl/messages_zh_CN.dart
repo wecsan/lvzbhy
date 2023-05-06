@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(time) => "${time} 分钟";
 
+  static String m6(name) => "确定要取消关注${name}吗？";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("关于"),
@@ -188,6 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
         "timedclose_time": m5,
         "unfollow": MessageLookupByLibrary.simpleMessage("取消关注"),
+        "unfollow_message": m6,
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "video": MessageLookupByLibrary.simpleMessage("视频"),

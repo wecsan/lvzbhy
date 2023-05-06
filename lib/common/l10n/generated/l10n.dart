@@ -1211,6 +1211,16 @@ class S {
     );
   }
 
+  /// `Are you sure to unfollow {name}?`
+  String unfollow_message(Object name) {
+    return Intl.message(
+      'Are you sure to unfollow $name?',
+      name: 'unfollow_message',
+      desc: '',
+      args: [name],
+    );
+  }
+
   /// `Followed`
   String get followed {
     return Intl.message(
