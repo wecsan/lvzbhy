@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(time) => "${time} Min";
 
+  static String m6(name) => "Are you sure to unfollow ${name}?";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("About"),
@@ -162,12 +164,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "issue_feedback":
             MessageLookupByLibrary.simpleMessage("Issue Feedback"),
         "license": MessageLookupByLibrary.simpleMessage("License"),
-        "loading_canload":
-            MessageLookupByLibrary.simpleMessage("release to load"),
-        "loading_failed":
-            MessageLookupByLibrary.simpleMessage("Load Failed! Drag Retry!"),
-        "loading_idle": MessageLookupByLibrary.simpleMessage("pull up to load"),
-        "loading_nomore": MessageLookupByLibrary.simpleMessage("No more Data"),
         "move_to_top": MessageLookupByLibrary.simpleMessage("Move To Top"),
         "new_version_info": m2,
         "no_new_version_info": MessageLookupByLibrary.simpleMessage(
@@ -176,6 +172,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline_room_title": MessageLookupByLibrary.simpleMessage("Offline"),
         "online_room_title": MessageLookupByLibrary.simpleMessage("Online"),
         "only_living": MessageLookupByLibrary.simpleMessage("Only Living"),
+        "play_video_failed":
+            MessageLookupByLibrary.simpleMessage("Play Video Failed"),
         "popular_title": MessageLookupByLibrary.simpleMessage("Popular"),
         "prefer_platform":
             MessageLookupByLibrary.simpleMessage("Platform Preference"),
@@ -199,6 +197,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recover_backup_success": MessageLookupByLibrary.simpleMessage(
             "Recover backup success, please restart"),
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
+        "replay": MessageLookupByLibrary.simpleMessage("REPLAY"),
+        "retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "room_info_content": m4,
         "search_input_hint":
             MessageLookupByLibrary.simpleMessage("Input live room keyword"),
@@ -232,6 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
         "timedclose_time": m5,
         "unfollow": MessageLookupByLibrary.simpleMessage("Unfollow"),
+        "unfollow_message": m6,
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "video": MessageLookupByLibrary.simpleMessage("Video"),

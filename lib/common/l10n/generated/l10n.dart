@@ -120,46 +120,6 @@ class S {
     );
   }
 
-  /// `pull up to load`
-  String get loading_idle {
-    return Intl.message(
-      'pull up to load',
-      name: 'loading_idle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load Failed! Drag Retry!`
-  String get loading_failed {
-    return Intl.message(
-      'Load Failed! Drag Retry!',
-      name: 'loading_failed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No more Data`
-  String get loading_nomore {
-    return Intl.message(
-      'No more Data',
-      name: 'loading_nomore',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `release to load`
-  String get loading_canload {
-    return Intl.message(
-      'release to load',
-      name: 'loading_canload',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Favorites`
   String get favorites_title {
     return Intl.message(
@@ -1251,6 +1211,16 @@ class S {
     );
   }
 
+  /// `Are you sure to unfollow {name}?`
+  String unfollow_message(Object name) {
+    return Intl.message(
+      'Are you sure to unfollow $name?',
+      name: 'unfollow_message',
+      desc: '',
+      args: [name],
+    );
+  }
+
   /// `Followed`
   String get followed {
     return Intl.message(
@@ -1326,6 +1296,36 @@ class S {
     return Intl.message(
       'DLNA device not found',
       name: 'dlan_device_not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Play Video Failed`
+  String get play_video_failed {
+    return Intl.message(
+      'Play Video Failed',
+      name: 'play_video_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get retry {
+    return Intl.message(
+      'Retry',
+      name: 'retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `REPLAY`
+  String get replay {
+    return Intl.message(
+      'REPLAY',
+      name: 'replay',
       desc: '',
       args: [],
     );

@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(time) => "${time} 分钟";
 
+  static String m6(name) => "确定要取消关注${name}吗？";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("关于"),
@@ -139,10 +141,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_is_replay": m1,
         "issue_feedback": MessageLookupByLibrary.simpleMessage("问题反馈"),
         "license": MessageLookupByLibrary.simpleMessage("开源许可证"),
-        "loading_canload": MessageLookupByLibrary.simpleMessage("释放以加载"),
-        "loading_failed": MessageLookupByLibrary.simpleMessage("加载失败！上滑重试"),
-        "loading_idle": MessageLookupByLibrary.simpleMessage("上滑以加载"),
-        "loading_nomore": MessageLookupByLibrary.simpleMessage("没有更多数据"),
         "move_to_top": MessageLookupByLibrary.simpleMessage("移到顶部"),
         "new_version_info": m2,
         "no_new_version_info": MessageLookupByLibrary.simpleMessage("已在使用最新版本"),
@@ -150,6 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "offline_room_title": MessageLookupByLibrary.simpleMessage("未开播"),
         "online_room_title": MessageLookupByLibrary.simpleMessage("已开播"),
         "only_living": MessageLookupByLibrary.simpleMessage("只搜索直播中"),
+        "play_video_failed": MessageLookupByLibrary.simpleMessage("无法播放直播"),
         "popular_title": MessageLookupByLibrary.simpleMessage("热门"),
         "prefer_platform": MessageLookupByLibrary.simpleMessage("首选直播平台"),
         "prefer_platform_subtitle":
@@ -169,6 +168,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recover_backup_success":
             MessageLookupByLibrary.simpleMessage("恢复备份成功，请重启"),
         "remove": MessageLookupByLibrary.simpleMessage("删除"),
+        "replay": MessageLookupByLibrary.simpleMessage("录播"),
+        "retry": MessageLookupByLibrary.simpleMessage("重试"),
         "room_info_content": m4,
         "search_input_hint": MessageLookupByLibrary.simpleMessage("输入直播关键字"),
         "select_recover_file": MessageLookupByLibrary.simpleMessage("选择备份文件"),
@@ -192,6 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "telegram": MessageLookupByLibrary.simpleMessage("Telegram"),
         "timedclose_time": m5,
         "unfollow": MessageLookupByLibrary.simpleMessage("取消关注"),
+        "unfollow_message": m6,
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "video": MessageLookupByLibrary.simpleMessage("视频"),

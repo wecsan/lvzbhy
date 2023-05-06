@@ -7,11 +7,6 @@
     "update": "更新",
     "remove": "删除",
     "move_to_top": "移到顶部",
-    
-    "loading_idle": "上滑以加载",
-    "loading_failed": "加载失败！上滑重试",
-    "loading_nomore": "没有更多数据",
-    "loading_canload": "释放以加载",
 
     "favorites_title": "关注",
     "empty_favorite_title": "无关注直播",
@@ -147,6 +142,7 @@
     
     "follow": "关注",
     "unfollow": "取消关注",
+    "unfollow_message": "确定要取消关注{name}吗？",
     "followed": "已关注",
     "offline": "未直播",
     "info_is_offline": "{name}未开始直播.",
@@ -155,5 +151,9 @@
     "float_window_play": "小窗播放",
     "dlan_button_info": "DLNA投屏",
     "dlan_title": "DLNA投屏",
-    "dlan_device_not_found": "未发现DLNA设备"
+    "dlan_device_not_found": "未发现DLNA设备",
+
+    "play_video_failed": "无法播放直播",
+    "retry": "重试",
+    "replay": "录播"
 }

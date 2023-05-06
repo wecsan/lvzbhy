@@ -1,29 +1,25 @@
-import 'package:pure_live/common/index.dart';
+import 'package:get/get.dart';
 
 class SnackBarUtil {
-  static void success(BuildContext context, String text) {
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+  static void success(String text) {
+    Get.snackbar(
+      'Success',
+      text,
       duration: const Duration(seconds: 2),
-      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-      content: Text(
-        text,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      ),
-    ));
+      backgroundColor: Get.theme.colorScheme.surfaceVariant,
+      colorText: Get.theme.colorScheme.onSurfaceVariant,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 
-  static void error(BuildContext context, String text) {
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+  static void error(String text) {
+    Get.snackbar(
+      'Error',
+      text,
       duration: const Duration(seconds: 2),
-      backgroundColor: Theme.of(context).colorScheme.errorContainer,
-      content: Text(
-        text,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onErrorContainer,
-        ),
-      ),
-    ));
+      backgroundColor: Get.theme.colorScheme.errorContainer,
+      colorText: Get.theme.colorScheme.onErrorContainer,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 }

@@ -1,56 +1,39 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 import 'package:pure_live/common/index.dart';
-import 'package:pure_live/pages/live_play/view.dart';
+import 'package:pure_live/routes/app_pages.dart';
 
 // ignore: must_be_immutable
 class RoomCard extends StatelessWidget {
-  RoomCard({
+  const RoomCard({
     Key? key,
     required this.room,
-    this.onLongPress,
     this.dense = false,
   }) : super(key: key);
 
-  final RoomInfo room;
-  final Function()? onLongPress;
+  final LiveRoom room;
   final bool dense;
 
-  bool loading = false;
-
   void onTap(BuildContext context) async {
-    // set loading tag avoid double click
-    if (loading) return;
-    loading = true;
-    final fullRoom = await LiveApi.getRoomInfo(room);
-    loading = false;
+    AppPages.toLivePlay(room);
+  }
 
-    if (fullRoom.liveStatus == LiveStatus.live) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LivePlayPage(
-            room: fullRoom,
-            preferResolution:
-                Provider.of<SettingsProvider>(context).preferResolution,
-          ),
+  void onLongPress(BuildContext context) {
+    Get.dialog(
+      AlertDialog(
+        title: Text(room.title),
+        content: Text(
+          S.of(context).room_info_content(
+                room.roomId,
+                room.platform,
+                room.nick,
+                room.title,
+                room.liveStatus.name,
+              ),
         ),
-      );
-    } else {
-      final info = fullRoom.liveStatus == LiveStatus.offline
-          ? S.of(context).info_is_offline(fullRoom.nick)
-          : S.of(context).info_is_replay(fullRoom.nick);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              info,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          );
-        },
-      );
-    }
+        actions: [FollowButton(room: room)],
+      ),
+    );
   }
 
   @override
@@ -63,7 +46,7 @@ class RoomCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(15.0),
         onTap: () => onTap(context),
-        onLongPress: onLongPress,
+        onLongPress: () => onLongPress(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -81,39 +64,38 @@ class RoomCard extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       color: Theme.of(context).focusColor,
                       elevation: 0,
-                      child: room.liveStatus.name == 'live'
-                          ? CachedNetworkImage(
+                      child: room.liveStatus == LiveStatus.offline
+                          ? Center(
+                              child: Icon(
+                                Icons.tv_off_rounded,
+                                size: dense ? 36 : 60,
+                              ),
+                            )
+                          : CachedNetworkImage(
                               imageUrl: room.cover,
                               fit: BoxFit.fill,
                               errorWidget: (context, error, stackTrace) =>
                                   Center(
                                 child: Icon(
                                   Icons.live_tv_rounded,
-                                  size: dense ? 30 : 48,
+                                  size: dense ? 38 : 62,
                                 ),
-                              ),
-                            )
-                          : Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.tv_off_rounded,
-                                    size: dense ? 38 : 48,
-                                  ),
-                                  Text(
-                                    S.of(context).offline,
-                                    style: TextStyle(
-                                      fontSize: dense ? 18 : 26,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )
-                                ],
                               ),
                             ),
                     ),
                   ),
                 ),
+                if (room.liveStatus == LiveStatus.replay)
+                  Positioned(
+                    right: dense ? 1 : 4,
+                    top: dense ? 1 : 4,
+                    child: CountChip(
+                      icon: Icons.videocam_rounded,
+                      count: S.of(context).replay,
+                      dense: dense,
+                      color: Theme.of(context).colorScheme.errorContainer,
+                    ),
+                  ),
                 if (room.liveStatus == LiveStatus.live &&
                     room.watching.isNotEmpty)
                   Positioned(
@@ -175,28 +157,65 @@ class RoomCard extends StatelessWidget {
   }
 }
 
+class FollowButton extends StatefulWidget {
+  const FollowButton({
+    Key? key,
+    required this.room,
+  }) : super(key: key);
+
+  final LiveRoom room;
+
+  @override
+  State<FollowButton> createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<FollowButton> {
+  final settings = Get.find<SettingsService>();
+
+  late bool isFavorite = settings.isFavorite(widget.room);
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.tonal(
+      onPressed: () {
+        setState(() => isFavorite = !isFavorite);
+        if (isFavorite) {
+          settings.addRoom(widget.room);
+        } else {
+          settings.removeRoom(widget.room);
+        }
+      },
+      style: ElevatedButton.styleFrom(),
+      child: Text(isFavorite ? S.of(context).unfollow : S.of(context).follow),
+    );
+  }
+}
+
 class CountChip extends StatelessWidget {
   const CountChip({
     Key? key,
     required this.icon,
     required this.count,
     this.dense = false,
+    this.color = Colors.black,
   }) : super(key: key);
 
   final IconData icon;
   final String count;
   final bool dense;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: const StadiumBorder(),
-      color: Colors.black.withOpacity(0.4),
+      color: color.withOpacity(0.5),
       shadowColor: Colors.transparent,
       elevation: 0,
       child: Padding(
         padding: EdgeInsets.all(dense ? 4 : 6),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Icon(
               icon,
@@ -208,7 +227,7 @@ class CountChip extends StatelessWidget {
               count,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.white.withOpacity(0.8),
-                    fontSize: dense ? 10 : null,
+                    fontSize: dense ? 9 : 11,
                   ),
             ),
           ],
