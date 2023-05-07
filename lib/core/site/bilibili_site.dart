@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:pure_live/core/danmaku/bilibili_danmaku.dart';
 import 'package:pure_live/core/interface/live_danmaku.dart';
 import 'package:pure_live/common/models/index.dart';
-import 'package:pure_live/common/utils/index.dart';
 import 'package:http/http.dart' as http;
 
 import '../interface/live_site.dart';
