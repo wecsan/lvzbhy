@@ -26,13 +26,13 @@ class EmptyView extends StatelessWidget {
           Text.rich(
             TextSpan(children: [
               TextSpan(
-                  text: "$title\n\n",
+                  text: "$title\n",
                   style: Theme.of(context)
                       .textTheme
-                      .headlineLarge
-                      ?.copyWith(color: color, fontSize: 28)),
+                      .headlineMedium
+                      ?.copyWith(color: color)),
               TextSpan(
-                  text: subtitle,
+                  text: "\n$subtitle",
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
