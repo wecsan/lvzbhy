@@ -331,6 +331,16 @@ class S {
     );
   }
 
+  /// `Favorite Areas`
+  String get favorite_areas {
+    return Intl.message(
+      'Favorite Areas',
+      name: 'favorite_areas',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Input live room keyword`
   String get search_input_hint {
     return Intl.message(

@@ -13,7 +13,7 @@ class FavoriteAreasPage extends GetView<SettingsService> {
       final crossAxisCount =
           width > 1280 ? 9 : (width > 960 ? 7 : (width > 640 ? 5 : 3));
       return Scaffold(
-        appBar: AppBar(title: Text('关注分区')),
+        appBar: AppBar(title: Text(S.of(context).favorite_areas)),
         body: Obx(
           () => controller.favoriteAreas.isNotEmpty
               ? MasonryGridView.count(

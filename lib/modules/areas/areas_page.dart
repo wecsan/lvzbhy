@@ -3,6 +3,7 @@ import 'package:pure_live/common/index.dart';
 
 import 'areas_controller.dart';
 import 'areas_grid_view.dart';
+import 'favorite_areas_page.dart';
 
 class AreasPage extends GetView<AreasController> {
   const AreasPage({Key? key}) : super(key: key);
@@ -35,6 +36,11 @@ class AreasPage extends GetView<AreasController> {
                     areas: controller.data[e.id]?['areas'] ?? [],
                   ))
               .toList(),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Get.to(() => const FavoriteAreasPage()),
+          child: const Icon(Icons.favorite_rounded),
         ),
       );
     });

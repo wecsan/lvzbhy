@@ -145,6 +145,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_screen_keep_on_subtitle": MessageLookupByLibrary.simpleMessage(
             "When in live play, keep screen on"),
         "experiment": MessageLookupByLibrary.simpleMessage("Experiment"),
+        "favorite_areas":
+            MessageLookupByLibrary.simpleMessage("Favorite Areas"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("Favorites"),
         "float_overlay_ratio":
             MessageLookupByLibrary.simpleMessage("Float Video Ratio"),

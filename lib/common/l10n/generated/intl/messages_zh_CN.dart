@@ -126,6 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_screen_keep_on_subtitle":
             MessageLookupByLibrary.simpleMessage("当处于直播播放页，屏幕保持常亮"),
         "experiment": MessageLookupByLibrary.simpleMessage("实验"),
+        "favorite_areas": MessageLookupByLibrary.simpleMessage("关注分区"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("关注"),
         "float_overlay_ratio": MessageLookupByLibrary.simpleMessage("悬浮窗尺寸"),
         "float_overlay_ratio_subtitle":

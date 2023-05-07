@@ -31,6 +31,7 @@
     "empty_areas_subtitle": "请点击下方按钮切换平台",
     "empty_areas_room_title": "未发现直播",
     "empty_areas_room_subtitle": "下滑/上滑刷新数据",
+    "favorite_areas": "关注分区",
 
     "search_input_hint": "输入直播关键字",
     "only_living": "只搜索直播中",
