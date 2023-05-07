@@ -40,82 +40,57 @@ class BilibiliSite implements LiveSite {
     Map<String, List<String>> links = {};
 
     String defaultQn = '10000';
-    String newStreamUrl =
+    String reqUrl =
         'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo'
         '?room_id=${room.roomId}&qn=$defaultQn&platform=h5&ptype=8'
         '&codec=0,1&format=0,1,2&protocol=0,1';
 
     try {
-      dynamic streamJson = await _getJson(newStreamUrl);
-      List<dynamic> qualityReferenceList =
-          streamJson['data']['playurl_info']['playurl']['g_qn_desc'];
+      dynamic streamJson = await _getJson(reqUrl);
 
-      Map<int, String> qualityRefMap = {};
-      for (var i = 0; i < qualityReferenceList.length; i++) {
-        qualityRefMap[qualityReferenceList[i]['qn']] =
-            qualityReferenceList[i]['desc'];
-      }
-      List<dynamic> streamMultiList =
-          streamJson['data']['playurl_info']['playurl']['stream'];
-
-      // Get m3u8 default, if not, get unplayable flv
-      Map streamProtocol =
-          streamMultiList[1]['format'][0] ?? streamMultiList[0]['format'][0];
-
-      // Find the m3u8-fmp4 link
-      for (int i = 0; i < streamMultiList.length; i++) {
-        if (streamMultiList[i]['protocol_name'] == 'http_hls') {
-          for (int j = 0; j < streamMultiList[i]['format'].length; j++) {
-            if (streamMultiList[i]['format'][j]['format_name'] == 'fmp4') {
-              streamProtocol = streamMultiList[i]['format'][j];
-              break;
-            }
-          }
-        }
+      // get quality name map
+      var qnMap = <int, String>{};
+      var qnList = streamJson['data']['playurl_info']['playurl']['g_qn_desc'];
+      for (var item in qnList) {
+        qnMap[item['qn']] = item['desc'];
       }
 
+      // get supported rates
+      var streamList = streamJson['data']['playurl_info']['playurl']['stream'];
+      var streamProtocol =
+          streamList[1]['format'][0] ?? streamList[0]['format'][0];
       List<dynamic> rates = streamProtocol['codec'][0]['accept_qn'];
-      for (int i = 0; i < rates.length; i++) {
-        int qn = rates[i].toInt();
-        String name = qualityRefMap[qn] ?? qn.toString();
 
-        links[name] ??= [];
-        if (qn == 10000) {
-          List urlInfo = streamProtocol['codec'][0]['url_info'];
-          String baseUrl = streamProtocol['codec'][0]['base_url'];
-          for (int i = 0; i < urlInfo.length; i++) {
-            links[name]
-                ?.add("${urlInfo[i]['host']}$baseUrl${urlInfo[i]['extra']}");
-          }
-          continue;
-        }
+      for (var qn in rates) {
+        var name = qnMap[qn] ?? qn.toString();
 
         String qnUrl =
             'https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo'
             '?room_id=${room.roomId}&qn=$qn&platform=h5&ptype=8'
             '&codec=0,1&format=0,1,2&protocol=0,1';
         dynamic qnJson = await _getJson(qnUrl);
-        List<dynamic> qnStreamMultiList =
-            qnJson['data']['playurl_info']['playurl']['stream'];
+
+        var qnStreamList = qnJson['data']['playurl_info']['playurl']['stream'];
+        var qnStreamProtocol =
+            qnStreamList[1]['format'][0] ?? qnStreamList[0]['format'][0];
 
         // get m3u8 default, if not, get unplayable flv
-        Map qnStreamProtocol = qnStreamMultiList[1]['format'][0] ??
-            qnStreamMultiList[0]['format'][0];
-        for (int i = 0; i < qnStreamMultiList.length; i++) {
-          if (qnStreamMultiList[i]['protocol_name'] == 'http_hls') {
-            for (int j = 0; j < qnStreamMultiList[i]['format'].length; j++) {
-              if (qnStreamMultiList[i]['format'][j]['format_name'] == 'fmp4') {
-                qnStreamProtocol = qnStreamMultiList[i]['format'][j];
+        for (int i = 0; i < qnStreamList.length; i++) {
+          if (qnStreamList[i]['protocol_name'] == 'http_hls') {
+            for (int j = 0; j < qnStreamList[i]['format'].length; j++) {
+              if (qnStreamList[i]['format'][j]['format_name'] == 'fmp4') {
+                qnStreamProtocol = qnStreamList[i]['format'][j];
                 break;
               }
             }
           }
         }
-        List urlInfo = qnStreamProtocol['codec'][0]['url_info'];
-        String baseUrl = qnStreamProtocol['codec'][0]['base_url'];
-        for (int i = 0; i < urlInfo.length; i++) {
-          links[name]
-              ?.add("${urlInfo[i]['host']}$baseUrl${urlInfo[i]['extra']}");
+
+        links[name] ??= [];
+        var baseUrl = qnStreamProtocol['codec'][0]['base_url'];
+        var urlInfo = qnStreamProtocol['codec'][0]['url_info'];
+        for (var item in urlInfo) {
+          links[name]?.add("${item['host']}$baseUrl${item['extra']}");
         }
       }
     } catch (e) {
