@@ -821,36 +821,6 @@ class S {
     );
   }
 
-  /// `Bilibili Cookie`
-  String get bilibili_cookie {
-    return Intl.message(
-      'Bilibili Cookie',
-      name: 'bilibili_cookie',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enable bilibili search cookie`
-  String get enable_bilibili_search_cookie {
-    return Intl.message(
-      'Enable bilibili search cookie',
-      name: 'enable_bilibili_search_cookie',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set custom bilibili search needed cookie`
-  String get enable_bilibili_search_cookie_subtitle {
-    return Intl.message(
-      'Set custom bilibili search needed cookie',
-      name: 'enable_bilibili_search_cookie_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `About`
   String get about {
     return Intl.message(

@@ -21,12 +21,11 @@ class BilibiliSite implements LiveSite {
   LiveDanmaku getDanmaku() => BiliBiliDanmaku();
 
   static Future<dynamic> _getJson(String url) async {
-    final cookie = PrefUtil.getString('bilibiliCustomCookie') ?? '';
     Map<String, String> headers = {
       'User-Agent':
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+      'cookie': 'buvid3=infoc;'
     };
-    if (cookie.isNotEmpty) headers['cookie'] = cookie;
 
     var resp = await http.get(
       Uri.parse(url),

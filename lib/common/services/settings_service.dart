@@ -29,9 +29,6 @@ class SettingsService extends GetxController {
     enableFullScreenDefault.listen((value) {
       PrefUtil.setBool('enableFullScreenDefault', value);
     });
-    bilibiliCustomCookie.listen((String value) {
-      PrefUtil.setString('bilibiliCustomCookie', value);
-    });
 
     favoriteRooms.listen((rooms) {
       PrefUtil.setStringList('favoriteRooms',
@@ -114,9 +111,6 @@ class SettingsService extends GetxController {
 
   final enableFullScreenDefault =
       (PrefUtil.getBool('enableFullScreenDefault') ?? false).obs;
-
-  final bilibiliCustomCookie =
-      (PrefUtil.getString('bilibiliCustomCookie') ?? '').obs;
 
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
   final preferResolution =
@@ -229,7 +223,6 @@ class SettingsService extends GetxController {
     enableScreenKeepOn.value = json['enableScreenKeepOn'] ?? false;
     enableAutoCheckUpdate.value = json['enableAutoCheckUpdate'] ?? true;
     enableFullScreenDefault.value = json['enableFullScreenDefault'] ?? false;
-    bilibiliCustomCookie.value = json['bilibiliCustomCookie'] ?? '';
     changePreferResolution(json['preferResolution'] ?? resolutions[0]);
     changePreferPlatform(json['preferPlatform'] ?? platforms[0]);
   }
@@ -248,7 +241,6 @@ class SettingsService extends GetxController {
     json['enableScreenKeepOn'] = enableScreenKeepOn.value;
     json['enableAutoCheckUpdate'] = enableAutoCheckUpdate.value;
     json['enableFullScreenDefault'] = enableFullScreenDefault.value;
-    json['bilibiliCustomCookie'] = bilibiliCustomCookie.value;
     json['preferResolution'] = preferResolution.value;
     json['preferPlatform'] = preferPlatform.value;
     return json;

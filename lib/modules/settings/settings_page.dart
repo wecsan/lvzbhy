@@ -110,12 +110,6 @@ class SettingsPage extends GetView<SettingsService> {
             onTap: showPreferPlatformSelectorDialog,
           ),
           ListTile(
-            title: Text(S.of(context).enable_bilibili_search_cookie),
-            subtitle:
-                Text(S.of(context).enable_bilibili_search_cookie_subtitle),
-            onTap: showBilibliCookieSetDialog,
-          ),
-          ListTile(
             title: Text(S.of(context).auto_refresh_time),
             subtitle: Text(S.of(context).auto_refresh_time_subtitle),
             trailing: Obx(() => Text('${controller.autoRefreshTime}s')),
@@ -261,36 +255,6 @@ class SettingsPage extends GetView<SettingsService> {
                     ' ${controller.autoRefreshTime}s'),
               ],
             )),
-      ),
-    );
-  }
-
-  void showBilibliCookieSetDialog() {
-    final ctl =
-        TextEditingController(text: controller.bilibiliCustomCookie.value);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(S.of(context).bilibili_cookie),
-        content: TextField(
-          controller: ctl,
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text(S.of(context).cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              controller.bilibiliCustomCookie.value = ctl.text;
-              Navigator.of(context).pop();
-            },
-            child: Text(S.of(context).confirm),
-          ),
-        ],
       ),
     );
   }
