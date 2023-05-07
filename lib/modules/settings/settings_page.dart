@@ -118,7 +118,7 @@ class SettingsPage extends GetView<SettingsService> {
           ListTile(
             title: Text(S.of(context).auto_refresh_time),
             subtitle: Text(S.of(context).auto_refresh_time_subtitle),
-            trailing: Text('${controller.autoRefreshTime}s'),
+            trailing: Obx(() => Text('${controller.autoRefreshTime}s')),
             onTap: showAutoRefreshTimeSetDialog,
           ),
         ],
@@ -127,23 +127,25 @@ class SettingsPage extends GetView<SettingsService> {
   }
 
   void showThemeModeSelectorDialog() {
-    Get.dialog(
-      SimpleDialog(
-        title: Text(S.of(Get.context!).change_theme_mode),
-        children: SettingsService.themeModes.keys.map<Widget>((name) {
-          return RadioListTile<String>(
-            activeColor: Theme.of(context).colorScheme.primary,
-            groupValue: controller.themeModeName.value,
-            value: name,
-            title: Text(name),
-            onChanged: (value) {
-              controller.changeThemeMode(value!);
-              Navigator.of(context).pop();
-            },
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text(S.of(Get.context!).change_theme_mode),
+            children: SettingsService.themeModes.keys.map<Widget>((name) {
+              return RadioListTile<String>(
+                activeColor: Theme.of(context).colorScheme.primary,
+                groupValue: controller.themeModeName.value,
+                value: name,
+                title: Text(name),
+                onChanged: (value) {
+                  controller.changeThemeMode(value!);
+                  Navigator.of(context).pop();
+                },
+              );
+            }).toList(),
           );
-        }).toList(),
-      ),
-    );
+        });
   }
 
   void showThemeColorSelectorDialog() {
@@ -244,21 +246,21 @@ class SettingsPage extends GetView<SettingsService> {
       context: context,
       builder: (context) => AlertDialog(
         // title: Text(S.of(context).auto_refresh_time),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Slider(
-              min: 10,
-              max: 120,
-              label: S.of(context).auto_refresh_time,
-              value: controller.autoRefreshTime.toDouble(),
-              onChanged: (value) =>
-                  controller.autoRefreshTime.value = value.toInt(),
-            ),
-            Text('${S.of(context).auto_refresh_time}:'
-                ' ${controller.autoRefreshTime}s'),
-          ],
-        ),
+        content: Obx(() => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Slider(
+                  min: 10,
+                  max: 120,
+                  label: S.of(context).auto_refresh_time,
+                  value: controller.autoRefreshTime.toDouble(),
+                  onChanged: (value) =>
+                      controller.autoRefreshTime.value = value.toInt(),
+                ),
+                Text('${S.of(context).auto_refresh_time}:'
+                    ' ${controller.autoRefreshTime}s'),
+              ],
+            )),
       ),
     );
   }
