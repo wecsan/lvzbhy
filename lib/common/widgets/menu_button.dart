@@ -10,6 +10,7 @@ class MenuButton extends StatelessWidget {
     AppPages.settings,
     AppPages.about,
     AppPages.contact,
+    AppPages.history,
   ];
 
   @override
@@ -46,6 +47,13 @@ class MenuButton extends StatelessWidget {
           child: MenuListTile(
             leading: const Icon(Icons.contact_support),
             text: S.of(context).contact,
+          ),
+        ),PopupMenuItem(
+          value: 3,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: MenuListTile(
+            leading: const Icon(Icons.history),
+            text: S.of(context).history,
           ),
         ),
       ],

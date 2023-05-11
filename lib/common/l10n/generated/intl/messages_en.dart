@@ -104,6 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please follow live rooms first"),
         "empty_favorite_title":
             MessageLookupByLibrary.simpleMessage("No Favorites"),
+        "empty_history":
+            MessageLookupByLibrary.simpleMessage("No history here"),
         "empty_live_subtitle": MessageLookupByLibrary.simpleMessage(
             "Click the button below\nto switch platform"),
         "empty_live_title":
@@ -159,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "help": MessageLookupByLibrary.simpleMessage("Help"),
         "hide_offline_rooms":
             MessageLookupByLibrary.simpleMessage("Hide Offline Rooms"),
+        "history": MessageLookupByLibrary.simpleMessage("History"),
         "info_is_offline": m0,
         "info_is_replay": m1,
         "issue_feedback":

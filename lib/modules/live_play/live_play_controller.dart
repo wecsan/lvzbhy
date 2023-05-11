@@ -57,7 +57,7 @@ class LivePlayController extends GetxController {
         );
         success.value = true;
       });
-    });
+    }).then((value) => settings.addRoomToHistory(room));
 
     // start danmaku server
     liveDanmaku.start(int.parse(

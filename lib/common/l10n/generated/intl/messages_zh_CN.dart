@@ -94,6 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "empty_favorite_subtitle":
             MessageLookupByLibrary.simpleMessage("请先关注其他直播间"),
         "empty_favorite_title": MessageLookupByLibrary.simpleMessage("无关注直播"),
+        "empty_history": MessageLookupByLibrary.simpleMessage("无观看历史记录"),
         "empty_live_subtitle":
             MessageLookupByLibrary.simpleMessage("请点击下方按钮切换平台"),
         "empty_live_title": MessageLookupByLibrary.simpleMessage("未发现直播"),
@@ -137,6 +138,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "github": MessageLookupByLibrary.simpleMessage("Github"),
         "help": MessageLookupByLibrary.simpleMessage("帮助"),
         "hide_offline_rooms": MessageLookupByLibrary.simpleMessage("隐藏未直播的直播间"),
+        "history": MessageLookupByLibrary.simpleMessage("历史记录"),
         "info_is_offline": m0,
         "info_is_replay": m1,
         "issue_feedback": MessageLookupByLibrary.simpleMessage("问题反馈"),

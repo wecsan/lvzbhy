@@ -38,6 +38,11 @@ class SettingsService extends GetxController {
           favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList());
     });
 
+    historyRooms.listen((rooms) {
+      PrefUtil.setStringList('historyRooms',
+          historyRooms.map<String>((e) => jsonEncode(e.toJson())).toList());
+    });
+
     backupDirectory.listen((String value) {
       backupDirectory.value = value;
       PrefUtil.setString('backupDirectory', value);
@@ -51,7 +56,9 @@ class SettingsService extends GetxController {
     "Light": ThemeMode.light,
   };
   final themeModeName = (PrefUtil.getString('themeMode') ?? "System").obs;
+
   get themeMode => SettingsService.themeModes[themeModeName.value]!;
+
   void changeThemeMode(String mode) {
     themeModeName.value = mode;
     PrefUtil.setString('themeMode', mode);
@@ -72,7 +79,9 @@ class SettingsService extends GetxController {
     "Orchid": const Color.fromARGB(255, 218, 112, 214),
   };
   final themeColorName = (PrefUtil.getString('themeColor') ?? "Blue").obs;
+
   get themeColor => SettingsService.themeColors[themeColorName.value]!;
+
   void changeThemeColor(String color) {
     themeColorName.value = color;
     PrefUtil.setString('themeColor', color);
@@ -83,7 +92,9 @@ class SettingsService extends GetxController {
     "简体中文": const Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
   };
   final languageName = (PrefUtil.getString('language') ?? "简体中文").obs;
+
   get language => SettingsService.languages[languageName.value]!;
+
   void changeLanguage(String value) {
     languageName.value = value;
     PrefUtil.setString('language', value);
@@ -117,6 +128,7 @@ class SettingsService extends GetxController {
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
   final preferResolution =
       (PrefUtil.getString('preferResolution') ?? resolutions[0]).obs;
+
   void changePreferResolution(String name) {
     if (resolutions.indexWhere((e) => e == name) != -1) {
       preferResolution.value = name;
@@ -127,6 +139,7 @@ class SettingsService extends GetxController {
   static const List<String> platforms = ['bilibili', 'douyu', 'huya'];
   final preferPlatform =
       (PrefUtil.getString('preferPlatform') ?? platforms[0]).obs;
+
   void changePreferPlatform(String name) {
     if (platforms.indexWhere((e) => e == name) != -1) {
       preferPlatform.value = name;
@@ -137,6 +150,11 @@ class SettingsService extends GetxController {
 
   // Favorite rooms storage
   final favoriteRooms = ((PrefUtil.getStringList('favoriteRooms') ?? [])
+          .map((e) => LiveRoom.fromJson(jsonDecode(e)))
+          .toList())
+      .obs;
+
+  final historyRooms = ((PrefUtil.getStringList('historyRooms') ?? [])
           .map((e) => LiveRoom.fromJson(jsonDecode(e)))
           .toList())
       .obs;
@@ -162,6 +180,23 @@ class SettingsService extends GetxController {
     if (idx == -1) return false;
     favoriteRooms[idx] = room;
     return true;
+  }
+
+  bool updateRoomInHistory(LiveRoom room) {
+    int idx = historyRooms.indexOf(room);
+    if (idx == -1) return false;
+    historyRooms[idx] = room;
+    return true;
+  }
+  void addRoomToHistory(LiveRoom room) {
+    if (historyRooms.contains(room)) {
+      historyRooms.remove(room);
+    }
+    //默认只记录20条，够用了
+    if (historyRooms.length > 19) {
+      historyRooms.removeRange(0, historyRooms.length - 19);
+    }
+    historyRooms.add(room);
   }
 
   // Backup & recover storage

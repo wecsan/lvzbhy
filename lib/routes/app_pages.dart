@@ -16,6 +16,8 @@ import 'package:pure_live/modules/settings/settings_binding.dart';
 import 'package:pure_live/modules/settings/settings_page.dart';
 import 'package:pure_live/modules/search/search_binding.dart';
 import 'package:pure_live/modules/search/search_page.dart';
+import 'package:pure_live/modules/history/history_page.dart';
+
 
 class AppPages {
   AppPages._();
@@ -33,6 +35,7 @@ class AppPages {
   static const contact = '/contact';
   static const backup = '/backup';
   static const about = '/about';
+  static const history = '/history';
   static const donate = '/donate';
 
   static toAreaRooms(LiveArea area) {
@@ -64,6 +67,10 @@ class AppPages {
       name: settings,
       page: SettingsPage.new,
       binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: history,
+      page: HistoryPage.new,
     ),
     GetPage(
       name: search,

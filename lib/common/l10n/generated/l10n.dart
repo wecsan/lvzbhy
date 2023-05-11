@@ -1330,6 +1330,26 @@ class S {
       args: [],
     );
   }
+
+  /// `History`
+  String get history {
+    return Intl.message(
+      'History',
+      name: 'history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No history here`
+  String get empty_history {
+    return Intl.message(
+      'No history here',
+      name: 'empty_history',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
