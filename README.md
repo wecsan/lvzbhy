@@ -18,6 +18,7 @@ Pure Live是一款款平台基于Flutter的直播转码软件，轻松看直播�
 - Windows
 
 ## Windows 安装
+使用 msix 安装请删除 .zip 后缀名。
 ![Windows](https://user-images.githubusercontent.com/82752643/221176075-b6604bd4-dd76-4427-8f9c-9a5f33d74620.png)
 
 
