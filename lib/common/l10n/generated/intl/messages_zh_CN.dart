@@ -50,8 +50,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_recover": MessageLookupByLibrary.simpleMessage("备份与恢复"),
         "backup_recover_subtitle":
             MessageLookupByLibrary.simpleMessage("创建备份与恢复"),
-        "bilibili_cookie":
-            MessageLookupByLibrary.simpleMessage("Bilibili Cookie"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "change_language": MessageLookupByLibrary.simpleMessage("切换语言"),
         "change_language_subtitle":
@@ -108,10 +106,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_background_play": MessageLookupByLibrary.simpleMessage("后台播放"),
         "enable_background_play_subtitle":
             MessageLookupByLibrary.simpleMessage("当暂时切出APP时，允许后台播放"),
-        "enable_bilibili_search_cookie":
-            MessageLookupByLibrary.simpleMessage("启用Bilibili搜索"),
-        "enable_bilibili_search_cookie_subtitle":
-            MessageLookupByLibrary.simpleMessage("设置Bilibili搜索所需Cookie"),
         "enable_dense_favorites_mode":
             MessageLookupByLibrary.simpleMessage("紧凑模式"),
         "enable_dense_favorites_mode_subtitle":
@@ -127,6 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_screen_keep_on_subtitle":
             MessageLookupByLibrary.simpleMessage("当处于直播播放页，屏幕保持常亮"),
         "experiment": MessageLookupByLibrary.simpleMessage("实验"),
+        "favorite_areas": MessageLookupByLibrary.simpleMessage("关注分区"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("关注"),
         "float_overlay_ratio": MessageLookupByLibrary.simpleMessage("悬浮窗尺寸"),
         "float_overlay_ratio_subtitle":

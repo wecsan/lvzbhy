@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     super.build(context);
     return LayoutBuilder(
-      builder: (context, constraint) => constraint.maxWidth <= 480
+      builder: (context, constraint) => constraint.maxWidth <= 680
           ? HomeMobileView(
               body: bodys[_selectedIndex],
               index: _selectedIndex,

@@ -112,7 +112,6 @@ class VideoController with ChangeNotifier {
         BetterPlayerConfiguration(
           autoPlay: true,
           fit: videoFit.value,
-          fullScreenByDefault: fullScreenByDefault,
           allowedScreenSleep: !allowScreenKeepOn,
           autoDetectFullscreenDeviceOrientation: true,
           autoDetectFullscreenAspectRatio: true,
@@ -129,6 +128,11 @@ class VideoController with ChangeNotifier {
       );
       mobileController?.setControlsEnabled(false);
       setDataSource(datasource);
+
+      // fix auto fullscreen
+      if (fullScreenByDefault && datasource.isNotEmpty) {
+        Timer(const Duration(milliseconds: 500), () => toggleFullScreen());
+      }
       mobileController?.addEventsListener(mobileStateListener);
     } else {
       throw UnimplementedError('Unsupported Platform');
@@ -210,6 +214,7 @@ class VideoController with ChangeNotifier {
     danmakuController.dispose();
     desktopController?.dispose();
     mobileController?.removeEventsListener(mobileStateListener);
+    mobileController?.pause();
     mobileController?.dispose();
   }
 
@@ -236,6 +241,7 @@ class VideoController with ChangeNotifier {
         autoStart: true,
       );
     } else if (Platform.isAndroid || Platform.isIOS) {
+      mobileController?.pause();
       mobileController?.setupDataSource(BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
         url,
@@ -277,7 +283,7 @@ class VideoController with ChangeNotifier {
     }
   }
 
-  void toggleFullScreen(BuildContext context) {
+  void toggleFullScreen() {
     // disable locked
     showLocked.value = false;
     // fix danmaku overlap bug
@@ -296,16 +302,11 @@ class VideoController with ChangeNotifier {
     if (Platform.isWindows || Platform.isLinux) {
       if (!isFullscreen.value) {
         WindowManager.instance.setFullScreen(true);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(controller: this),
-          ),
-        );
+        Get.to(() => DesktopFullscreen(controller: this));
       } else {
         WindowManager.instance.setFullScreen(false);
-        Navigator.pop(context);
-        // TODO: 重设大小，修复窗口大小BUG
+        Get.back();
+        // 重设大小，修复窗口大小BUG
         WindowManager.instance.getSize().then((value) => WindowManager.instance
             .setSize(Size(value.width + 1, value.height + 1)));
       }
@@ -326,7 +327,7 @@ class VideoController with ChangeNotifier {
     }
   }
 
-  void toggleWindowFullScreen(BuildContext context) {
+  void toggleWindowFullScreen() {
     // disable locked
     showLocked.value = false;
     // fix danmaku overlap bug
@@ -344,14 +345,9 @@ class VideoController with ChangeNotifier {
 
     if (Platform.isWindows || Platform.isLinux) {
       if (!isWindowFullscreen.value) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DesktopFullscreen(controller: this),
-          ),
-        );
+        Get.to(() => DesktopFullscreen(controller: this));
       } else {
-        Navigator.pop(context);
+        Get.back();
       }
       isWindowFullscreen.toggle();
     } else {
@@ -457,7 +453,7 @@ class _MobileFullscreenState extends State<MobileFullscreen>
       resizeToAvoidBottomInset: false,
       body: WillPopScope(
         onWillPop: () {
-          widget.controller.toggleFullScreen(context);
+          widget.controller.toggleFullScreen();
           return Future(() => true);
         },
         child: Container(

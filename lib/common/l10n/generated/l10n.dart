@@ -331,6 +331,16 @@ class S {
     );
   }
 
+  /// `Favorite Areas`
+  String get favorite_areas {
+    return Intl.message(
+      'Favorite Areas',
+      name: 'favorite_areas',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Input live room keyword`
   String get search_input_hint {
     return Intl.message(
@@ -806,36 +816,6 @@ class S {
     return Intl.message(
       'Auto refresh favorites rooms status',
       name: 'auto_refresh_time_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Bilibili Cookie`
-  String get bilibili_cookie {
-    return Intl.message(
-      'Bilibili Cookie',
-      name: 'bilibili_cookie',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enable bilibili search cookie`
-  String get enable_bilibili_search_cookie {
-    return Intl.message(
-      'Enable bilibili search cookie',
-      name: 'enable_bilibili_search_cookie',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set custom bilibili search needed cookie`
-  String get enable_bilibili_search_cookie_subtitle {
-    return Intl.message(
-      'Set custom bilibili search needed cookie',
-      name: 'enable_bilibili_search_cookie_subtitle',
       desc: '',
       args: [],
     );

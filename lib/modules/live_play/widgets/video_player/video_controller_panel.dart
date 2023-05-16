@@ -56,8 +56,8 @@ class _VideoControllerPanelState extends State<VideoControllerPanel> {
                   }
                 },
                 onDoubleTap: () => controller.isWindowFullscreen.value
-                    ? controller.toggleWindowFullScreen(context)
-                    : controller.toggleFullScreen(context),
+                    ? controller.toggleWindowFullScreen()
+                    : controller.toggleFullScreen(),
                 child: BrightnessVolumnDargArea(controller: controller),
               ),
               SettingsPanel(
@@ -258,8 +258,8 @@ class BackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => controller.isWindowFullscreen.value
-          ? controller.toggleWindowFullScreen(context)
-          : controller.toggleFullScreen(context),
+          ? controller.toggleWindowFullScreen()
+          : controller.toggleFullScreen(),
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(12),
@@ -672,7 +672,7 @@ class ExpandWindowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.toggleWindowFullScreen(context),
+      onTap: () => controller.toggleWindowFullScreen(),
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(12),
@@ -699,7 +699,7 @@ class ExpandButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.toggleFullScreen(context),
+      onTap: () => controller.toggleFullScreen(),
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(12),

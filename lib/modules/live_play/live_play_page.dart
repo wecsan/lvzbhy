@@ -60,7 +60,7 @@ class LivePlayPage extends GetView<LivePlayController> {
       body: LayoutBuilder(builder: (context, constraint) {
         final width = constraint.maxWidth;
         return SafeArea(
-          child: width <= 480
+          child: width <= 680
               ? Column(
                   children: <Widget>[
                     buildVideoPlayer(),

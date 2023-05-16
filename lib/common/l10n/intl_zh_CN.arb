@@ -31,6 +31,7 @@
     "empty_areas_subtitle": "请点击下方按钮切换平台",
     "empty_areas_room_title": "未发现直播",
     "empty_areas_room_subtitle": "下滑/上滑刷新数据",
+    "favorite_areas": "关注分区",
 
     "search_input_hint": "输入直播关键字",
     "only_living": "只搜索直播中",
@@ -95,10 +96,6 @@
 
     "auto_refresh_time": "定时刷新时间",
     "auto_refresh_time_subtitle": "定时刷新关注直播间状态",
-
-    "bilibili_cookie": "Bilibili Cookie",
-    "enable_bilibili_search_cookie": "启用Bilibili搜索",
-    "enable_bilibili_search_cookie_subtitle": "设置Bilibili搜索所需Cookie",
 
     "about": "关于",
     "version": "版本",

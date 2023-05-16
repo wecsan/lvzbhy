@@ -31,7 +31,7 @@ class AreaCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 clipBehavior: Clip.antiAlias,
-                color: Theme.of(context).focusColor,
+                color: Colors.white,
                 elevation: 0,
                 child: CachedNetworkImage(
                   imageUrl: area.areaPic,

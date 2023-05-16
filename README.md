@@ -17,6 +17,10 @@ Pure Live是一款款平台基于Flutter的直播转码软件，轻松看直播�
 - Android
 - Windows
 
+## Windows 安装
+![Windows](https://user-images.githubusercontent.com/82752643/221176075-b6604bd4-dd76-4427-8f9c-9a5f33d74620.png)
+
+
 ## 开发进度看板[link](https://jackiu-notes.notion.site/50bc0d3d377445eea029c6e3d4195671?v=663125e639b047cea5e69d8264926b8b)
 
 ## Screenshots
@@ -68,8 +72,6 @@ Pure Live是一款款平台基于Flutter的直播转码软件，轻松看直播�
 - [x] [虎牙APP](https://www.huya.com/download/)
 
 - [x] [斗鱼APP](https://www.douyu.com/client)
-
-- [ ] 没有其他平台的计划
 
 ## Donate
 

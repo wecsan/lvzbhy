@@ -3,6 +3,7 @@ import 'package:pure_live/common/index.dart';
 
 import 'areas_controller.dart';
 import 'areas_grid_view.dart';
+import 'favorite_areas_page.dart';
 
 class AreasPage extends GetView<AreasController> {
   const AreasPage({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class AreasPage extends GetView<AreasController> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraint) {
-      bool showAction = constraint.maxWidth <= 480;
+      bool showAction = constraint.maxWidth <= 680;
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -31,10 +32,15 @@ class AreasPage extends GetView<AreasController> {
           controller: controller.tabController,
           children: Sites.supportSites
               .map((e) => AreaGridView(
-                    labels: controller.data[e.id]!['labels'],
-                    areas: controller.data[e.id]!['areas'],
+                    labels: controller.data[e.id]?['labels'] ?? [],
+                    areas: controller.data[e.id]?['areas'] ?? [],
                   ))
               .toList(),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Get.to(() => const FavoriteAreasPage()),
+          child: const Icon(Icons.favorite_rounded),
         ),
       );
     });

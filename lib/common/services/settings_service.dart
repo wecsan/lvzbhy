@@ -29,13 +29,14 @@ class SettingsService extends GetxController {
     enableFullScreenDefault.listen((value) {
       PrefUtil.setBool('enableFullScreenDefault', value);
     });
-    bilibiliCustomCookie.listen((String value) {
-      PrefUtil.setString('bilibiliCustomCookie', value);
-    });
 
     favoriteRooms.listen((rooms) {
       PrefUtil.setStringList('favoriteRooms',
           favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList());
+    });
+    favoriteAreas.listen((rooms) {
+      PrefUtil.setStringList('favoriteAreas',
+          favoriteAreas.map<String>((e) => jsonEncode(e.toJson())).toList());
     });
 
     historyRooms.listen((rooms) {
@@ -122,9 +123,6 @@ class SettingsService extends GetxController {
   final enableFullScreenDefault =
       (PrefUtil.getBool('enableFullScreenDefault') ?? false).obs;
 
-  final bilibiliCustomCookie =
-      (PrefUtil.getString('bilibiliCustomCookie') ?? '').obs;
-
   static const List<String> resolutions = ['原画', '蓝光8M', '蓝光4M', '超清', '流畅'];
   final preferResolution =
       (PrefUtil.getString('preferResolution') ?? resolutions[0]).obs;
@@ -198,6 +196,28 @@ class SettingsService extends GetxController {
     }
     historyRooms.add(room);
   }
+  
+  // Favorite areas storage
+  final favoriteAreas = ((PrefUtil.getStringList('favoriteAreas') ?? [])
+          .map((e) => LiveArea.fromJson(jsonDecode(e)))
+          .toList())
+      .obs;
+
+  bool isFavoriteArea(LiveArea area) {
+    return favoriteAreas.contains(area);
+  }
+
+  bool addArea(LiveArea area) {
+    if (favoriteAreas.contains(area)) return false;
+    favoriteAreas.add(area);
+    return true;
+  }
+
+  bool removeArea(LiveArea area) {
+    if (!favoriteAreas.contains(area)) return false;
+    favoriteAreas.remove(area);
+    return true;
+  }
 
   // Backup & recover storage
   final backupDirectory = (PrefUtil.getString('backupDirectory') ?? '').obs;
@@ -226,6 +246,10 @@ class SettingsService extends GetxController {
     favoriteRooms.value = (json['favoriteRooms'] as List)
         .map<LiveRoom>((e) => LiveRoom.fromJson(jsonDecode(e)))
         .toList();
+    favoriteAreas.value = (json['favoriteAreas'] as List)
+        .map<LiveArea>((e) => LiveArea.fromJson(jsonDecode(e)))
+        .toList();
+
     changeThemeMode(json['themeMode'] ?? "System");
     changeThemeColor(json['themeColor'] ?? "Crimson");
     enableDynamicTheme.value = json['enableDynamicTheme'] ?? false;
@@ -234,7 +258,6 @@ class SettingsService extends GetxController {
     enableScreenKeepOn.value = json['enableScreenKeepOn'] ?? false;
     enableAutoCheckUpdate.value = json['enableAutoCheckUpdate'] ?? true;
     enableFullScreenDefault.value = json['enableFullScreenDefault'] ?? false;
-    bilibiliCustomCookie.value = json['bilibiliCustomCookie'] ?? '';
     changePreferResolution(json['preferResolution'] ?? resolutions[0]);
     changePreferPlatform(json['preferPlatform'] ?? platforms[0]);
   }
@@ -243,6 +266,8 @@ class SettingsService extends GetxController {
     Map<String, dynamic> json = {};
     json['favoriteRooms'] =
         favoriteRooms.map<String>((e) => jsonEncode(e.toJson())).toList();
+    json['favoriteAreas'] =
+        favoriteAreas.map<String>((e) => jsonEncode(e.toJson())).toList();
     json['themeMode'] = themeModeName.value;
     json['themeColor'] = themeColorName.value;
     json['enableDynamicTheme'] = enableDynamicTheme.value;
@@ -251,7 +276,6 @@ class SettingsService extends GetxController {
     json['enableScreenKeepOn'] = enableScreenKeepOn.value;
     json['enableAutoCheckUpdate'] = enableAutoCheckUpdate.value;
     json['enableFullScreenDefault'] = enableFullScreenDefault.value;
-    json['bilibiliCustomCookie'] = bilibiliCustomCookie.value;
     json['preferResolution'] = preferResolution.value;
     json['preferPlatform'] = preferPlatform.value;
     return json;

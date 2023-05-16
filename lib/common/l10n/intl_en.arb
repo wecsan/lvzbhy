@@ -31,6 +31,7 @@
     "empty_areas_room_title": "No Live Found",
     "empty_areas_room_subtitle": "Pull down to refresh data",
     "switch_platform": "Switch platform",
+    "favorite_areas": "Favorite Areas",
 
     "search_input_hint": "Input live room keyword",
     "only_living": "Only Living",
@@ -95,10 +96,6 @@
 
     "auto_refresh_time": "Auto Refresh Time",
     "auto_refresh_time_subtitle": "Auto refresh favorites rooms status",
-
-    "bilibili_cookie": "Bilibili Cookie",
-    "enable_bilibili_search_cookie": "Enable bilibili search cookie",
-    "enable_bilibili_search_cookie_subtitle": "Set custom bilibili search needed cookie",
 
     "about": "About",
     "version": "Version",

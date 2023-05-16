@@ -7,7 +7,6 @@ class FavoriteController extends GetxController
     with GetSingleTickerProviderStateMixin {
   final SettingsService settings = Get.find<SettingsService>();
   late TabController tabController;
-  int index = 0;
 
   FavoriteController() {
     tabController = TabController(length: 2, vsync: this);
@@ -17,32 +16,31 @@ class FavoriteController extends GetxController
   void onInit() {
     super.onInit();
     // 初始化关注页
-    onlineRooms.addAll(settings.favoriteRooms
-        .where((room) => room.liveStatus == LiveStatus.live));
-    offlineRooms.addAll(settings.favoriteRooms
-        .where((room) => room.liveStatus != LiveStatus.live));
-
-    // 刷新数据
-    onRefresh();
-    // 定时自动刷新
-    Timer.periodic(Duration(minutes: settings.autoRefreshTime.value), (timer) {
-      onRefresh();
-    });
+    syncRooms();
 
     // 监听settings rooms变化
-    settings.favoriteRooms.listen((rooms) {
-      onlineRooms.clear();
-      onlineRooms.addAll(settings.favoriteRooms
-          .where((room) => room.liveStatus == LiveStatus.live));
+    settings.favoriteRooms.listen((rooms) => syncRooms());
 
-      offlineRooms.clear();
-      offlineRooms.addAll(settings.favoriteRooms
-          .where((room) => room.liveStatus != LiveStatus.live));
-    });
+    // 定时自动刷新
+    onRefresh();
+    Timer.periodic(
+      Duration(seconds: settings.autoRefreshTime.value),
+      (timer) => onRefresh(),
+    );
   }
 
   final onlineRooms = [].obs;
   final offlineRooms = [].obs;
+
+  void syncRooms() {
+    onlineRooms.clear();
+    onlineRooms.addAll(settings.favoriteRooms
+        .where((room) => room.liveStatus == LiveStatus.live));
+
+    offlineRooms.clear();
+    offlineRooms.addAll(settings.favoriteRooms
+        .where((room) => room.liveStatus != LiveStatus.live));
+  }
 
   Future<bool> onRefresh() async {
     for (final room in settings.favoriteRooms) {
@@ -53,15 +51,7 @@ class FavoriteController extends GetxController
         return false;
       }
     }
-
-    onlineRooms.clear();
-    onlineRooms.addAll(settings.favoriteRooms
-        .where((room) => room.liveStatus == LiveStatus.live));
-
-    offlineRooms.clear();
-    offlineRooms.addAll(settings.favoriteRooms
-        .where((room) => room.liveStatus != LiveStatus.live));
-
+    syncRooms();
     return true;
   }
 }

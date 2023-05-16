@@ -53,8 +53,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Backup &Recover"),
         "backup_recover_subtitle":
             MessageLookupByLibrary.simpleMessage("Create backup and recover"),
-        "bilibili_cookie":
-            MessageLookupByLibrary.simpleMessage("Bilibili Cookie"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "change_language": MessageLookupByLibrary.simpleMessage("Language"),
         "change_language_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -123,11 +121,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Play Background"),
         "enable_background_play_subtitle": MessageLookupByLibrary.simpleMessage(
             "When leave app, allow video play background"),
-        "enable_bilibili_search_cookie": MessageLookupByLibrary.simpleMessage(
-            "Enable bilibili search cookie"),
-        "enable_bilibili_search_cookie_subtitle":
-            MessageLookupByLibrary.simpleMessage(
-                "Set custom bilibili search needed cookie"),
         "enable_dense_favorites_mode":
             MessageLookupByLibrary.simpleMessage("Dense Mode"),
         "enable_dense_favorites_mode_subtitle":
@@ -147,6 +140,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_screen_keep_on_subtitle": MessageLookupByLibrary.simpleMessage(
             "When in live play, keep screen on"),
         "experiment": MessageLookupByLibrary.simpleMessage("Experiment"),
+        "favorite_areas":
+            MessageLookupByLibrary.simpleMessage("Favorite Areas"),
         "favorites_title": MessageLookupByLibrary.simpleMessage("Favorites"),
         "float_overlay_ratio":
             MessageLookupByLibrary.simpleMessage("Float Video Ratio"),
