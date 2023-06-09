@@ -7,8 +7,23 @@ import 'package:pure_live/common/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pure_live/modules/area_rooms/area_rooms_controller.dart';
 
-class AreasRoomPage extends GetView<AreaRoomsController> {
+class AreasRoomPage extends StatefulWidget {
   const AreasRoomPage({Key? key}) : super(key: key);
+
+  @override
+  State<AreasRoomPage> createState() => _AreasRoomPageState();
+}
+
+class _AreasRoomPageState extends State<AreasRoomPage> {
+  AreaRoomsController get controller => Get.find<AreaRoomsController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.list.listen((p0) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +52,20 @@ class AreasRoomPage extends GetView<AreaRoomsController> {
             controller: controller.refreshController,
             onRefresh: controller.onRefresh,
             onLoading: controller.onLoading,
-            child: Obx(
-              () => controller.list.isNotEmpty
-                  ? MasonryGridView.count(
-                      padding: const EdgeInsets.all(5),
-                      controller: controller.scrollController,
-                      crossAxisCount: crossAxisCount,
-                      itemCount: controller.list.length,
-                      itemBuilder: (context, index) =>
-                          RoomCard(room: controller.list[index], dense: true),
-                    )
-                  : EmptyView(
-                      icon: Icons.live_tv_rounded,
-                      title: S.of(context).empty_areas_room_title,
-                      subtitle: S.of(context).empty_areas_room_subtitle,
-                    ),
-            ),
+            child: controller.list.isNotEmpty
+                ? MasonryGridView.count(
+                    padding: const EdgeInsets.all(5),
+                    controller: controller.scrollController,
+                    crossAxisCount: crossAxisCount,
+                    itemCount: controller.list.length,
+                    itemBuilder: (context, index) =>
+                        RoomCard(room: controller.list[index], dense: true),
+                  )
+                : EmptyView(
+                    icon: Icons.live_tv_rounded,
+                    title: S.of(context).empty_areas_room_title,
+                    subtitle: S.of(context).empty_areas_room_subtitle,
+                  ),
           ),
         );
       }),
